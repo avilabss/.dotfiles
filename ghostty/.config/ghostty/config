@@ -3,3 +3,5 @@ font-size = 14
 font-thicken = true
 cursor-style = block
 
+# Catppuccin Mocha theme (matches starship)
+theme = catppuccin-mocha
