@@ -21,8 +21,11 @@ $haskell\
 $python\
 [](fg:green bg:sapphire)\
 $conda\
+$docker_context\
 [](fg:sapphire bg:lavender)\
+$time\
 [ ](fg:lavender)\
+$battery\
 $cmd_duration\
 $line_break\
 $character"""
@@ -141,12 +144,12 @@ ignore_base = false
 
 [time]
 disabled = false
-time_format = "%R"
+time_format = "%I:%M %p"
 style = "bg:lavender"
 format = '[[  $time ](fg:crust bg:lavender)]($style)'
 
 [line_break]
-disabled = true
+disabled = false
 
 [character]
 disabled = false
@@ -164,6 +167,27 @@ style = "bg:lavender"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
+
+[battery]
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+unknown_symbol = "󰁽 "
+empty_symbol = "󰂎 "
+disabled = false
+format = "[$symbol$percentage]($style) "
+
+[[battery.display]]
+threshold = 10
+style = "bold red"
+
+[[battery.display]]
+threshold = 30
+style = "bold yellow"
+
+[[battery.display]]
+threshold = 100
+style = "bold green"
 
 [palettes.catppuccin_mocha]
 rosewater = "#f5e0dc"
