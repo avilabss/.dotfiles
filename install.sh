@@ -65,6 +65,16 @@ install_linux() {
         fi
     done
 
+    # Install Docker
+    if ! command -v docker &> /dev/null; then
+        echo -e "${YELLOW}Installing Docker...${NC}"
+        curl -fsSL https://get.docker.com | sh
+        sudo usermod -aG docker "$USER"
+        echo -e "${GREEN}Docker installed - log out and back in to use without sudo${NC}"
+    else
+        echo -e "${GREEN}Docker already installed${NC}"
+    fi
+
     # Install Starship (not in apt)
     if ! command -v starship &> /dev/null; then
         echo -e "${YELLOW}Installing Starship...${NC}"
