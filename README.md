@@ -1,47 +1,110 @@
 # .dotfiles
-This repository contains my personal dotfiles, which are configuration files for various applications and tools I use. The dotfiles are organized in a way that allows easy management and deployment using GNU Stow.
 
-To use this .dotfiles repository, you can follow these steps:
-1. **Clone the repository**:
-   Open your terminal and run the following command to clone the repository to your local machine:
-   ```bash
-   git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
-   ```
-2. **Ensure GNU Stow is installed**:
-   This repository uses GNU Stow to manage dotfiles. Make sure you have it installed on your system. You can install it using your package manager. For example, on Ubuntu, you can run:
-   ```bash
-   sudo apt install stow
-   ```
-3. **Navigate to the dotfiles directory**:
-   Change your current directory to the cloned dotfiles directory:
-   ```bash
-   cd ~/dotfiles
-   ```
-4. **Stow the desired configuration**:
-   Use GNU Stow to symlink the desired configuration files to your home directory. For example, if you want to stow the `nvim` configuration, run:
-   ```bash
-   stow nvim
-   ```
-   You can replace `nvim` with any other directory in the repository to apply different configurations.
+Personal dotfiles for macOS and Linux, managed with GNU Stow.
 
-# Directory Structure
+## Quick Install
 
-To ensure we don't have any conflicts with existing dotfiles, the directory structure is designed to avoid overwriting files that are already present in the home directory. Below are examples of how the directory structure looks for different configurations.
-
-```md
-~/.dotfiles/
-├── nvim/
-│   └── .config/
-│       └── nvim/
-├── kitty/
-│   └── .config/
-│       └── kitty/
+```bash
+git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
+cd ~/dotfiles
+./install.sh
 ```
 
-```md
-~/.dotfiles/
-├── bash/
-│   └── .bashrc
-├── vim/
-│   └── .vimrc
+The install script will:
+- Detect your OS (macOS or Linux)
+- Install all dependencies (Homebrew on macOS, apt on Linux)
+- Install Oh My Zsh and plugins
+- Install Tmux Plugin Manager
+- Stow all configurations
+- Set zsh as default shell
+
+## What's Included
+
+| Tool | Description |
+|------|-------------|
+| **Neovim** | Editor with LSP, completion, debugging, Telescope |
+| **Zsh** | Shell with Oh My Zsh framework |
+| **Tmux** | Terminal multiplexer with vim navigation |
+| **Starship** | Cross-shell prompt |
+| **Ghostty** | Terminal emulator |
+
+All tools use the **Catppuccin Mocha** theme.
+
+## Manual Installation
+
+If you prefer to install manually:
+
+### 1. Install Dependencies
+
+**macOS:**
+```bash
+brew bundle --file=Brewfile
+```
+
+**Linux (apt):**
+```bash
+# Install packages
+xargs -a packages/apt.txt sudo apt install -y
+
+# Install Starship
+curl -sS https://starship.rs/install.sh | sh
+```
+
+### 2. Install Oh My Zsh
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+# Install plugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+```
+
+### 3. Install Tmux Plugin Manager
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+### 4. Stow Configurations
+
+```bash
+cd ~/dotfiles
+stow nvim zsh tmux starship ghostty
+```
+
+## Directory Structure
+
+```
+~/dotfiles/
+├── install.sh          # Automated install script
+├── Brewfile            # macOS dependencies (Homebrew)
+├── packages/
+│   └── apt.txt         # Linux dependencies (apt)
+├── nvim/               # Neovim config
+│   └── .config/nvim/
+├── zsh/                # Zsh config
+│   ├── .zshrc
+│   └── .zprofile
+├── tmux/               # Tmux config
+│   └── .tmux.conf
+├── starship/           # Starship prompt
+│   └── .config/starship.toml
+└── ghostty/            # Ghostty terminal
+    └── .config/ghostty/
+```
+
+## Post-Install
+
+1. Restart your terminal
+2. In tmux, press `Ctrl-a + I` to install plugins
+3. Open neovim - Lazy will auto-install plugins
+
+## Adding/Removing Packages
+
+**macOS:** Edit `Brewfile`, then run `brew bundle`
+
+**Linux:** Edit `packages/apt.txt`, then run:
+```bash
+xargs -a packages/apt.txt sudo apt install -y
 ```

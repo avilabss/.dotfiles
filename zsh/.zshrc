@@ -1,3 +1,9 @@
+# OS Detection
+case "$OSTYPE" in
+    darwin*)  IS_MACOS=true ;;
+    linux*)   IS_LINUX=true ;;
+esac
+
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -26,5 +32,7 @@ source $ZSH/oh-my-zsh.sh
 
 eval "$(starship init zsh)"
 
-# Add VS Code to PATH
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+# Add VS Code to PATH (macOS only - Linux uses system package manager)
+if [[ $IS_MACOS ]]; then
+    export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+fi

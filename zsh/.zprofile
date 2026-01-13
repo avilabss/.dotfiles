@@ -1,8 +1,18 @@
+# OS Detection
+case "$OSTYPE" in
+    darwin*)  IS_MACOS=true ;;
+    linux*)   IS_LINUX=true ;;
+esac
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
+# Homebrew (macOS only)
+if [[ $IS_MACOS ]] && [[ -f /opt/homebrew/bin/brew ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
 
-# Added by OrbStack: command-line tools and integration
-source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+# OrbStack: command-line tools and integration (macOS only)
+if [[ $IS_MACOS ]]; then
+    source ~/.orbstack/shell/init.zsh 2>/dev/null || :
+fi
 
 # Add local bin to PATH
-export PATH="$PATH:/Users/avi/.local/bin"
+export PATH="$PATH:$HOME/.local/bin"

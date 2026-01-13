@@ -1,0 +1,21 @@
+# CLI tools
+zsh
+fastfetch
+git
+git-lfs
+golang
+neovim
+nodejs
+npm
+pipx
+ripgrep
+stow
+tmux
+wget
+
+# Apps
+flameshot
+
+# Build essentials (often needed)
+curl
+unzip
