@@ -50,6 +50,12 @@ install_linux() {
         exit 1
     fi
 
+    # Add fastfetch PPA
+    if ! grep -q "zhangsongcui3371/fastfetch" /etc/apt/sources.list.d/*.list 2>/dev/null; then
+        echo -e "${YELLOW}Adding fastfetch PPA...${NC}"
+        sudo add-apt-repository -y ppa:zhangsongcui3371/fastfetch
+    fi
+
     # Update package list
     echo -e "${YELLOW}Updating package list...${NC}"
     sudo apt update
@@ -198,6 +204,20 @@ install_common() {
     else
         echo -e "${GREEN}TPM already installed${NC}"
     fi
+
+    # Backup conflicting files before stowing
+    echo -e "${YELLOW}Backing up existing dotfiles...${NC}"
+    BACKUP_DIR="$HOME/.dotfiles_backup/$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$BACKUP_DIR"
+
+    # Files that may conflict with stow
+    CONFLICT_FILES=(.zshrc .zprofile .tmux.conf)
+    for file in "${CONFLICT_FILES[@]}"; do
+        if [[ -f "$HOME/$file" && ! -L "$HOME/$file" ]]; then
+            echo -e "${YELLOW}Backing up $file...${NC}"
+            mv "$HOME/$file" "$BACKUP_DIR/"
+        fi
+    done
 
     # Stow all configurations
     echo -e "${YELLOW}Stowing dotfiles...${NC}"
