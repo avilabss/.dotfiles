@@ -140,6 +140,20 @@ install_linux_optional() {
 
         echo -e "${GREEN}RDP configured - connect using your IP on port 3389${NC}"
     fi
+
+    # QEMU Guest Agent
+    read -p "Install QEMU guest agent (for VMs running on Proxmox/KVM)? [y/N]: " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Installing QEMU guest agent...${NC}"
+        sudo apt install -y qemu-guest-agent
+
+        echo -e "${YELLOW}Enabling QEMU guest agent service...${NC}"
+        sudo systemctl enable qemu-guest-agent
+        sudo systemctl start qemu-guest-agent
+
+        echo -e "${GREEN}QEMU guest agent configured${NC}"
+    fi
 }
 
 #------------------------------------------------------------------------------
