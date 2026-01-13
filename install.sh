@@ -63,7 +63,7 @@ install_linux() {
     # Install packages from apt.txt
     echo -e "${YELLOW}Installing packages from apt.txt...${NC}"
     grep -v '^#' "$DOTFILES_DIR/packages/apt.txt" | grep -v '^$' | while read -r package; do
-        if dpkg -l "$package" &> /dev/null; then
+        if dpkg -l "$package" 2>/dev/null | grep -q "^ii"; then
             echo -e "${GREEN}$package already installed${NC}"
         else
             echo -e "${YELLOW}Installing $package...${NC}"
