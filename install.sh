@@ -88,6 +88,58 @@ install_linux() {
     else
         echo -e "${GREEN}Ghostty already installed${NC}"
     fi
+
+    # Optional features
+    install_linux_optional
+}
+
+#------------------------------------------------------------------------------
+# Linux Optional Setup
+#------------------------------------------------------------------------------
+install_linux_optional() {
+    echo ""
+    echo -e "${YELLOW}========================================${NC}"
+    echo -e "${YELLOW}  Optional Linux Setup${NC}"
+    echo -e "${YELLOW}========================================${NC}"
+
+    # SSH Server Setup
+    read -p "Install and configure OpenSSH server? [y/N]: " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Installing OpenSSH server...${NC}"
+        sudo apt install -y openssh-server
+
+        echo -e "${YELLOW}Enabling SSH service...${NC}"
+        sudo systemctl enable ssh
+        sudo systemctl start ssh
+
+        echo -e "${YELLOW}Configuring UFW for SSH...${NC}"
+        sudo apt install -y ufw
+        sudo ufw allow ssh
+        sudo ufw --force enable
+
+        echo -e "${GREEN}SSH server configured and UFW enabled${NC}"
+    fi
+
+    # RDP Setup
+    read -p "Install and configure RDP (xrdp) for remote desktop? [y/N]: " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        echo -e "${YELLOW}Installing xrdp...${NC}"
+        sudo apt install -y xrdp
+
+        echo -e "${YELLOW}Enabling xrdp service...${NC}"
+        sudo systemctl enable xrdp
+        sudo systemctl start xrdp
+
+        # Allow RDP through firewall
+        if command -v ufw &> /dev/null; then
+            echo -e "${YELLOW}Configuring UFW for RDP (port 3389)...${NC}"
+            sudo ufw allow 3389/tcp
+        fi
+
+        echo -e "${GREEN}RDP configured - connect using your IP on port 3389${NC}"
+    fi
 }
 
 #------------------------------------------------------------------------------
