@@ -105,6 +105,29 @@ install_linux() {
         echo -e "${GREEN}Ghostty already installed${NC}"
     fi
 
+    # Install Google Chrome
+    if ! command -v google-chrome &> /dev/null; then
+        echo -e "${YELLOW}Installing Google Chrome...${NC}"
+        wget -q -O /tmp/chrome.deb https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt install -y /tmp/chrome.deb
+        rm /tmp/chrome.deb
+    else
+        echo -e "${GREEN}Google Chrome already installed${NC}"
+    fi
+
+    # Install JetBrainsMono Nerd Font
+    if ! fc-list | grep -qi "JetBrainsMono Nerd"; then
+        echo -e "${YELLOW}Installing JetBrainsMono Nerd Font...${NC}"
+        FONT_DIR="$HOME/.local/share/fonts"
+        mkdir -p "$FONT_DIR"
+        wget -q -O /tmp/JetBrainsMono.zip https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip
+        unzip -o -q /tmp/JetBrainsMono.zip -d "$FONT_DIR"
+        rm /tmp/JetBrainsMono.zip
+        fc-cache -f
+    else
+        echo -e "${GREEN}JetBrainsMono Nerd Font already installed${NC}"
+    fi
+
     # Optional features
     install_linux_optional
 }

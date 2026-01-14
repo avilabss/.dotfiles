@@ -1,3 +1,6 @@
+# Taps
+tap "homebrew/cask-fonts"
+
 # CLI tools
 brew "fastfetch"
 brew "git"
@@ -18,3 +21,7 @@ cask "ghostty"
 cask "flameshot"
 cask "orbstack"
 cask "legcord"
+cask "google-chrome"
+
+# Fonts
+cask "font-jetbrains-mono-nerd-font"

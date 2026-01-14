@@ -19,3 +19,5 @@ flameshot
 # Build essentials (often needed)
 curl
 unzip
+fontconfig
+software-properties-common
