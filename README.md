@@ -7,32 +7,56 @@ Personal dotfiles for macOS and Linux, managed with GNU Stow.
 ```bash
 git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
 cd ~/dotfiles
+chmod +x install.sh
 ./install.sh
 ```
 
-The install script will:
-- Detect your OS (macOS or Linux)
-- Install all dependencies (Homebrew on macOS, apt on Linux)
-- Install Oh My Zsh and plugins
-- Install Tmux Plugin Manager
-- Stow all configurations
-- Set zsh as default shell
+For automated installs (skip interactive prompts):
+```bash
+./install.sh --skip-optional
+```
 
-## What's Included
+## What Gets Installed
+
+### Core Tools (both platforms)
 
 | Tool | Description |
 |------|-------------|
-| **Neovim** | Editor with LSP, completion, debugging, Telescope |
-| **Zsh** | Shell with Oh My Zsh framework |
-| **Tmux** | Terminal multiplexer with vim navigation |
-| **Starship** | Cross-shell prompt |
-| **Ghostty** | Terminal emulator |
+| Neovim | Editor with LSP, completion, debugging, Telescope |
+| Zsh | Shell with Oh My Zsh framework |
+| Tmux | Terminal multiplexer with vim navigation |
+| Starship | Cross-shell prompt |
+| Ghostty | Terminal emulator |
+| Docker | Containers (OrbStack on macOS) |
+| Google Chrome | Browser |
+| JetBrainsMono Nerd Font | Terminal font |
 
-All tools use the **Catppuccin Mocha** theme.
+### Additional Tools
+
+| Tool | Description |
+|------|-------------|
+| fastfetch | System info |
+| ripgrep | Fast search |
+| git, git-lfs | Version control |
+| go, node, pipx, uv | Language runtimes & package managers |
+| flameshot | Screenshots |
+
+### Linux Optional Setup
+
+When running on Linux, you'll be prompted to optionally install:
+- **OpenSSH server** + UFW firewall
+- **xrdp** for remote desktop
+- **QEMU guest agent** (for Proxmox/KVM VMs)
+
+Skip these prompts with `--skip-optional`.
+
+## What the Install Script Does
+
+1. **macOS**: Installs Homebrew (if needed), then runs `brew bundle`
+2. **Linux**: Adds required PPAs, installs apt packages, then installs Docker/Starship/uv/Ghostty/Chrome/fonts via their official methods
+3. **Both**: Installs Oh My Zsh + plugins, TPM, backs up existing dotfiles, stows configs, sets zsh as default shell
 
 ## Manual Installation
-
-If you prefer to install manually:
 
 ### 1. Install Dependencies
 
@@ -43,19 +67,24 @@ brew bundle --file=Brewfile
 
 **Linux (apt):**
 ```bash
+# Add fastfetch PPA
+sudo add-apt-repository ppa:zhangsongcui3371/fastfetch
+
 # Install packages
+sudo apt update
 xargs -a packages/apt.txt sudo apt install -y
 
-# Install Starship
+# Install tools not in apt
+curl -fsSL https://get.docker.com | sh
 curl -sS https://starship.rs/install.sh | sh
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-### 2. Install Oh My Zsh
+### 2. Install Oh My Zsh + Plugins
 
 ```bash
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-# Install plugins
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
 ```
@@ -77,34 +106,34 @@ stow nvim zsh tmux starship ghostty
 
 ```
 ~/dotfiles/
-├── install.sh          # Automated install script
-├── Brewfile            # macOS dependencies (Homebrew)
+├── install.sh              # Install script (run this)
+├── Brewfile                # macOS dependencies
 ├── packages/
-│   └── apt.txt         # Linux dependencies (apt)
-├── nvim/               # Neovim config
-│   └── .config/nvim/
-├── zsh/                # Zsh config
-│   ├── .zshrc
-│   └── .zprofile
-├── tmux/               # Tmux config
-│   └── .tmux.conf
-├── starship/           # Starship prompt
-│   └── .config/starship.toml
-└── ghostty/            # Ghostty terminal
-    └── .config/ghostty/
+│   └── apt.txt             # Linux dependencies
+├── nvim/.config/nvim/      # Neovim config
+├── zsh/
+│   ├── .zshrc              # Zsh config
+│   └── .zprofile           # Zsh profile
+├── tmux/.tmux.conf         # Tmux config
+├── starship/.config/starship.toml
+└── ghostty/.config/ghostty/
 ```
 
 ## Post-Install
 
-1. Restart your terminal
+1. Restart your terminal (or `source ~/.zshrc`)
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim - Lazy will auto-install plugins
 
-## Adding/Removing Packages
+## Adding Packages
 
 **macOS:** Edit `Brewfile`, then run `brew bundle`
 
 **Linux:** Edit `packages/apt.txt`, then run:
 ```bash
-xargs -a packages/apt.txt sudo apt install -y
+sudo apt update && xargs -a packages/apt.txt sudo apt install -y
 ```
+
+## Theme
+
+All tools use **Catppuccin Mocha** for consistent aesthetics.

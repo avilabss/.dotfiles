@@ -8,6 +8,22 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SKIP_OPTIONAL=false
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --skip-optional) SKIP_OPTIONAL=true ;;
+        --help|-h)
+            echo "Usage: ./install.sh [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  --skip-optional  Skip optional Linux setup (SSH, RDP, QEMU agent)"
+            echo "  --help, -h       Show this help message"
+            exit 0
+            ;;
+    esac
+done
 
 # OS Detection
 case "$OSTYPE" in
@@ -129,7 +145,11 @@ install_linux() {
     fi
 
     # Optional features
-    install_linux_optional
+    if [[ "$SKIP_OPTIONAL" == false ]]; then
+        install_linux_optional
+    else
+        echo -e "${YELLOW}Skipping optional setup (--skip-optional flag)${NC}"
+    fi
 }
 
 #------------------------------------------------------------------------------
