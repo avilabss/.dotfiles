@@ -1,10 +1,51 @@
 ---
-- name: Verify neovim is installed
-  ansible.builtin.command: nvim --version
-  register: nvim_version
+# macOS gets neovim from Brewfile - nothing to do
+# Linux installs from GitHub release tarball for 0.11+ compatibility
+
+- name: Check current neovim version
+  ansible.builtin.shell: nvim --version | head -1
+  register: nvim_version_check
   changed_when: false
-  failed_when: nvim_version.rc != 0
+  failed_when: false
+
+- name: Install neovim from GitHub release (Linux)
+  when:
+    - ansible_os_family != 'Darwin'
+    - nvim_version_check.rc != 0 or 'v0.11' not in nvim_version_check.stdout
+  block:
+    - name: Remove distro neovim if present
+      ansible.builtin.package:
+        name: neovim
+        state: absent
+      become: true
+
+    - name: Create install directory
+      ansible.builtin.file:
+        path: "{{ neovim_install_dir }}"
+        state: directory
+        mode: "0755"
+      become: true
+
+    - name: Download and extract neovim tarball
+      ansible.builtin.unarchive:
+        src: "{{ neovim_tarball_url }}"
+        dest: "{{ neovim_install_dir }}"
+        remote_src: true
+        extra_opts: [--strip-components=1]
+      become: true
+
+    - name: Symlink nvim to /usr/local/bin
+      ansible.builtin.file:
+        src: "{{ neovim_install_dir }}/bin/nvim"
+        dest: /usr/local/bin/nvim
+        state: link
+      become: true
 
 - name: Display neovim version
+  ansible.builtin.shell: nvim --version | head -1
+  register: nvim_final
+  changed_when: false
+
+- name: Show neovim version
   ansible.builtin.debug:
-    msg: "{{ nvim_version.stdout_lines[0] }}"
+    msg: "{{ nvim_final.stdout }}"

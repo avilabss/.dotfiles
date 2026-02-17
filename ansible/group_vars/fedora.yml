@@ -3,7 +3,6 @@ common_packages:
   - zsh
   - git
   - git-lfs
-  - neovim
   - stow
   - tmux
   - wget

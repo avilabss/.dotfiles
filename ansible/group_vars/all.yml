@@ -40,6 +40,11 @@ rustup_install_url: "https://sh.rustup.rs"
 # Poetry
 poetry_install_url: "https://install.python-poetry.org"
 
+# Neovim (Linux - installed from GitHub release for 0.11+)
+neovim_version: "v0.11.0"
+neovim_tarball_url: "https://github.com/neovim/neovim/releases/download/{{ neovim_version }}/nvim-linux-x86_64.tar.gz"
+neovim_install_dir: "/opt/nvim"
+
 # Nerd Font
 nerd_font_name: "JetBrainsMono"
 nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"
