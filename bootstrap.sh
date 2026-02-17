@@ -78,15 +78,8 @@ echo -e "${GREEN}Ansible is ready. Running playbook...${NC}"
 # Build playbook command
 cd "$DOTFILES_DIR/ansible"
 
-ANSIBLE_ARGS=()
-
-# Linux tasks need sudo — prompt for password
-if [[ "$OSTYPE" == linux* ]]; then
-    ANSIBLE_ARGS+=(--ask-become-pass)
-fi
-
 if [[ "$INSTALL_ALL" == true ]]; then
-    ansible-playbook site.yml "${ANSIBLE_ARGS[@]}" "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml "${EXTRA_ARGS[@]}"
 else
-    ansible-playbook site.yml --skip-tags optional "${ANSIBLE_ARGS[@]}" "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml --skip-tags optional "${EXTRA_ARGS[@]}"
 fi
