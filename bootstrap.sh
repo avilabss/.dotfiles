@@ -7,6 +7,30 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_ALL=false
+EXTRA_ARGS=()
+
+# Parse arguments
+for arg in "$@"; do
+    case $arg in
+        --all)  INSTALL_ALL=true ;;
+        --help|-h)
+            echo "Usage: ./bootstrap.sh [OPTIONS] [ANSIBLE_ARGS]"
+            echo ""
+            echo "Options:"
+            echo "  --all         Install everything including optional roles"
+            echo "  --help, -h    Show this help message"
+            echo ""
+            echo "Examples:"
+            echo "  ./bootstrap.sh                  Core setup only"
+            echo "  ./bootstrap.sh --all            Everything (docker, ssh, xrdp, qemu, sunshine)"
+            echo "  ./bootstrap.sh --tags docker    Only Docker"
+            echo "  ./bootstrap.sh --check          Dry run"
+            exit 0
+            ;;
+        *)      EXTRA_ARGS+=("$arg") ;;
+    esac
+done
 
 echo -e "${GREEN}========================================${NC}"
 echo -e "${GREEN}  Dotfiles Bootstrap${NC}"
@@ -51,6 +75,11 @@ fi
 
 echo -e "${GREEN}Ansible is ready. Running playbook...${NC}"
 
-# Run the playbook - pass any extra arguments through (e.g., --tags docker,ssh)
+# Build playbook command
 cd "$DOTFILES_DIR/ansible"
-ansible-playbook site.yml "$@"
+
+if [[ "$INSTALL_ALL" == true ]]; then
+    ansible-playbook site.yml "${EXTRA_ARGS[@]}"
+else
+    ansible-playbook site.yml --skip-tags optional "${EXTRA_ARGS[@]}"
+fi

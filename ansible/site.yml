@@ -44,22 +44,22 @@
       tags: [ghostty]
 
     - role: docker
-      tags: [docker, never]
+      tags: [docker, optional]
 
     - role: ssh
-      tags: [ssh, never]
+      tags: [ssh, optional]
       when: ansible_os_family != 'Darwin'
 
     - role: xrdp
-      tags: [xrdp, never]
+      tags: [xrdp, optional]
       when: ansible_os_family != 'Darwin'
 
     - role: qemu
-      tags: [qemu, never]
+      tags: [qemu, optional]
       when: ansible_os_family != 'Darwin'
 
     - role: sunshine
-      tags: [sunshine, never]
+      tags: [sunshine, optional]
 
   post_tasks:
     - name: Installation complete
