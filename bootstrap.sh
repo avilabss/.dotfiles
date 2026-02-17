@@ -56,6 +56,12 @@ if [[ "$OSTYPE" == darwin* ]]; then
 elif [[ "$OSTYPE" == linux* ]]; then
     echo -e "${YELLOW}Detected Linux${NC}"
 
+    # Switch sudo-rs to legacy sudo wrapper if available (fixes Ansible become compatibility)
+    if [[ -x /usr/bin/sudo.ws ]]; then
+        echo -e "${YELLOW}Switching to legacy sudo for Ansible compatibility...${NC}"
+        sudo update-alternatives --set sudo /usr/bin/sudo.ws
+    fi
+
     if command -v apt &> /dev/null; then
         echo -e "${YELLOW}Detected Debian/Ubuntu - installing Ansible via apt...${NC}"
         sudo apt update
@@ -75,25 +81,10 @@ fi
 
 echo -e "${GREEN}Ansible is ready. Running playbook...${NC}"
 
-# Collect sudo password on Linux (needed for become tasks)
-BECOME_ARGS=()
-if [[ "$OSTYPE" == linux* ]]; then
-    read -s -p "Enter sudo password: " BECOME_PASS
-    echo
-    # Write to a temp file with restricted permissions, cleaned up on exit
-    PASS_FILE="$(mktemp)"
-    chmod 600 "$PASS_FILE"
-    echo "$BECOME_PASS" > "$PASS_FILE"
-    unset BECOME_PASS
-    trap 'rm -f "$PASS_FILE"' EXIT
-    BECOME_ARGS=(--become-password-file "$PASS_FILE")
-fi
-
-# Build playbook command
 cd "$DOTFILES_DIR/ansible"
 
 if [[ "$INSTALL_ALL" == true ]]; then
-    ansible-playbook site.yml "${BECOME_ARGS[@]}" "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml --ask-become-pass "${EXTRA_ARGS[@]}"
 else
-    ansible-playbook site.yml --skip-tags optional "${BECOME_ARGS[@]}" "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml --ask-become-pass --skip-tags optional "${EXTRA_ARGS[@]}"
 fi
