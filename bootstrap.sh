@@ -8,12 +8,14 @@ NC='\033[0m'
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 INSTALL_ALL=false
+HAS_TAGS=false
 EXTRA_ARGS=()
 
 # Parse arguments
 for arg in "$@"; do
     case $arg in
-        --all)  INSTALL_ALL=true ;;
+        --tags)  HAS_TAGS=true; EXTRA_ARGS+=("$arg") ;;
+        --all)   INSTALL_ALL=true ;;
         --help|-h)
             echo "Usage: ./bootstrap.sh [OPTIONS] [ANSIBLE_ARGS]"
             echo ""
@@ -83,7 +85,7 @@ echo -e "${GREEN}Ansible is ready. Running playbook...${NC}"
 
 cd "$DOTFILES_DIR/ansible"
 
-if [[ "$INSTALL_ALL" == true ]]; then
+if [[ "$INSTALL_ALL" == true || "$HAS_TAGS" == true ]]; then
     ansible-playbook site.yml --ask-become-pass "${EXTRA_ARGS[@]}"
 else
     ansible-playbook site.yml --ask-become-pass --skip-tags optional "${EXTRA_ARGS[@]}"
