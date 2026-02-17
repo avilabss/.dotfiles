@@ -22,7 +22,9 @@ brew_casks:
 dev_tool_packages:
   - go
   - node
+  - python
   - pipx
+  - rust
   - starship
   - uv
 

@@ -34,6 +34,12 @@ starship_install_url: "https://starship.rs/install.sh"
 # uv (Python)
 uv_install_url: "https://astral.sh/uv/install.sh"
 
+# Rust
+rustup_install_url: "https://sh.rustup.rs"
+
+# Poetry
+poetry_install_url: "https://install.python-poetry.org"
+
 # Nerd Font
 nerd_font_name: "JetBrainsMono"
 nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"

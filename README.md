@@ -34,7 +34,8 @@ cd ~/dotfiles
 | Google Chrome | Browser |
 | JetBrainsMono Nerd Font | Terminal font |
 | fastfetch, ripgrep, flameshot | System info, search, screenshots |
-| go, node, pipx, uv | Language runtimes & package managers |
+| go, rust, node, python | Language runtimes |
+| pipx, uv, poetry | Package managers |
 | git, git-lfs | Version control |
 
 ### Optional (via tags)

@@ -11,7 +11,20 @@
   ansible.builtin.include_tasks: fedora.yml
   when: "'fedora' in group_names"
 
-# uv is installed via script on Linux (not in distro repos)
+# Rust via rustup (Linux only - macOS gets it from brew)
+- name: Check if rustup is installed
+  ansible.builtin.command: which rustup
+  register: rustup_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Rust via rustup
+  ansible.builtin.shell: curl --proto '=https' --tlsv1.2 -sSf {{ rustup_install_url }} | sh -s -- -y
+  when:
+    - rustup_check.rc != 0
+    - ansible_os_family != 'Darwin'
+
+# uv (Linux only - macOS gets it from brew)
 - name: Check if uv is installed
   ansible.builtin.command: which uv
   register: uv_check
@@ -23,6 +36,17 @@
   when:
     - uv_check.rc != 0
     - ansible_os_family != 'Darwin'
+
+# Poetry (all platforms)
+- name: Check if poetry is installed
+  ansible.builtin.command: which poetry
+  register: poetry_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Poetry
+  ansible.builtin.shell: curl -sSL {{ poetry_install_url }} | python3 -
+  when: poetry_check.rc != 0
 
 # Google Chrome on Linux
 - name: Check if Google Chrome is installed
