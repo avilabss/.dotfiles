@@ -12,11 +12,13 @@
              else 'fedora' if ansible_distribution in ['Fedora', 'CentOS', 'Rocky', 'AlmaLinux']
              else 'unknown' }}
       changed_when: false
+      tags: always
 
     - name: Fail on unsupported OS
       ansible.builtin.fail:
         msg: "Unsupported OS: {{ ansible_distribution }} ({{ ansible_os_family }})"
       when: group_names | intersect(['macos', 'debian', 'fedora']) | length == 0
+      tags: always
 
   roles:
     - role: common
