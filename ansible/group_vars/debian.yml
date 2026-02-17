@@ -15,9 +15,6 @@ common_packages:
   - fastfetch
   - flameshot
 
-apt_ppas:
-  - ppa:zhangsongcui3371/fastfetch
-
 dev_tool_packages:
   - golang
   - nodejs

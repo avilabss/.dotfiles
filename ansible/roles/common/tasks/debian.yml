@@ -3,8 +3,9 @@
   ansible.builtin.apt_repository:
     repo: "{{ item }}"
     state: present
-  loop: "{{ apt_ppas }}"
+  loop: "{{ apt_ppas | default([]) }}"
   become: true
+  when: apt_ppas is defined and apt_ppas | length > 0
 
 - name: Update apt cache
   ansible.builtin.apt:
