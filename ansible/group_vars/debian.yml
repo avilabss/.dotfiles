@@ -37,3 +37,5 @@ xrdp_packages:
 
 qemu_packages:
   - qemu-guest-agent
+
+sunshine_deb_url: "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-ubuntu-24.04-amd64.deb"

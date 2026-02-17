@@ -75,7 +75,8 @@ Re-run only specific roles:
 |-----|-------------|-----------|
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
-| `xrdp` | Remote desktop | Linux |
+| `xrdp` | Remote desktop (RDP) | Linux |
+| `sunshine` | Remote desktop (Moonlight/Sunshine) | All |
 | `qemu` | QEMU guest agent (Proxmox/KVM) | Linux |
 
 ## Directory Structure

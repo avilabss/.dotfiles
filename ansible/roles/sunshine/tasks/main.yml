@@ -1,0 +1,12 @@
+---
+- name: Include macOS Sunshine tasks
+  ansible.builtin.include_tasks: macos.yml
+  when: "'macos' in group_names"
+
+- name: Include Debian Sunshine tasks
+  ansible.builtin.include_tasks: debian.yml
+  when: "'debian' in group_names"
+
+- name: Include Fedora Sunshine tasks
+  ansible.builtin.include_tasks: fedora.yml
+  when: "'fedora' in group_names"

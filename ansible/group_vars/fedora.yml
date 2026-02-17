@@ -33,3 +33,5 @@ xrdp_packages:
 
 qemu_packages:
   - qemu-guest-agent
+
+sunshine_copr_repo: "lizardbyte/beta"

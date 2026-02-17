@@ -58,6 +58,9 @@
       tags: [qemu, never]
       when: ansible_os_family != 'Darwin'
 
+    - role: sunshine
+      tags: [sunshine, never]
+
   post_tasks:
     - name: Installation complete
       ansible.builtin.debug:

@@ -1,0 +1,26 @@
+---
+- name: Check if Sunshine is installed
+  ansible.builtin.command: which sunshine
+  register: sunshine_check
+  changed_when: false
+  failed_when: false
+
+- name: Download Sunshine deb package
+  ansible.builtin.get_url:
+    url: "{{ sunshine_deb_url }}"
+    dest: /tmp/sunshine.deb
+    mode: "0644"
+  when: sunshine_check.rc != 0
+
+- name: Install Sunshine
+  ansible.builtin.apt:
+    deb: /tmp/sunshine.deb
+    state: present
+  become: true
+  when: sunshine_check.rc != 0
+
+- name: Clean up deb package
+  ansible.builtin.file:
+    path: /tmp/sunshine.deb
+    state: absent
+  when: sunshine_check.rc != 0

@@ -1,0 +1,14 @@
+---
+- name: Add LizardByte tap
+  community.general.homebrew_tap:
+    name: LizardByte/homebrew
+    state: present
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+
+- name: Install Sunshine
+  community.general.homebrew:
+    name: sunshine
+    state: present
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"

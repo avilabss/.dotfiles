@@ -1,0 +1,12 @@
+---
+- name: Enable LizardByte COPR repository
+  ansible.builtin.command: dnf copr enable -y {{ sunshine_copr_repo }}
+  become: true
+  register: copr_result
+  changed_when: "'enabled' in copr_result.stdout or copr_result.rc == 0"
+
+- name: Install Sunshine
+  ansible.builtin.dnf:
+    name: Sunshine
+    state: present
+  become: true
