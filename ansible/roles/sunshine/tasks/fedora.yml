@@ -10,3 +10,23 @@
     name: Sunshine
     state: present
   become: true
+
+- name: Allow Sunshine TCP ports through firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}/tcp"
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+  loop:
+    - "47984-47990"
+
+- name: Allow Sunshine UDP ports through firewalld
+  ansible.posix.firewalld:
+    port: "{{ item }}/udp"
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+  loop:
+    - "47998-48000"

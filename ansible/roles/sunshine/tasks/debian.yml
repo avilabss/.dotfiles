@@ -24,3 +24,17 @@
     path: /tmp/sunshine.deb
     state: absent
   when: sunshine_check.rc != 0
+
+- name: Allow Sunshine TCP ports through UFW
+  community.general.ufw:
+    rule: allow
+    port: "47984:47990"
+    proto: tcp
+  become: true
+
+- name: Allow Sunshine UDP ports through UFW
+  community.general.ufw:
+    rule: allow
+    port: "47998:48000"
+    proto: udp
+  become: true
