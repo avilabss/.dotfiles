@@ -1,0 +1,10 @@
+---
+- name: Verify neovim is installed
+  ansible.builtin.command: nvim --version
+  register: nvim_version
+  changed_when: false
+  failed_when: nvim_version.rc != 0
+
+- name: Display neovim version
+  ansible.builtin.debug:
+    msg: "{{ nvim_version.stdout_lines[0] }}"

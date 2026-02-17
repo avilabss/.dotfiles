@@ -1,0 +1,39 @@
+---
+dotfiles_user: "{{ ansible_user_id }}"
+dotfiles_dir: "{{ ansible_env.HOME }}/dotfiles"
+
+# Stow packages to symlink
+stow_packages:
+  - zsh
+  - nvim
+  - tmux
+  - starship
+  - ghostty
+
+# Files that may conflict with stow and need backing up
+stow_conflict_files:
+  - .zshrc
+  - .zprofile
+  - .tmux.conf
+
+# Oh My Zsh
+omz_install_url: "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+omz_plugins:
+  - name: zsh-autosuggestions
+    repo: "https://github.com/zsh-users/zsh-autosuggestions"
+  - name: zsh-syntax-highlighting
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting"
+
+# TPM
+tpm_repo: "https://github.com/tmux-plugins/tpm"
+tpm_dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+
+# Starship
+starship_install_url: "https://starship.rs/install.sh"
+
+# uv (Python)
+uv_install_url: "https://astral.sh/uv/install.sh"
+
+# Nerd Font
+nerd_font_name: "JetBrainsMono"
+nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"

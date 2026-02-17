@@ -1,0 +1,52 @@
+---
+- name: Include macOS dev tool tasks
+  ansible.builtin.include_tasks: macos.yml
+  when: "'macos' in group_names"
+
+- name: Include Debian dev tool tasks
+  ansible.builtin.include_tasks: debian.yml
+  when: "'debian' in group_names"
+
+- name: Include Fedora dev tool tasks
+  ansible.builtin.include_tasks: fedora.yml
+  when: "'fedora' in group_names"
+
+# uv is installed via script on Linux (not in distro repos)
+- name: Check if uv is installed
+  ansible.builtin.command: which uv
+  register: uv_check
+  changed_when: false
+  failed_when: false
+
+- name: Install uv
+  ansible.builtin.shell: curl -LsSf {{ uv_install_url }} | sh
+  when:
+    - uv_check.rc != 0
+    - ansible_os_family != 'Darwin'
+
+# Google Chrome on Linux
+- name: Check if Google Chrome is installed
+  ansible.builtin.command: which google-chrome
+  register: chrome_check
+  changed_when: false
+  failed_when: false
+  when: ansible_os_family != 'Darwin'
+
+- name: Install Google Chrome (Debian)
+  ansible.builtin.apt:
+    deb: "{{ chrome_url }}"
+    state: present
+  become: true
+  when:
+    - "'debian' in group_names"
+    - chrome_check.rc != 0
+
+- name: Install Google Chrome (Fedora)
+  ansible.builtin.dnf:
+    name: "{{ chrome_url }}"
+    state: present
+    disable_gpg_check: true
+  become: true
+  when:
+    - "'fedora' in group_names"
+    - chrome_check.rc != 0

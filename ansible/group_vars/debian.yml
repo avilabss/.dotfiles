@@ -1,0 +1,39 @@
+---
+common_packages:
+  - zsh
+  - git
+  - git-lfs
+  - neovim
+  - stow
+  - tmux
+  - wget
+  - curl
+  - unzip
+  - fontconfig
+  - software-properties-common
+  - ripgrep
+  - fastfetch
+  - flameshot
+
+apt_ppas:
+  - ppa:zhangsongcui3371/fastfetch
+
+dev_tool_packages:
+  - golang
+  - nodejs
+  - npm
+  - pipx
+
+ghostty_install_url: "https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh"
+
+chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+
+ssh_packages:
+  - openssh-server
+  - ufw
+
+xrdp_packages:
+  - xrdp
+
+qemu_packages:
+  - qemu-guest-agent

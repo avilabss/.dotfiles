@@ -1,0 +1,5 @@
+---
+# Ghostty is installed as a cask in the common role on macOS
+- name: Ghostty installed via common role on macOS
+  ansible.builtin.debug:
+    msg: "Ghostty installed as a cask in common role"

@@ -1,0 +1,30 @@
+---
+- name: Check if Oh My Zsh is installed
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+  register: omz_check
+
+- name: Install Oh My Zsh
+  ansible.builtin.shell: sh -c "$(curl -fsSL {{ omz_install_url }})" "" --unattended
+  when: not omz_check.stat.exists
+
+- name: Install Oh My Zsh custom plugins
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/plugins/{{ item.name }}"
+    depth: 1
+  loop: "{{ omz_plugins }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: Get zsh path
+  ansible.builtin.command: which zsh
+  register: zsh_path
+  changed_when: false
+
+- name: Change default shell to zsh
+  ansible.builtin.user:
+    name: "{{ dotfiles_user }}"
+    shell: "{{ zsh_path.stdout }}"
+  become: true
+  when: "'zsh' not in ansible_user_shell"

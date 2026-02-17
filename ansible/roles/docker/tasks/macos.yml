@@ -1,0 +1,7 @@
+---
+- name: Install OrbStack
+  community.general.homebrew_cask:
+    name: "{{ docker_cask }}"
+    state: present
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"

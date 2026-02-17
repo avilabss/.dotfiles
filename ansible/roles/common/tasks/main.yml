@@ -1,0 +1,54 @@
+---
+- name: Include macOS package installation
+  ansible.builtin.include_tasks: macos.yml
+  when: "'macos' in group_names"
+
+- name: Include Debian package installation
+  ansible.builtin.include_tasks: debian.yml
+  when: "'debian' in group_names"
+
+- name: Include Fedora package installation
+  ansible.builtin.include_tasks: fedora.yml
+  when: "'fedora' in group_names"
+
+- name: Create backup directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.dotfiles_backup/{{ ansible_date_time.iso8601_basic_short }}"
+    state: directory
+    mode: "0755"
+  register: backup_dir
+
+- name: Check for conflicting dotfiles
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/{{ item }}"
+  loop: "{{ stow_conflict_files }}"
+  register: conflict_check
+
+- name: Back up conflicting dotfiles
+  ansible.builtin.copy:
+    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+    dest: "{{ backup_dir.path }}/{{ item.item }}"
+    remote_src: true
+    mode: preserve
+  loop: "{{ conflict_check.results }}"
+  when: item.stat.exists and not item.stat.islnk
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Remove conflicting files so stow can take over
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/{{ item.item }}"
+    state: absent
+  loop: "{{ conflict_check.results }}"
+  when: item.stat.exists and not item.stat.islnk
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Stow dotfile packages
+  ansible.builtin.command: stow -R {{ item }}
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  loop: "{{ stow_packages }}"
+  register: stow_result
+  changed_when: stow_result.rc == 0
+  failed_when: stow_result.rc != 0

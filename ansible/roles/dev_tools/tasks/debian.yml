@@ -1,0 +1,6 @@
+---
+- name: Install dev tool packages (apt)
+  ansible.builtin.apt:
+    name: "{{ dev_tool_packages }}"
+    state: present
+  become: true

@@ -1,0 +1,5 @@
+---
+# Nerd fonts are installed as a cask in the common role on macOS
+- name: Nerd fonts installed via common role on macOS
+  ansible.builtin.debug:
+    msg: "JetBrainsMono Nerd Font installed as a cask in common role"

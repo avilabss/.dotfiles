@@ -1,0 +1,35 @@
+---
+common_packages:
+  - zsh
+  - git
+  - git-lfs
+  - neovim
+  - stow
+  - tmux
+  - wget
+  - curl
+  - unzip
+  - fontconfig
+  - ripgrep
+  - fastfetch
+  - flameshot
+
+dev_tool_packages:
+  - golang
+  - nodejs
+  - npm
+  - pipx
+
+ghostty_copr_repo: "pgdev/ghostty"
+
+chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
+
+ssh_packages:
+  - openssh-server
+  - firewalld
+
+xrdp_packages:
+  - xrdp
+
+qemu_packages:
+  - qemu-guest-agent

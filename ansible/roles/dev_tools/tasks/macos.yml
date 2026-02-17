@@ -1,0 +1,7 @@
+---
+- name: Install dev tool packages (brew)
+  community.general.homebrew:
+    name: "{{ dev_tool_packages }}"
+    state: present
+  environment:
+    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"

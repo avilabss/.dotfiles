@@ -1,0 +1,29 @@
+---
+brew_taps:
+  - homebrew/cask-fonts
+
+common_packages:
+  - fastfetch
+  - git
+  - git-lfs
+  - neovim
+  - ripgrep
+  - stow
+  - tmux
+  - wget
+
+brew_casks:
+  - ghostty
+  - flameshot
+  - google-chrome
+  - legcord
+  - font-jetbrains-mono-nerd-font
+
+dev_tool_packages:
+  - go
+  - node
+  - pipx
+  - starship
+  - uv
+
+docker_cask: orbstack

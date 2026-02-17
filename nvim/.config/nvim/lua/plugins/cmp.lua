@@ -41,9 +41,12 @@ return {
                     -- Confirm completion
                     ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Don't auto-select
 
-                    -- Tab/Shift-Tab: Navigate or expand snippet
+                    -- Tab/Shift-Tab: Accept Copilot, navigate cmp, or expand snippet
                     ['<Tab>'] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
+                        local copilot = require("copilot.suggestion")
+                        if copilot.is_visible() then
+                            copilot.accept()
+                        elseif cmp.visible() then
                             cmp.select_next_item()
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()

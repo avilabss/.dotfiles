@@ -1,0 +1,18 @@
+---
+- name: Check if Ghostty is installed
+  ansible.builtin.command: which ghostty
+  register: ghostty_check
+  changed_when: false
+  failed_when: false
+
+- name: Enable Ghostty COPR repository
+  ansible.builtin.command: dnf copr enable -y {{ ghostty_copr_repo }}
+  become: true
+  when: ghostty_check.rc != 0
+
+- name: Install Ghostty from COPR
+  ansible.builtin.dnf:
+    name: ghostty
+    state: present
+  become: true
+  when: ghostty_check.rc != 0

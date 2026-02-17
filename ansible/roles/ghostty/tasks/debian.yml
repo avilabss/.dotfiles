@@ -1,0 +1,10 @@
+---
+- name: Check if Ghostty is installed
+  ansible.builtin.command: which ghostty
+  register: ghostty_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Ghostty (Ubuntu/Debian)
+  ansible.builtin.shell: /bin/bash -c "$(curl -fsSL {{ ghostty_install_url }})"
+  when: ghostty_check.rc != 0

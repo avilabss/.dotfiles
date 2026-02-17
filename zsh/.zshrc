@@ -36,3 +36,8 @@ eval "$(starship init zsh)"
 if [[ $IS_MACOS ]]; then
     export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 fi
+
+# Add llvm to PATH
+if [[ $IS_MACOS ]]; then
+    export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
+fi

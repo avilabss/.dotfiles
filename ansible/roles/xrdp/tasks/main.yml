@@ -1,0 +1,30 @@
+---
+- name: Install xrdp
+  ansible.builtin.package:
+    name: "{{ xrdp_packages }}"
+    state: present
+  become: true
+
+- name: Enable and start xrdp
+  ansible.builtin.systemd:
+    name: xrdp
+    enabled: true
+    state: started
+  become: true
+
+- name: Allow RDP through UFW (Debian)
+  community.general.ufw:
+    rule: allow
+    port: "3389"
+    proto: tcp
+  become: true
+  when: "'debian' in group_names"
+
+- name: Allow RDP through firewalld (Fedora)
+  ansible.posix.firewalld:
+    port: 3389/tcp
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+  when: "'fedora' in group_names"

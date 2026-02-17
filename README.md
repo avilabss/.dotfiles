@@ -1,24 +1,53 @@
 # .dotfiles
 
-Personal dotfiles for macOS and Linux, managed with GNU Stow.
+Personal dotfiles for macOS, Debian/Ubuntu, and Fedora, managed with Ansible and GNU Stow.
 
 ## Quick Install
 
 ```bash
 git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
 cd ~/dotfiles
-chmod +x install.sh
-./install.sh
+./bootstrap.sh
 ```
 
-For automated installs (skip interactive prompts):
+The bootstrap script will:
+1. Detect your OS (macOS / Debian / Fedora)
+2. Install Ansible if not present
+3. Run the Ansible playbook to set everything up
+
+## Optional Features
+
+Optional roles (Docker, SSH, xrdp, QEMU) are skipped by default. Opt in with `--tags`:
+
 ```bash
-./install.sh --skip-optional
+# Include Docker
+./bootstrap.sh --tags all,docker
+
+# Include Docker + SSH server
+./bootstrap.sh --tags all,docker,ssh
+
+# Include everything
+./bootstrap.sh --tags all,docker,ssh,xrdp,qemu
+```
+
+## Selective Setup
+
+Re-run only specific roles:
+
+```bash
+# Only re-stow configs
+./bootstrap.sh --tags common
+
+# Only re-run zsh setup
+./bootstrap.sh --tags zsh
+
+# Dry run (preview changes)
+./bootstrap.sh --check
 ```
 
 ## What Gets Installed
 
-### Core Tools (both platforms)
+### Core Tools (all platforms)
 
 | Tool | Description |
 |------|-------------|
@@ -27,7 +56,6 @@ For automated installs (skip interactive prompts):
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
 | Ghostty | Terminal emulator |
-| Docker | Containers (OrbStack on macOS) |
 | Google Chrome | Browser |
 | JetBrainsMono Nerd Font | Terminal font |
 
@@ -41,98 +69,62 @@ For automated installs (skip interactive prompts):
 | go, node, pipx, uv | Language runtimes & package managers |
 | flameshot | Screenshots |
 
-### Linux Optional Setup
+### Optional (via tags)
 
-When running on Linux, you'll be prompted to optionally install:
-- **OpenSSH server** + UFW firewall
-- **xrdp** for remote desktop
-- **QEMU guest agent** (for Proxmox/KVM VMs)
-
-Skip these prompts with `--skip-optional`.
-
-## What the Install Script Does
-
-1. **macOS**: Installs Homebrew (if needed), then runs `brew bundle`
-2. **Linux**: Adds required PPAs, installs apt packages, then installs Docker/Starship/uv/Ghostty/Chrome/fonts via their official methods
-3. **Both**: Installs Oh My Zsh + plugins, TPM, backs up existing dotfiles, stows configs, sets zsh as default shell
-
-## Manual Installation
-
-### 1. Install Dependencies
-
-**macOS:**
-```bash
-brew bundle --file=Brewfile
-```
-
-**Linux (apt):**
-```bash
-# Add fastfetch PPA
-sudo add-apt-repository ppa:zhangsongcui3371/fastfetch
-
-# Install packages
-sudo apt update
-xargs -a packages/apt.txt sudo apt install -y
-
-# Install tools not in apt
-curl -fsSL https://get.docker.com | sh
-curl -sS https://starship.rs/install.sh | sh
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### 2. Install Oh My Zsh + Plugins
-
-```bash
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-```
-
-### 3. Install Tmux Plugin Manager
-
-```bash
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-```
-
-### 4. Stow Configurations
-
-```bash
-cd ~/dotfiles
-stow nvim zsh tmux starship ghostty
-```
+| Tag | Description | Platforms |
+|-----|-------------|-----------|
+| `docker` | Docker / OrbStack | All |
+| `ssh` | OpenSSH server + firewall | Linux |
+| `xrdp` | Remote desktop | Linux |
+| `qemu` | QEMU guest agent (Proxmox/KVM) | Linux |
 
 ## Directory Structure
 
 ```
 ~/dotfiles/
-├── install.sh              # Install script (run this)
-├── Brewfile                # macOS dependencies
-├── packages/
-│   └── apt.txt             # Linux dependencies
-├── nvim/.config/nvim/      # Neovim config
+├── bootstrap.sh               # Run this to set up
+├── ansible/
+│   ├── site.yml               # Main playbook
+│   ├── group_vars/
+│   │   ├── all.yml            # Common variables
+│   │   ├── macos.yml          # macOS-specific
+│   │   ├── debian.yml         # Debian/Ubuntu-specific
+│   │   └── fedora.yml         # Fedora-specific
+│   └── roles/                 # Ansible roles
+│       ├── common/            # Package install + stow
+│       ├── zsh/               # Oh My Zsh + plugins
+│       ├── nvim/              # Neovim
+│       ├── tmux/              # TPM
+│       ├── starship/          # Starship prompt
+│       ├── ghostty/           # Ghostty terminal
+│       ├── fonts/             # Nerd fonts
+│       ├── dev_tools/         # Go, Node, Python, Chrome
+│       ├── docker/            # Docker (optional)
+│       ├── ssh/               # SSH server (optional)
+│       ├── xrdp/              # xrdp (optional)
+│       └── qemu/              # QEMU agent (optional)
+├── nvim/.config/nvim/         # Neovim config (stowed)
 ├── zsh/
-│   ├── .zshrc              # Zsh config
-│   └── .zprofile           # Zsh profile
-├── tmux/.tmux.conf         # Tmux config
+│   ├── .zshrc                 # Zsh config (stowed)
+│   └── .zprofile              # Zsh profile (stowed)
+├── tmux/.tmux.conf            # Tmux config (stowed)
 ├── starship/.config/starship.toml
 └── ghostty/.config/ghostty/
 ```
+
+## Adding Packages
+
+**macOS:** Edit `ansible/group_vars/macos.yml`, add to `common_packages`, `dev_tool_packages`, or `brew_casks`
+
+**Debian/Ubuntu:** Edit `ansible/group_vars/debian.yml`, add to `common_packages` or `dev_tool_packages`
+
+**Fedora:** Edit `ansible/group_vars/fedora.yml`, add to `common_packages` or `dev_tool_packages`
 
 ## Post-Install
 
 1. Restart your terminal (or `source ~/.zshrc`)
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim - Lazy will auto-install plugins
-
-## Adding Packages
-
-**macOS:** Edit `Brewfile`, then run `brew bundle`
-
-**Linux:** Edit `packages/apt.txt`, then run:
-```bash
-sudo apt update && xargs -a packages/apt.txt sudo apt install -y
-```
 
 ## Theme
 

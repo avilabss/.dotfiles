@@ -1,0 +1,68 @@
+---
+- name: Dotfiles Setup
+  hosts: localhost
+  gather_facts: true
+
+  pre_tasks:
+    - name: Classify host by OS family
+      ansible.builtin.group_by:
+        key: >-
+          {{ 'macos' if ansible_os_family == 'Darwin'
+             else 'debian' if ansible_distribution in ['Debian', 'Ubuntu', 'Pop!_OS', 'Linux Mint']
+             else 'fedora' if ansible_distribution in ['Fedora', 'CentOS', 'Rocky', 'AlmaLinux']
+             else 'unknown' }}
+      changed_when: false
+
+    - name: Fail on unsupported OS
+      ansible.builtin.fail:
+        msg: "Unsupported OS: {{ ansible_distribution }} ({{ ansible_os_family }})"
+      when: group_names | intersect(['macos', 'debian', 'fedora']) | length == 0
+
+  roles:
+    - role: common
+      tags: [common, always]
+
+    - role: fonts
+      tags: [fonts]
+
+    - role: dev_tools
+      tags: [dev-tools]
+
+    - role: zsh
+      tags: [zsh]
+
+    - role: nvim
+      tags: [nvim]
+
+    - role: tmux
+      tags: [tmux]
+
+    - role: starship
+      tags: [starship]
+
+    - role: ghostty
+      tags: [ghostty]
+
+    - role: docker
+      tags: [docker, never]
+
+    - role: ssh
+      tags: [ssh, never]
+      when: ansible_os_family != 'Darwin'
+
+    - role: xrdp
+      tags: [xrdp, never]
+      when: ansible_os_family != 'Darwin'
+
+    - role: qemu
+      tags: [qemu, never]
+      when: ansible_os_family != 'Darwin'
+
+  post_tasks:
+    - name: Installation complete
+      ansible.builtin.debug:
+        msg:
+          - "Setup complete! Next steps:"
+          - "  1. Restart your terminal (or source ~/.zshrc)"
+          - "  2. In tmux, press Ctrl-a + I to install plugins"
+          - "  3. Open neovim - Lazy will auto-install plugins"

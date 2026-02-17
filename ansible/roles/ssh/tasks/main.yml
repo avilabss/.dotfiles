@@ -1,0 +1,38 @@
+---
+- name: Install SSH packages
+  ansible.builtin.package:
+    name: "{{ ssh_packages }}"
+    state: present
+  become: true
+
+- name: Enable and start SSH service
+  ansible.builtin.systemd:
+    name: "{{ 'ssh' if 'debian' in group_names else 'sshd' }}"
+    enabled: true
+    state: started
+  become: true
+
+# UFW for Debian
+- name: Allow SSH through UFW (Debian)
+  community.general.ufw:
+    rule: allow
+    name: OpenSSH
+  become: true
+  when: "'debian' in group_names"
+
+- name: Enable UFW (Debian)
+  community.general.ufw:
+    state: enabled
+    policy: deny
+  become: true
+  when: "'debian' in group_names"
+
+# firewalld for Fedora
+- name: Allow SSH through firewalld (Fedora)
+  ansible.posix.firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+    immediate: true
+  become: true
+  when: "'fedora' in group_names"
