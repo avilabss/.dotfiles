@@ -75,11 +75,25 @@ fi
 
 echo -e "${GREEN}Ansible is ready. Running playbook...${NC}"
 
+# Collect sudo password on Linux (needed for become tasks)
+BECOME_ARGS=()
+if [[ "$OSTYPE" == linux* ]]; then
+    read -s -p "Enter sudo password: " BECOME_PASS
+    echo
+    # Write to a temp file with restricted permissions, cleaned up on exit
+    PASS_FILE="$(mktemp)"
+    chmod 600 "$PASS_FILE"
+    echo "$BECOME_PASS" > "$PASS_FILE"
+    unset BECOME_PASS
+    trap 'rm -f "$PASS_FILE"' EXIT
+    BECOME_ARGS=(--become-password-file "$PASS_FILE")
+fi
+
 # Build playbook command
 cd "$DOTFILES_DIR/ansible"
 
 if [[ "$INSTALL_ALL" == true ]]; then
-    ansible-playbook site.yml "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml "${BECOME_ARGS[@]}" "${EXTRA_ARGS[@]}"
 else
-    ansible-playbook site.yml --skip-tags optional "${EXTRA_ARGS[@]}"
+    ansible-playbook site.yml --skip-tags optional "${BECOME_ARGS[@]}" "${EXTRA_ARGS[@]}"
 fi
