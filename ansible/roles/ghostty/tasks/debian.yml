@@ -7,4 +7,5 @@
 
 - name: Install Ghostty (Ubuntu/Debian)
   ansible.builtin.shell: /bin/bash -c "$(curl -fsSL {{ ghostty_install_url }})"
+  become: true
   when: ghostty_check.rc != 0
