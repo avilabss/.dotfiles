@@ -41,3 +41,5 @@ fi
 if [[ $IS_MACOS ]]; then
     export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 fi
+
+. "$HOME/.local/bin/env"
