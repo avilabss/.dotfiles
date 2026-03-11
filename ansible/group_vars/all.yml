@@ -15,6 +15,7 @@ stow_conflict_files:
   - .zshrc
   - .zprofile
   - .tmux.conf
+  - .config/ghostty/config
 
 # Oh My Zsh
 omz_install_url: "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"

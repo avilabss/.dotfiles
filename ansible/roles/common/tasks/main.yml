@@ -24,6 +24,16 @@
   loop: "{{ stow_conflict_files }}"
   register: conflict_check
 
+- name: Create backup subdirectories for nested conflict files
+  ansible.builtin.file:
+    path: "{{ backup_dir.path }}/{{ item.item | dirname }}"
+    state: directory
+    mode: "0755"
+  loop: "{{ conflict_check.results }}"
+  when: item.stat.exists and not item.stat.islnk and '/' in item.item
+  loop_control:
+    label: "{{ item.item }}"
+
 - name: Back up conflicting dotfiles
   ansible.builtin.copy:
     src: "{{ ansible_env.HOME }}/{{ item.item }}"

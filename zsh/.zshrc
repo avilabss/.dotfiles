@@ -42,4 +42,5 @@ if [[ $IS_MACOS ]]; then
     export PATH="/opt/homebrew/opt/llvm/bin:$PATH"
 fi
 
-. "$HOME/.local/bin/env"
+# Source uv/rustup environment if available
+[[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
