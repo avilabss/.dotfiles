@@ -5,7 +5,7 @@
   register: omz_check
 
 - name: Install Oh My Zsh
-  ansible.builtin.shell: sh -c "$(curl -fsSL {{ omz_install_url }})" "" --unattended
+  ansible.builtin.shell: sh -c "$(curl -fsSL {{ omz_install_url }})" "" --unattended --keep-zshrc
   when: not omz_check.stat.exists
 
 - name: Install Oh My Zsh custom plugins
