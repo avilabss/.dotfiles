@@ -47,3 +47,6 @@ fi
 
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
+
+# opencode
+export PATH=/home/avi/.opencode/bin:$PATH
