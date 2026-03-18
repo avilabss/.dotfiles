@@ -9,6 +9,7 @@ stow_packages:
   - tmux
   - starship
   - ghostty
+  - opencode
 
 # Files that may conflict with stow and need backing up
 stow_conflict_files:
@@ -45,6 +46,9 @@ poetry_install_url: "https://install.python-poetry.org"
 neovim_version: "v0.11.0"
 neovim_tarball_url: "https://github.com/neovim/neovim/releases/download/{{ neovim_version }}/nvim-linux-x86_64.tar.gz"
 neovim_install_dir: "/opt/nvim"
+
+# OpenCode
+opencode_install_url: "https://opencode.ai/install"
 
 # Nerd Font
 nerd_font_name: "JetBrainsMono"

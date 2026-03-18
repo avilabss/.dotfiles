@@ -44,3 +44,6 @@ fi
 
 # Source uv/rustup environment if available
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+# opencode
+export PATH="$HOME/.opencode/bin:$PATH"

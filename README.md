@@ -31,6 +31,7 @@ cd ~/dotfiles
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
 | Ghostty | Terminal emulator |
+| OpenCode | AI coding agent (config + agents) |
 | Google Chrome | Browser |
 | JetBrainsMono Nerd Font | Terminal font |
 | fastfetch, ripgrep, flameshot | System info, search, screenshots |
@@ -56,11 +57,39 @@ Edit the `group_vars` file for your platform:
 - **Debian/Ubuntu:** `ansible/group_vars/debian.yml`
 - **Fedora:** `ansible/group_vars/fedora.yml`
 
+## OpenCode
+
+Config and agents are managed via stow (`opencode/.config/opencode/`).
+
+### Provider Setup
+
+After install, authenticate providers inside the OpenCode TUI:
+
+```
+/connect    # Select provider, follow prompts
+/models     # Verify available models
+```
+
+Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
+
+### Agents
+
+| Agent | Model | Role |
+|-------|-------|------|
+| `architect` | `claude-opus-4-6` | Primary -- plans and delegates tasks |
+| `developer` | `claude-sonnet-4-6` | Implements tasks from architect |
+| `repo-scouter` | `claude-opus-4-6` | Scans repos for stack/conventions |
+| `code-reviewer-1` | `gpt-5.3-codex` | Code review |
+| `code-reviewer-2` | `claude-opus-4-6` | Code review |
+
+All Anthropic models use max extended thinking. OpenAI codex uses high reasoning effort.
+
 ## Post-Install
 
 1. Restart your terminal (or `source ~/.zshrc`)
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim - Lazy will auto-install plugins
+4. Run `opencode`, then `/connect` to authenticate Anthropic and OpenAI
 
 ## Theme
 
