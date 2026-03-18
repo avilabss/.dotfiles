@@ -9,7 +9,6 @@ stow_packages:
   - tmux
   - starship
   - ghostty
-  - opencode
 
 # Files that may conflict with stow and need backing up
 stow_conflict_files:

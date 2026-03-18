@@ -31,7 +31,6 @@ cd ~/dotfiles
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
 | Ghostty | Terminal emulator |
-| OpenCode | AI coding agent (config + agents) |
 | Google Chrome | Browser |
 | JetBrainsMono Nerd Font | Terminal font |
 | fastfetch, ripgrep, flameshot | System info, search, screenshots |
@@ -43,6 +42,7 @@ cd ~/dotfiles
 
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
+| `opencode` | AI coding agent (config + agents) | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |

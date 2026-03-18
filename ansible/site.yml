@@ -46,7 +46,7 @@
       tags: [ghostty]
 
     - role: opencode
-      tags: [opencode]
+      tags: [opencode, optional]
 
     - role: docker
       tags: [docker, optional]
