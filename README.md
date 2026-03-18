@@ -84,6 +84,21 @@ Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by do
 
 All Anthropic models use max extended thinking. OpenAI codex uses high reasoning effort.
 
+### Workflow
+
+1. You describe what you want to `@architect` (the default agent)
+2. Architect asks clarifying questions, then proposes a plan
+3. You say "approved" to greenlight
+4. Architect writes a Task Brief and delegates to `@developer`
+5. Developer implements, then sends to both `@code-reviewer-1` and `@code-reviewer-2` in parallel
+6. Reviewers approve or request changes -- developer iterates until both approve
+7. Everyone reports back to architect, who decides: done or another round
+8. Architect summarizes and asks what's next
+
+`@repo-scouter` can be called by any agent to scan the repo for stack, conventions, and commands.
+
+**Key rules:** architect never writes code (only Task Briefs), developer never expands scope, reviewers can only read and request changes (no file edits).
+
 ## Post-Install
 
 1. Restart your terminal (or `source ~/.zshrc`)
