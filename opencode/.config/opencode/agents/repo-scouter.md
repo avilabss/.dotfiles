@@ -2,6 +2,8 @@
 description: Scans a repository and reports stack, conventions, and commands.
 mode: subagent
 model: anthropic/claude-opus-4-6
+variant: max
+temperature: 0.1
 tools:
   write: true
   edit: true

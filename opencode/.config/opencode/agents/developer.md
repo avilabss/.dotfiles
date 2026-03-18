@@ -2,6 +2,8 @@
 description: Writes careful and considered code.
 mode: subagent
 model: anthropic/claude-sonnet-4-6
+variant: max
+temperature: 0.1
 tools:
   write: true
   edit: true
