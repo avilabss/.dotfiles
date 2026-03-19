@@ -1,0 +1,19 @@
+[Unit]
+Description=OpenCode Web UI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+ExecStart={{ opencode_path }} web --hostname {{ opencode_web_hostname }}
+Restart=always
+RestartSec=5
+KillMode=process
+WorkingDirectory={{ ansible_env.HOME }}
+Environment=HOME={{ ansible_env.HOME }}
+Environment="PATH={{ ansible_env.HOME }}/.cargo/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.HOME }}/.npm-global/bin:{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}/.nvm/current/bin:{{ ansible_env.HOME }}/.fnm/current/bin:{{ ansible_env.HOME }}/.volta/bin:{{ ansible_env.HOME }}/.asdf/shims:{{ ansible_env.HOME }}/.local/share/pnpm:{{ ansible_env.HOME }}/.bun/bin:/usr/local/bin:/usr/bin:/bin"
+{% if opencode_web_password | default('') != '' %}
+Environment=OPENCODE_SERVER_PASSWORD={{ opencode_web_password }}
+{% endif %}
+
+[Install]
+WantedBy=default.target

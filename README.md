@@ -43,6 +43,7 @@ cd ~/dotfiles
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
 | `opencode` | AI coding agent (config + agents) | All |
+| `opencode-web` | OpenCode Web UI as a persistent service | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
@@ -98,6 +99,42 @@ All Anthropic models use max extended thinking. OpenAI codex uses high reasoning
 `@repo-scouter` can be called by any agent to scan the repo for stack, conventions, and commands.
 
 **Key rules:** architect never writes code (only Task Briefs), developer never expands scope, reviewers can only read and request changes (no file edits).
+
+## OpenCode Web UI
+
+The `opencode-web` tag sets up the OpenCode web interface as a persistent service that survives reboots.
+
+```bash
+./bootstrap.sh --tags opencode-web
+```
+
+**What it does:**
+- **Linux:** Creates a systemd user service + opens the firewall port (UFW/firewalld)
+- **macOS:** Creates a launchd LaunchAgent (no firewall changes needed — macOS prompts on first connection)
+
+**Configuration** (in `ansible/group_vars/all.yml`):
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `opencode_web_port` | `4096` | Port for the web UI (set in `opencode.json` server config) |
+| `opencode_web_hostname` | `0.0.0.0` | Bind address (`0.0.0.0` = LAN accessible, `127.0.0.1` = local only) |
+| `opencode_web_password` | *(empty)* | Set `OPENCODE_SERVER_PASSWORD` for basic auth |
+
+**Service management:**
+
+```bash
+# Linux
+systemctl --user status opencode-web
+systemctl --user restart opencode-web
+journalctl --user -u opencode-web -f
+
+# macOS
+launchctl list | grep opencode
+launchctl kickstart -k gui/$(id -u)/com.opencode.web  # restart
+tail -f ~/Library/Logs/opencode-web.log
+```
+
+> **Note:** Requires opencode to be installed first (`--tags opencode` or install manually).
 
 ## Post-Install
 

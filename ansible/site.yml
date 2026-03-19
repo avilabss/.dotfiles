@@ -48,6 +48,9 @@
     - role: opencode
       tags: [opencode, optional]
 
+    - role: opencode_web
+      tags: [opencode-web, optional]
+
     - role: docker
       tags: [docker, optional]
 

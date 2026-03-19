@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.opencode.web</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>{{ opencode_path }}</string>
+        <string>web</string>
+        <string>--hostname</string>
+        <string>{{ opencode_web_hostname }}</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>{{ ansible_env.HOME }}</string>
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>{{ ansible_env.HOME }}</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.HOME }}/.opencode/bin</string>
+{% if opencode_web_password | default('') != '' %}
+        <key>OPENCODE_SERVER_PASSWORD</key>
+        <string>{{ opencode_web_password }}</string>
+{% endif %}
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-web.log</string>
+    <key>StandardErrorPath</key>
+    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-web.log</string>
+</dict>
+</plist>

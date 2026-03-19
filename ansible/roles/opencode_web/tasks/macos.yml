@@ -1,0 +1,45 @@
+---
+- name: Find opencode binary
+  ansible.builtin.command: which opencode
+  register: opencode_bin
+  changed_when: false
+  failed_when: false
+
+- name: Check ~/.opencode/bin/opencode fallback
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.opencode/bin/opencode"
+  register: opencode_local_bin
+  when: opencode_bin.rc != 0
+
+- name: Set opencode binary path
+  ansible.builtin.set_fact:
+    opencode_path: >-
+      {{ opencode_bin.stdout if opencode_bin.rc == 0
+         else ansible_env.HOME ~ '/.opencode/bin/opencode' if opencode_local_bin.stat.exists | default(false)
+         else '' }}
+
+- name: Fail if opencode not found
+  ansible.builtin.fail:
+    msg: "opencode binary not found. Install opencode first (--tags opencode)."
+  when: opencode_path == ''
+
+- name: Create LaunchAgents directory
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/LaunchAgents"
+    state: directory
+    mode: "0755"
+
+- name: Deploy opencode-web launchd plist
+  ansible.builtin.template:
+    src: com.opencode.web.plist.j2
+    dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist"
+    mode: "0644"
+
+- name: Unload opencode-web launchd (if running)
+  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+  changed_when: false
+  failed_when: false
+
+- name: Load opencode-web launchd
+  ansible.builtin.command: launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+  changed_when: true
