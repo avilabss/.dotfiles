@@ -5,5 +5,17 @@
   "autoupdate": true,
   "server": {
     "port": 4096
+  },
+  "provider": {
+    "openai": {
+      "models": {
+        "gpt-5.4": {
+          "reasoningEffort": "xhigh"
+        },
+        "gpt-5.3-codex": {
+          "reasoningEffort": "xhigh"
+        }
+      }
+    }
   }
 }
