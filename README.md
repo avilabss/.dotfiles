@@ -2,7 +2,7 @@
 
 Personal dotfiles for macOS, Debian/Ubuntu, and Fedora, managed with Ansible and GNU Stow.
 
-## Quick 
+## Quick Install
 
 ```bash
 git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
