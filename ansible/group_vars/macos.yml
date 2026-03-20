@@ -1,6 +1,5 @@
 ---
-brew_taps:
-  - homebrew/cask-fonts
+brew_taps: []
 
 common_packages:
   - fastfetch

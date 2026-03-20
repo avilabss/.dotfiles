@@ -27,7 +27,9 @@
 
 - name: Install casks
   community.general.homebrew_cask:
-    name: "{{ brew_casks }}"
+    name: "{{ item }}"
     state: present
+  loop: "{{ brew_casks }}"
   environment:
     PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+  ignore_errors: true

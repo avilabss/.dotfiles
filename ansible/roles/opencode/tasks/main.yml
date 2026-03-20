@@ -8,16 +8,23 @@
   when: "'macos' not in group_names"
 
 - name: Stow opencode config
-  ansible.builtin.command: stow -R opencode
+  ansible.builtin.command: stow --adopt -R opencode
   args:
     chdir: "{{ dotfiles_dir }}"
   register: stow_opencode
   changed_when: stow_opencode.rc == 0
   failed_when: stow_opencode.rc != 0
 
+- name: Restore dotfiles version after adopt
+  ansible.builtin.command: git checkout -- opencode/
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  changed_when: false
+
 - name: Install opencode plugin dependencies
   ansible.builtin.command: npm install
   args:
     chdir: "{{ ansible_env.HOME }}/.config/opencode"
+  environment: "{{ {'PATH': '/opt/homebrew/bin:' ~ ansible_env.PATH} if 'macos' in group_names else {} }}"
   register: npm_install_opencode
   changed_when: "'added' in npm_install_opencode.stdout"
