@@ -14,3 +14,10 @@
   register: stow_opencode
   changed_when: stow_opencode.rc == 0
   failed_when: stow_opencode.rc != 0
+
+- name: Install opencode plugin dependencies
+  ansible.builtin.command: npm install
+  args:
+    chdir: "{{ ansible_env.HOME }}/.config/opencode"
+  register: npm_install_opencode
+  changed_when: "'added' in npm_install_opencode.stdout"
