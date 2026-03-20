@@ -1,8 +1,7 @@
 ---
 description: Writes careful and considered code.
 mode: subagent
-model: anthropic/claude-sonnet-4-6
-variant: max
+model: openai/gpt-5.3-codex
 temperature: 0.1
 tools:
   write: true

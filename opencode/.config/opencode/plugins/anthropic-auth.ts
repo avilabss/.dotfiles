@@ -13,9 +13,25 @@
  */
 
 import type { Plugin } from "@opencode-ai/plugin";
-import { generatePKCE } from "@openauthjs/openauth/pkce";
 
 const CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e";
+
+// Inline PKCE implementation (avoids @openauthjs/openauth subpath export issues)
+function base64urlEncode(buffer: Uint8Array): string {
+  let binary = "";
+  for (const byte of buffer) binary += String.fromCharCode(byte);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function generatePKCE(length = 64): Promise<{ verifier: string; challenge: string; method: string }> {
+  const buffer = new Uint8Array(length);
+  crypto.getRandomValues(buffer);
+  const verifier = base64urlEncode(buffer);
+  const data = new TextEncoder().encode(verifier);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  const challenge = base64urlEncode(new Uint8Array(hash));
+  return { verifier, challenge, method: "S256" };
+}
 
 type OAuthStored = {
   type: "oauth";

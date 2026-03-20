@@ -1,8 +1,7 @@
 ---
 description: Architects whole implementations.
 mode: primary
-model: anthropic/claude-opus-4-6
-variant: max
+model: openai/o3
 temperature: 0.1
 tools:
   write: true
