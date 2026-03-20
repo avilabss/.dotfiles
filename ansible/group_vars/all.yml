@@ -51,6 +51,7 @@ opencode_install_url: "https://opencode.ai/install"
 opencode_serve_port: "4096"
 opencode_serve_hostname: "0.0.0.0"
 opencode_serve_password: ""
+openrouter_api_key: ""
 
 # Nerd Font
 nerd_font_name: "JetBrainsMono"
