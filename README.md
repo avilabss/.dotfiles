@@ -64,26 +64,26 @@ Config and agents are managed via stow (`opencode/.config/opencode/`).
 
 ### Provider Setup
 
-After install, authenticate providers inside the OpenCode TUI:
+After install, authenticate OpenRouter inside the OpenCode TUI:
 
 ```
-/connect    # Select provider, follow prompts
+/connect    # Select OpenRouter, enter API key
 /models     # Verify available models
 ```
 
-Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
+Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles). All models are routed through OpenRouter.
 
 ### Agents
 
 | Agent | Model | Role |
 |-------|-------|------|
-| `architect` | `claude-opus-4-6` | Primary -- plans and delegates tasks |
-| `developer` | `claude-sonnet-4-6` | Implements tasks from architect |
-| `repo-scouter` | `claude-opus-4-6` | Scans repos for stack/conventions |
-| `code-reviewer-1` | `gpt-5.3-codex` | Code review |
-| `code-reviewer-2` | `claude-opus-4-6` | Code review |
+| `architect` | `openrouter/anthropic/claude-opus-4-6` | Primary -- plans and delegates tasks |
+| `developer` | `openrouter/anthropic/claude-sonnet-4-6` | Implements tasks from architect |
+| `repo-scouter` | `openrouter/anthropic/claude-opus-4-6` | Scans repos for stack/conventions |
+| `code-reviewer-1` | `openrouter/openai/gpt-5.3-codex` | Code review (high reasoning) |
+| `code-reviewer-2` | `openrouter/anthropic/claude-opus-4-6` | Code review |
 
-All Anthropic models use max extended thinking. OpenAI codex uses high reasoning effort.
+All models routed through OpenRouter. Single API key for everything.
 
 ### Workflow
 
@@ -141,7 +141,7 @@ tail -f ~/Library/Logs/opencode-web.log
 1. Restart your terminal (or `source ~/.zshrc`)
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim - Lazy will auto-install plugins
-4. Run `opencode`, then `/connect` to authenticate Anthropic and OpenAI
+4. Run `opencode`, then `/connect` to authenticate OpenRouter
 
 ## Theme
 

@@ -77,4 +77,4 @@
           - "  1. Restart your terminal (or source ~/.zshrc)"
           - "  2. In tmux, press Ctrl-a + I to install plugins"
           - "  3. Open neovim - Lazy will auto-install plugins"
-          - "  4. Run opencode, then /connect to authenticate providers"
+          - "  4. Run opencode, then /connect to authenticate OpenRouter"
