@@ -1,7 +1,7 @@
 ---
 description: Architects whole implementations.
 mode: primary
-model: openrouter/anthropic/claude-opus-4-6
+model: openrouter/anthropic/claude-opus-4.6
 temperature: 0.1
 tools:
   write: true

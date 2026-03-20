@@ -1,7 +1,7 @@
 ---
 description: Scans a repository and reports stack, conventions, and commands.
 mode: subagent
-model: openrouter/anthropic/claude-opus-4-6
+model: openrouter/anthropic/claude-opus-4.6
 temperature: 0.1
 tools:
   write: true

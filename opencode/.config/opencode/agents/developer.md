@@ -1,7 +1,7 @@
 ---
 description: Writes careful and considered code.
 mode: subagent
-model: openrouter/anthropic/claude-sonnet-4-6
+model: openrouter/anthropic/claude-sonnet-4.6
 temperature: 0.1
 tools:
   write: true
