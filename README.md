@@ -77,11 +77,11 @@ Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by do
 
 | Agent | Model | Role |
 |-------|-------|------|
-| `architect` | `openrouter/anthropic/claude-opus-4-6` | Primary — plans and delegates tasks |
-| `developer` | `openrouter/anthropic/claude-sonnet-4-6` | Implements tasks from architect |
-| `repo-scouter` | `openrouter/anthropic/claude-opus-4-6` | Scans repos for stack/conventions |
+| `architect` | `openrouter/anthropic/claude-opus-4.6` | Primary — plans and delegates tasks |
+| `developer` | `openrouter/anthropic/claude-sonnet-4.6` | Implements tasks from architect |
+| `repo-scouter` | `openrouter/anthropic/claude-opus-4.6` | Scans repos for stack/conventions |
 | `code-reviewer-1` | `openrouter/openai/gpt-5.3-codex` | Code review (high reasoning) |
-| `code-reviewer-2` | `openrouter/anthropic/claude-opus-4-6` | Code review |
+| `code-reviewer-2` | `openrouter/anthropic/claude-opus-4.6` | Code review |
 
 All models routed through OpenRouter. Single API key for everything.
 
