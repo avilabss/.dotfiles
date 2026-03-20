@@ -2,7 +2,7 @@
 description: Scans a repository and reports stack, conventions, and commands.
 mode: subagent
 model: openai/gpt-5.4
-reasoningEffort: high
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: true

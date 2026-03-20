@@ -2,7 +2,7 @@
 description: Reviews code for best practices and potential issues.
 mode: subagent
 model: openai/gpt-5.4
-reasoningEffort: high
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: false

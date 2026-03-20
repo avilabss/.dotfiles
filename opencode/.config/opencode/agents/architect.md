@@ -2,7 +2,7 @@
 description: Architects whole implementations.
 mode: primary
 model: openai/gpt-5.4
-reasoningEffort: high
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: true
