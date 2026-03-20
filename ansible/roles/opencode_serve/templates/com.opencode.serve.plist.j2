@@ -3,13 +3,15 @@
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.opencode.web</string>
+    <string>com.opencode.serve</string>
     <key>ProgramArguments</key>
     <array>
         <string>{{ opencode_path }}</string>
-        <string>web</string>
+        <string>serve</string>
         <string>--hostname</string>
-        <string>{{ opencode_web_hostname }}</string>
+        <string>{{ opencode_serve_hostname }}</string>
+        <string>--port</string>
+        <string>{{ opencode_serve_port }}</string>
     </array>
     <key>WorkingDirectory</key>
     <string>{{ ansible_env.HOME }}</string>
@@ -19,9 +21,9 @@
         <string>{{ ansible_env.HOME }}</string>
         <key>PATH</key>
         <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.HOME }}/.opencode/bin</string>
-{% if opencode_web_password | default('') != '' %}
+{% if opencode_serve_password | default('') != '' %}
         <key>OPENCODE_SERVER_PASSWORD</key>
-        <string>{{ opencode_web_password }}</string>
+        <string>{{ opencode_serve_password }}</string>
 {% endif %}
     </dict>
     <key>RunAtLoad</key>
@@ -29,8 +31,8 @@
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-web.log</string>
+    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-serve.log</string>
     <key>StandardErrorPath</key>
-    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-web.log</string>
+    <string>{{ ansible_env.HOME }}/Library/Logs/opencode-serve.log</string>
 </dict>
 </plist>

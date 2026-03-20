@@ -23,23 +23,33 @@
     msg: "opencode binary not found. Install opencode first (--tags opencode)."
   when: opencode_path == ''
 
+- name: Unload old opencode-web launchd (cleanup)
+  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+  changed_when: false
+  failed_when: false
+
+- name: Remove old opencode-web plist
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist"
+    state: absent
+
 - name: Create LaunchAgents directory
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/Library/LaunchAgents"
     state: directory
     mode: "0755"
 
-- name: Deploy opencode-web launchd plist
+- name: Deploy opencode-serve launchd plist
   ansible.builtin.template:
-    src: com.opencode.web.plist.j2
-    dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist"
+    src: com.opencode.serve.plist.j2
+    dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist"
     mode: "0644"
 
-- name: Unload opencode-web launchd (if running)
-  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+- name: Unload opencode-serve launchd (if running)
+  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist
   changed_when: false
   failed_when: false
 
-- name: Load opencode-web launchd
-  ansible.builtin.command: launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+- name: Load opencode-serve launchd
+  ansible.builtin.command: launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist
   changed_when: true

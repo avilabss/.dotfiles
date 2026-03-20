@@ -23,16 +23,29 @@
     msg: "opencode binary not found. Install opencode first (--tags opencode)."
   when: opencode_path == ''
 
+- name: Stop and disable old opencode-web service (cleanup)
+  ansible.builtin.systemd:
+    name: opencode-web
+    enabled: false
+    state: stopped
+    scope: user
+  failed_when: false
+
+- name: Remove old opencode-web service file
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/systemd/user/opencode-web.service"
+    state: absent
+
 - name: Create systemd user directory
   ansible.builtin.file:
     path: "{{ ansible_env.HOME }}/.config/systemd/user"
     state: directory
     mode: "0755"
 
-- name: Deploy opencode-web systemd user service
+- name: Deploy opencode-serve systemd user service
   ansible.builtin.template:
-    src: opencode-web.service.j2
-    dest: "{{ ansible_env.HOME }}/.config/systemd/user/opencode-web.service"
+    src: opencode-serve.service.j2
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/opencode-serve.service"
     mode: "0644"
 
 - name: Reload systemd user daemon
@@ -40,25 +53,25 @@
     daemon_reload: true
     scope: user
 
-- name: Enable and start opencode-web service
+- name: Enable and start opencode-serve service
   ansible.builtin.systemd:
-    name: opencode-web
+    name: opencode-serve
     enabled: true
     state: started
     scope: user
 
-- name: Allow opencode-web through UFW (Debian)
+- name: Allow opencode-serve through UFW (Debian)
   community.general.ufw:
     rule: allow
-    port: "{{ opencode_web_port }}"
+    port: "{{ opencode_serve_port }}"
     proto: tcp
-    comment: OpenCode Web UI
+    comment: OpenCode Server
   become: true
   when: "'debian' in group_names"
 
-- name: Allow opencode-web through firewalld (Fedora)
+- name: Allow opencode-serve through firewalld (Fedora)
   ansible.posix.firewalld:
-    port: "{{ opencode_web_port }}/tcp"
+    port: "{{ opencode_serve_port }}/tcp"
     permanent: true
     state: enabled
     immediate: true

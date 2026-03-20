@@ -48,9 +48,9 @@ neovim_install_dir: "/opt/nvim"
 
 # OpenCode
 opencode_install_url: "https://opencode.ai/install"
-opencode_web_port: "4096"
-opencode_web_hostname: "0.0.0.0"
-opencode_web_password: ""
+opencode_serve_port: "4096"
+opencode_serve_hostname: "0.0.0.0"
+opencode_serve_password: ""
 
 # Nerd Font
 nerd_font_name: "JetBrainsMono"
