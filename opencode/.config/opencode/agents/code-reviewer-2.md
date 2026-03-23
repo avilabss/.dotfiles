@@ -1,7 +1,7 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: openrouter/anthropic/claude-opus-4.6
+model: anthropic/claude-opus-4-6
 reasoningEffort: high
 temperature: 0.1
 tools:

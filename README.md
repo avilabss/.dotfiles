@@ -42,8 +42,9 @@ cd ~/dotfiles
 
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
-| `opencode` | AI coding agent (config + agents) | All |
+| `opencode` | AI coding agent (config + agents + claude-auth plugin) | All |
 | `opencode-serve` | OpenCode server as a persistent service | All |
+| `claude-code` | Claude Code CLI (required for opencode-claude-auth plugin) | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
@@ -64,26 +65,33 @@ Config and agents are managed via stow (`opencode/.config/opencode/`). The openc
 
 ### Provider Setup
 
-After install, authenticate OpenRouter inside the OpenCode TUI:
+Two providers are used:
 
-```
-/connect    # Select OpenRouter, enter API key
-/models     # Verify available models
+1. **OpenAI (ChatGPT Pro sub)** — powers architect, developer, repo-scouter, and reviewer-1
+2. **Anthropic (Claude Max sub via [opencode-claude-auth](https://github.com/griffinmartin/opencode-claude-auth))** — powers reviewer-2 (Opus)
+
+```bash
+# 1. Auth OpenAI (ChatGPT Plus/Pro subscription)
+/connect    # Select "OpenAI (ChatGPT Plus/Pro)", complete browser OAuth
+
+# 2. Auth Claude (requires Claude Code installed and authenticated)
+# The opencode-claude-auth plugin handles this automatically —
+# just make sure `claude` CLI is installed and you've logged in once.
 ```
 
-Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles). All models are routed through OpenRouter.
+Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
 
 ### Agents
 
-| Agent | Model | Role |
-|-------|-------|------|
-| `architect` | `openrouter/anthropic/claude-opus-4.6` | Primary — plans and delegates tasks |
-| `developer` | `openrouter/anthropic/claude-sonnet-4.6` | Implements tasks from architect |
-| `repo-scouter` | `openrouter/anthropic/claude-opus-4.6` | Scans repos for stack/conventions |
-| `code-reviewer-1` | `openrouter/openai/gpt-5.3-codex` | Code review (high reasoning) |
-| `code-reviewer-2` | `openrouter/anthropic/claude-opus-4.6` | Code review |
+| Agent | Model | Reasoning | Role |
+|-------|-------|-----------|------|
+| `architect` | `openai/gpt-5.4` | xhigh | Primary — plans and delegates tasks |
+| `developer` | `openai/gpt-5.3-codex` | xhigh | Implements tasks from architect |
+| `repo-scouter` | `openai/gpt-5.4` | xhigh | Scans repos for stack/conventions |
+| `code-reviewer-1` | `openai/gpt-5.4` | xhigh | Code review (GPT) |
+| `code-reviewer-2` | `anthropic/claude-opus-4-6` | high | Code review (Opus, via Claude sub) |
 
-All models routed through OpenRouter. Single API key for everything.
+Cross-model diversity: GPT builds, Opus reviews.
 
 ### Workflow
 
@@ -141,7 +149,8 @@ tail -f ~/Library/Logs/opencode-serve.log
 1. Restart your terminal (or `source ~/.zshrc`)
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim — Lazy will auto-install plugins
-4. Run `opencode`, then `/connect` to authenticate OpenRouter
+4. Run `opencode`, then `/connect` to authenticate OpenAI (ChatGPT Plus/Pro)
+5. If using Claude models: run `claude` once to authenticate, then the opencode-claude-auth plugin handles the rest
 
 ## Theme
 

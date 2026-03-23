@@ -1,0 +1,13 @@
+---
+- name: Check if Claude Code is installed
+  ansible.builtin.command: which claude
+  register: claude_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Claude Code via npm
+  ansible.builtin.command: npm install -g @anthropic-ai/claude-code
+  environment: "{{ {'PATH': '/opt/homebrew/bin:' ~ ansible_env.PATH} if 'macos' in group_names else {} }}"
+  when: claude_check.rc != 0
+  register: claude_install
+  changed_when: "'added' in claude_install.stdout"
