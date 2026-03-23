@@ -1,7 +1,8 @@
 ---
 description: Architects whole implementations.
 mode: primary
-model: openrouter/anthropic/claude-opus-4.6
+model: openai/gpt-5.4
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: true

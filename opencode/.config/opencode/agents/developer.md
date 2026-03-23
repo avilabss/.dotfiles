@@ -1,7 +1,8 @@
 ---
 description: Writes careful and considered code.
 mode: subagent
-model: openrouter/anthropic/claude-sonnet-4.6
+model: openai/gpt-5.3-codex
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: true

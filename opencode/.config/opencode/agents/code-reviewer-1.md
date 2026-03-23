@@ -1,8 +1,8 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: openrouter/openai/gpt-5.3-codex
-reasoningEffort: high
+model: openai/gpt-5.4
+reasoningEffort: xhigh
 temperature: 0.1
 tools:
   write: false
