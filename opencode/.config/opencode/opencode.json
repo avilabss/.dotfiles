@@ -5,5 +5,9 @@
   "autoupdate": true,
   "server": {
     "port": 4096
+  },
+  "tools": {
+    "websearch": true,
+    "codesearch": true
   }
 }
