@@ -1,8 +1,10 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: anthropic/claude-opus-4-6
-reasoningEffort: high
+model: anthropic/claude-opus-4-7
+reasoningEffort: xhigh
+thinking:
+  type: adaptive
 temperature: 0.1
 tools:
   write: false

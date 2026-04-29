@@ -1,7 +1,7 @@
 ---
 description: Writes careful and considered code.
 mode: subagent
-model: openai/gpt-5.3-codex
+model: openai/gpt-5.5
 reasoningEffort: xhigh
 temperature: 0.1
 tools:

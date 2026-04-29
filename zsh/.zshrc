@@ -35,6 +35,8 @@ eval "$(starship init zsh)"
 # Add VS Code to PATH (macOS only - Linux uses system package manager)
 if [[ $IS_MACOS ]]; then
     export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+elif [[ $IS_LINUX ]]; then
+    alias code="flatpak run com.visualstudio.code"
 fi
 
 # Add llvm to PATH
@@ -49,4 +51,4 @@ fi
 export PATH="$HOME/.opencode/bin:$PATH"
 
 # opencode
-export PATH=/home/avi/.opencode/bin:$PATH
+# export PATH=/home/avi/.opencode/bin:$PATH
