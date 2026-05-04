@@ -4,4 +4,4 @@
     name: "{{ dev_tool_packages }}"
     state: present
   environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"

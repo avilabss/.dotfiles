@@ -24,7 +24,7 @@
 - name: Install opencode plugin dependencies
   ansible.builtin.command: npm install
   args:
-    chdir: "{{ ansible_env.HOME }}/.config/opencode"
-  environment: "{{ {'PATH': '/opt/homebrew/bin:' ~ ansible_env.PATH} if 'macos' in group_names else {} }}"
+    chdir: "{{ ansible_facts['env']['HOME'] }}/.config/opencode"
+  environment: "{{ {'PATH': '/opt/homebrew/bin:' ~ ansible_facts['env']['PATH']} if 'macos' in group_names else {} }}"
   register: npm_install_opencode
   changed_when: "'added' in npm_install_opencode.stdout"

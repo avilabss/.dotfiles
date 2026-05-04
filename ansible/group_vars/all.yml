@@ -1,6 +1,6 @@
 ---
-dotfiles_user: "{{ ansible_user_id }}"
-dotfiles_dir: "{{ ansible_env.HOME }}/dotfiles"
+dotfiles_user: "{{ ansible_facts['user_id'] }}"
+dotfiles_dir: "{{ ansible_facts['env']['HOME'] }}/dotfiles"
 
 # Stow packages to symlink
 stow_packages:
@@ -15,7 +15,7 @@ stow_conflict_files:
   - .zshrc
   - .zprofile
   - .tmux.conf
-  - .config/ghostty/config
+  - .config/ghostty
 
 # Oh My Zsh
 omz_install_url: "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
@@ -27,7 +27,7 @@ omz_plugins:
 
 # TPM
 tpm_repo: "https://github.com/tmux-plugins/tpm"
-tpm_dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+tpm_dest: "{{ ansible_facts['env']['HOME'] }}/.tmux/plugins/tpm"
 
 # Starship
 starship_install_url: "https://starship.rs/install.sh"

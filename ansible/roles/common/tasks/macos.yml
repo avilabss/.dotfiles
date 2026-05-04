@@ -16,14 +16,14 @@
     state: present
   loop: "{{ brew_taps }}"
   environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Install common packages (brew)
   community.general.homebrew:
     name: "{{ common_packages }}"
     state: present
   environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Install casks
   community.general.homebrew_cask:
@@ -31,5 +31,5 @@
     state: present
   loop: "{{ brew_casks }}"
   environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
   ignore_errors: true

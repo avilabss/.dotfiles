@@ -7,7 +7,7 @@
 
 - name: Create fonts directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/share/fonts"
+    path: "{{ ansible_facts['env']['HOME'] }}/.local/share/fonts"
     state: directory
     mode: "0755"
   when: font_check.rc != 0
@@ -15,7 +15,7 @@
 - name: Download and extract JetBrainsMono Nerd Font
   ansible.builtin.unarchive:
     src: "{{ nerd_font_url }}"
-    dest: "{{ ansible_env.HOME }}/.local/share/fonts"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.local/share/fonts"
     remote_src: true
   when: font_check.rc != 0
 

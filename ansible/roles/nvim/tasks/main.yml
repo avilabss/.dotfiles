@@ -10,7 +10,7 @@
 
 - name: Install neovim from GitHub release (Linux)
   when:
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
     - nvim_version_check.rc != 0 or 'v0.11' not in nvim_version_check.stdout
   block:
     - name: Remove distro neovim if present

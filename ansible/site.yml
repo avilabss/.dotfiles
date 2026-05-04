@@ -7,16 +7,16 @@
     - name: Classify host by OS family
       ansible.builtin.group_by:
         key: >-
-          {{ 'macos' if ansible_os_family == 'Darwin'
-             else 'debian' if ansible_distribution in ['Debian', 'Ubuntu', 'Pop!_OS', 'Linux Mint']
-             else 'fedora' if ansible_distribution in ['Fedora', 'CentOS', 'Rocky', 'AlmaLinux']
+          {{ 'macos' if ansible_facts['os_family'] == 'Darwin'
+             else 'debian' if ansible_facts['distribution'] in ['Debian', 'Ubuntu', 'Pop!_OS', 'Linux Mint']
+             else 'fedora' if ansible_facts['distribution'] in ['Fedora', 'CentOS', 'Rocky', 'AlmaLinux']
              else 'unknown' }}
       changed_when: false
       tags: always
 
     - name: Fail on unsupported OS
       ansible.builtin.fail:
-        msg: "Unsupported OS: {{ ansible_distribution }} ({{ ansible_os_family }})"
+        msg: "Unsupported OS: {{ ansible_facts['distribution'] }} ({{ ansible_facts['os_family'] }})"
       when: group_names | intersect(['macos', 'debian', 'fedora']) | length == 0
       tags: always
 
@@ -59,15 +59,15 @@
 
     - role: ssh
       tags: [ssh, optional]
-      when: ansible_os_family != 'Darwin'
+      when: ansible_facts['os_family'] != 'Darwin'
 
     - role: xrdp
       tags: [xrdp, optional]
-      when: ansible_os_family != 'Darwin'
+      when: ansible_facts['os_family'] != 'Darwin'
 
     - role: qemu
       tags: [qemu, optional]
-      when: ansible_os_family != 'Darwin'
+      when: ansible_facts['os_family'] != 'Darwin'
 
     - role: sunshine
       tags: [sunshine, optional]

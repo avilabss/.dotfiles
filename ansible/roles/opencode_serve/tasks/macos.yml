@@ -7,7 +7,7 @@
 
 - name: Check ~/.opencode/bin/opencode fallback
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.opencode/bin/opencode"
+    path: "{{ ansible_facts['env']['HOME'] }}/.opencode/bin/opencode"
   register: opencode_local_bin
   when: opencode_bin.rc != 0
 
@@ -15,7 +15,7 @@
   ansible.builtin.set_fact:
     opencode_path: >-
       {{ opencode_bin.stdout if opencode_bin.rc == 0
-         else ansible_env.HOME ~ '/.opencode/bin/opencode' if opencode_local_bin.stat.exists | default(false)
+         else ansible_facts['env']['HOME'] ~ '/.opencode/bin/opencode' if opencode_local_bin.stat.exists | default(false)
          else '' }}
 
 - name: Fail if opencode not found
@@ -24,32 +24,32 @@
   when: opencode_path == ''
 
 - name: Unload old opencode-web launchd (cleanup)
-  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist
+  ansible.builtin.command: launchctl unload {{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/com.opencode.web.plist
   changed_when: false
   failed_when: false
 
 - name: Remove old opencode-web plist
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.web.plist"
+    path: "{{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/com.opencode.web.plist"
     state: absent
 
 - name: Create LaunchAgents directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/Library/LaunchAgents"
+    path: "{{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents"
     state: directory
     mode: "0755"
 
 - name: Deploy opencode-serve launchd plist
   ansible.builtin.template:
     src: com.opencode.serve.plist.j2
-    dest: "{{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist"
+    dest: "{{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/com.opencode.serve.plist"
     mode: "0644"
 
 - name: Unload opencode-serve launchd (if running)
-  ansible.builtin.command: launchctl unload {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist
+  ansible.builtin.command: launchctl unload {{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/com.opencode.serve.plist
   changed_when: false
   failed_when: false
 
 - name: Load opencode-serve launchd
-  ansible.builtin.command: launchctl load {{ ansible_env.HOME }}/Library/LaunchAgents/com.opencode.serve.plist
+  ansible.builtin.command: launchctl load {{ ansible_facts['env']['HOME'] }}/Library/LaunchAgents/com.opencode.serve.plist
   changed_when: true

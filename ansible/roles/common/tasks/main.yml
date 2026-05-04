@@ -13,14 +13,14 @@
 
 - name: Create backup directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.dotfiles_backup/{{ ansible_date_time.iso8601_basic_short }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/.dotfiles_backup/{{ ansible_facts['date_time']['iso8601_basic_short'] }}"
     state: directory
     mode: "0755"
   register: backup_dir
 
 - name: Check for conflicting dotfiles
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/{{ item }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/{{ item }}"
   loop: "{{ stow_conflict_files }}"
   register: conflict_check
 
@@ -36,7 +36,7 @@
 
 - name: Back up conflicting dotfiles
   ansible.builtin.copy:
-    src: "{{ ansible_env.HOME }}/{{ item.item }}"
+    src: "{{ ansible_facts['env']['HOME'] }}/{{ item.item }}"
     dest: "{{ backup_dir.path }}/{{ item.item }}"
     remote_src: true
     mode: preserve
@@ -47,7 +47,7 @@
 
 - name: Remove conflicting files so stow can take over
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/{{ item.item }}"
+    path: "{{ ansible_facts['env']['HOME'] }}/{{ item.item }}"
     state: absent
   loop: "{{ conflict_check.results }}"
   when: item.stat.exists and not item.stat.islnk

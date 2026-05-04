@@ -22,7 +22,7 @@
   ansible.builtin.shell: curl --proto '=https' --tlsv1.2 -sSf {{ rustup_install_url }} | sh -s -- -y
   when:
     - rustup_check.rc != 0
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 # uv (Linux only - macOS gets it from brew)
 - name: Check if uv is installed
@@ -35,7 +35,7 @@
   ansible.builtin.shell: curl -LsSf {{ uv_install_url }} | sh
   when:
     - uv_check.rc != 0
-    - ansible_os_family != 'Darwin'
+    - ansible_facts['os_family'] != 'Darwin'
 
 # Poetry (all platforms)
 - name: Check if poetry is installed
@@ -54,7 +54,7 @@
   register: chrome_check
   changed_when: false
   failed_when: false
-  when: ansible_os_family != 'Darwin'
+  when: ansible_facts['os_family'] != 'Darwin'
 
 - name: Install Google Chrome (Debian)
   ansible.builtin.apt:

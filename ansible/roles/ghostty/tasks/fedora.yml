@@ -8,7 +8,17 @@
 - name: Enable Ghostty COPR repository
   ansible.builtin.command: dnf copr enable -y {{ ghostty_copr_repo }}
   become: true
+  register: copr_enable_result
+  failed_when: false
   when: ghostty_check.rc != 0
+
+- name: Enable Ghostty COPR repository (rawhide fallback for unsupported Fedora versions)
+  ansible.builtin.command: >-
+    dnf copr enable -y {{ ghostty_copr_repo }} fedora-rawhide-{{ ansible_facts['architecture'] }}
+  become: true
+  when:
+    - ghostty_check.rc != 0
+    - copr_enable_result.rc != 0
 
 - name: Install Ghostty from COPR
   ansible.builtin.dnf:
