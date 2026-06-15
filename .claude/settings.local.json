@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dnf info *)",
+      "Bash(dnf search *)",
+      "Bash(python3 *)"
+    ]
+  }
+}

@@ -1,7 +1,7 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: openai/gpt-5.5
+model: openai/gpt-5.5-pro
 reasoningEffort: xhigh
 temperature: 0.1
 tools:

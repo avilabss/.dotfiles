@@ -48,9 +48,6 @@
     - role: opencode
       tags: [opencode, optional]
 
-    - role: claude_code
-      tags: [claude-code, optional]
-
     - role: opencode_serve
       tags: [opencode-serve, optional]
 
@@ -81,4 +78,3 @@
           - "  2. In tmux, press Ctrl-a + I to install plugins"
           - "  3. Open neovim - Lazy will auto-install plugins"
           - "  4. Run opencode, then /connect to authenticate OpenAI"
-          - "  5. If using Claude models: run 'claude' once to auth, plugin handles the rest"

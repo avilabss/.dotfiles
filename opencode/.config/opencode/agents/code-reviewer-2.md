@@ -1,10 +1,8 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: anthropic/claude-opus-4-7
+model: openai/gpt-5.3-codex-spark
 reasoningEffort: xhigh
-thinking:
-  type: adaptive
 temperature: 0.1
 tools:
   write: false

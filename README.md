@@ -42,9 +42,8 @@ cd ~/dotfiles
 
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
-| `opencode` | AI coding agent (config + agents + claude-auth plugin) | All |
+| `opencode` | AI coding agent (config + agents) | All |
 | `opencode-serve` | OpenCode server as a persistent service | All |
-| `claude-code` | Claude Code CLI (required for opencode-claude-auth plugin) | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
@@ -65,18 +64,13 @@ Config and agents are managed via stow (`opencode/.config/opencode/`). The openc
 
 ### Provider Setup
 
-Two providers are used:
+One provider is used:
 
-1. **OpenAI (ChatGPT Pro sub)** — powers architect, developer, repo-scouter, and reviewer-1
-2. **Anthropic (Claude Max sub via [opencode-claude-auth](https://github.com/griffinmartin/opencode-claude-auth))** — powers reviewer-2 (Opus)
+1. **OpenAI (ChatGPT Pro sub)** — powers architect, developer, repo-scouter, and both reviewers
 
 ```bash
-# 1. Auth OpenAI (ChatGPT Plus/Pro subscription)
+# Auth OpenAI (ChatGPT Plus/Pro subscription)
 /connect    # Select "OpenAI (ChatGPT Plus/Pro)", complete browser OAuth
-
-# 2. Auth Claude (requires Claude Code installed and authenticated)
-# The opencode-claude-auth plugin handles this automatically —
-# just make sure `claude` CLI is installed and you've logged in once.
 ```
 
 Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
@@ -85,13 +79,13 @@ Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by do
 
 | Agent | Model | Reasoning | Role |
 |-------|-------|-----------|------|
-| `architect` | `openai/gpt-5.4` | xhigh | Primary — plans and delegates tasks |
-| `developer` | `openai/gpt-5.3-codex` | xhigh | Implements tasks from architect |
-| `repo-scouter` | `openai/gpt-5.4` | xhigh | Scans repos for stack/conventions |
-| `code-reviewer-1` | `openai/gpt-5.4` | xhigh | Code review (GPT) |
-| `code-reviewer-2` | `anthropic/claude-opus-4-6` | high | Code review (Opus, via Claude sub) |
+| `architect` | `openai/gpt-5.5` | xhigh | Primary — plans and delegates tasks |
+| `developer` | `openai/gpt-5.5` | xhigh | Implements tasks from architect |
+| `repo-scouter` | `openai/gpt-5.5` | xhigh | Scans repos for stack/conventions |
+| `code-reviewer-1` | `openai/gpt-5.5-pro` | xhigh | Code review (strongest GPT review pass) |
+| `code-reviewer-2` | `openai/gpt-5.3-codex-spark` | xhigh | Code review (Codex Spark coding-specialized pass) |
 
-Cross-model diversity: GPT builds, Opus reviews.
+Both reviewers run independently on OpenAI GPT models, using different model families for review diversity.
 
 ### Workflow
 
@@ -150,7 +144,6 @@ tail -f ~/Library/Logs/opencode-serve.log
 2. In tmux, press `Ctrl-a + I` to install plugins
 3. Open neovim — Lazy will auto-install plugins
 4. Run `opencode`, then `/connect` to authenticate OpenAI (ChatGPT Plus/Pro)
-5. If using Claude models: run `claude` once to authenticate, then the opencode-claude-auth plugin handles the rest
 
 ## Theme
 

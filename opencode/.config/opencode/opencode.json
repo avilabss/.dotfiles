@@ -9,6 +9,5 @@
   "tools": {
     "websearch": true,
     "codesearch": true
-  },
-  "plugin": ["opencode-claude-auth@latest"]
+  }
 }

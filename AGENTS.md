@@ -25,7 +25,7 @@ The playbook auto-detects the OS via `group_by` in `pre_tasks` and assigns the h
 There are two kinds of roles:
 
 - **Core roles**: Run by default (`common`, `fonts`, `dev_tools`, `zsh`, `nvim`, `tmux`, `starship`, `ghostty`)
-- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
+- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `opencode_serve`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
 
 Some optional roles are Linux-only (restricted via `when: ansible_os_family != 'Darwin'` in `site.yml`).
 
