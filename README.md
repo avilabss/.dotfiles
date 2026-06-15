@@ -82,7 +82,7 @@ Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by do
 | `developer` | `openai/gpt-5.5` | xhigh | Implements tasks from architect |
 | `repo-scouter` | `openai/gpt-5.5` | xhigh | Scans repos for stack/conventions |
 | `code-reviewer-1` | `openai/gpt-5.5` | xhigh | Code review (latest GPT review pass) |
-| `code-reviewer-2` | `openai/gpt-5.3-codex-spark` | xhigh | Code review (Codex Spark coding-specialized pass) |
+| `code-reviewer-2` | `openai/gpt-5.4` | xhigh | Code review (secondary GPT review pass) |
 
 Both reviewers run independently on OpenAI GPT models, using different model families for review diversity.
 

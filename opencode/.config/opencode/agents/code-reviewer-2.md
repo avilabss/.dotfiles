@@ -1,7 +1,7 @@
 ---
 description: Reviews code for best practices and potential issues.
 mode: subagent
-model: openai/gpt-5.3-codex-spark
+model: openai/gpt-5.4
 reasoningEffort: xhigh
 temperature: 0.1
 tools:
