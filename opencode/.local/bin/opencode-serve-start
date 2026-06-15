@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+port="${OPENCODE_SERVE_PORT:-4096}"
+hostname="${OPENCODE_SERVE_HOSTNAME:-0.0.0.0}"
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/opencode"
+pid_file="$state_dir/serve.pid"
+log_file="$state_dir/serve.log"
+
+mkdir -p "$state_dir"
+
+if [[ -f "$pid_file" ]]; then
+  pid="$(cat "$pid_file")"
+  if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+    command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
+    if [[ "$command_line" == *"opencode serve"* ]]; then
+      echo "opencode serve is already running (pid $pid)."
+      echo "Log: $log_file"
+      exit 0
+    fi
+  fi
+  rm -f "$pid_file"
+fi
+
+if ! command -v opencode >/dev/null 2>&1; then
+  echo "opencode not found in PATH." >&2
+  exit 1
+fi
+
+nohup opencode serve --hostname "$hostname" --port "$port" >>"$log_file" 2>&1 &
+pid="$!"
+printf '%s\n' "$pid" >"$pid_file"
+
+echo "Started opencode serve on $hostname:$port (pid $pid)."
+echo "Log: $log_file"

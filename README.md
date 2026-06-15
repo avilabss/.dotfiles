@@ -43,7 +43,6 @@ cd ~/dotfiles
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
 | `opencode` | AI coding agent (config + agents) | All |
-| `opencode-serve` | OpenCode server as a persistent service | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
@@ -102,38 +101,22 @@ Both reviewers run independently on OpenAI GPT models, using different model fam
 
 **Key rules:** architect never writes code (only Task Briefs), developer never expands scope, reviewers can only read and request changes (no file edits).
 
-## OpenCode Server
+## OpenCode Server Scripts
 
-The `opencode-serve` tag sets up the OpenCode server as a persistent service that survives reboots.
+The `opencode` tag installs helper scripts for manually running the OpenCode server. No systemd or launchd service is created; the server runs only when you start it.
 
 ```bash
-./bootstrap.sh --tags opencode-serve
+opencode-serve-start
+opencode-serve-stop
 ```
 
-**What it does:**
-- **Linux:** Creates a systemd user service (`opencode-serve`) + opens the firewall port (UFW/firewalld)
-- **macOS:** Creates a launchd LaunchAgent (`com.opencode.serve`) — macOS prompts on first connection
+By default, `opencode-serve-start` runs `opencode serve` on `0.0.0.0:4096` in the background and writes logs to `~/.local/state/opencode/serve.log`.
 
-**Configuration** (in `ansible/group_vars/all.yml`):
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `opencode_serve_port` | `4096` | Port for the server (matches `opencode.json` server config) |
-| `opencode_serve_hostname` | `0.0.0.0` | Bind address (`0.0.0.0` = LAN accessible, `127.0.0.1` = local only) |
-| `opencode_serve_password` | *(empty)* | Set `OPENCODE_SERVER_PASSWORD` for basic auth |
-
-**Service management:**
+Override the bind address or port per run with environment variables:
 
 ```bash
-# Linux
-systemctl --user status opencode-serve
-systemctl --user restart opencode-serve
-journalctl --user -u opencode-serve -f
-
-# macOS
-launchctl list | grep opencode
-launchctl kickstart -k gui/$(id -u)/com.opencode.serve  # restart
-tail -f ~/Library/Logs/opencode-serve.log
+OPENCODE_SERVE_HOSTNAME=127.0.0.1 OPENCODE_SERVE_PORT=4096 opencode-serve-start
+tail -f ~/.local/state/opencode/serve.log
 ```
 
 > **Note:** Requires opencode to be installed first (`--tags opencode` or install manually).
