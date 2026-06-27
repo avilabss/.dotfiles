@@ -11,7 +11,6 @@ common_packages:
   - fontconfig
   - software-properties-common
   - ripgrep
-  - fastfetch
 
 dev_tool_packages:
   - golang

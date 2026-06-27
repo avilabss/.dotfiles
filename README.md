@@ -32,7 +32,7 @@ cd ~/dotfiles
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
 | JetBrainsMono Nerd Font | Terminal font |
-| fastfetch, ripgrep | System info and search |
+| ripgrep | Fast search |
 | go, rust, node, python | Language runtimes |
 | pipx, uv, poetry | Package managers |
 | git, git-lfs | Version control |
