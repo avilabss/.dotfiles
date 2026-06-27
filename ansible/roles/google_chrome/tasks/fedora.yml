@@ -1,0 +1,14 @@
+---
+- name: Check if Google Chrome is installed
+  ansible.builtin.command: which google-chrome
+  register: chrome_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Google Chrome (Fedora)
+  ansible.builtin.dnf:
+    name: "{{ chrome_url }}"
+    state: present
+    disable_gpg_check: true
+  become: true
+  when: chrome_check.rc != 0

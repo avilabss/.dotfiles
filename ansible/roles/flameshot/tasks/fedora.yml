@@ -1,0 +1,6 @@
+---
+- name: Install Flameshot (Fedora)
+  ansible.builtin.dnf:
+    name: "{{ flameshot_package }}"
+    state: present
+  become: true

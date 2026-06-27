@@ -42,11 +42,17 @@
     - role: starship
       tags: [starship]
 
-    - role: ghostty
-      tags: [ghostty]
-
     - role: opencode
       tags: [opencode, optional]
+
+    - role: ghostty
+      tags: [ghostty, optional]
+
+    - role: google_chrome
+      tags: [google-chrome, chrome, optional]
+
+    - role: flameshot
+      tags: [flameshot, optional]
 
     - role: docker
       tags: [docker, optional]

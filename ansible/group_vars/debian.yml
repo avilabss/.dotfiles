@@ -12,7 +12,6 @@ common_packages:
   - software-properties-common
   - ripgrep
   - fastfetch
-  - flameshot
 
 dev_tool_packages:
   - golang
@@ -24,6 +23,8 @@ dev_tool_packages:
 ghostty_install_url: "https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh"
 
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+
+flameshot_package: flameshot
 
 ssh_packages:
   - openssh-server

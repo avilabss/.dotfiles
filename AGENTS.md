@@ -24,8 +24,9 @@ The playbook auto-detects the OS via `group_by` in `pre_tasks` and assigns the h
 
 There are two kinds of roles:
 
-- **Core roles**: Run by default (`common`, `fonts`, `dev_tools`, `zsh`, `nvim`, `tmux`, `starship`, `ghostty`)
-- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
+- **Core roles**: Run by default (`common`, `fonts`, `dev_tools`, `zsh`, `nvim`, `tmux`, `starship`)
+- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `ghostty`, `google_chrome`, `flameshot`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
+- Desktop app roles (`ghostty`, `google_chrome`, `flameshot`) are optional so headless/server installs can keep the normal core dotfiles without pulling GUI packages. Ghostty stows its own config from its role, not from default `stow_packages`.
 
 Some optional roles are Linux-only (restricted via `when: ansible_os_family != 'Darwin'` in `site.yml`).
 
@@ -43,7 +44,7 @@ Stow is handled centrally in the `common` role — not in individual config role
 
 - Always use fully qualified collection names (e.g., `ansible.builtin.apt`, not `apt`)
 - Per-platform task dispatch: `main.yml` includes platform-specific files (`macos.yml`, `debian.yml`, `fedora.yml`, or `linux.yml`)
-- Package lists go in `ansible/group_vars/<platform>.yml`, not hardcoded in tasks
+- Package lists go in `ansible/group_vars/<platform>.yml`, not hardcoded in tasks. GUI desktop apps should be optional roles rather than default common/dev packages when they are not useful on headless servers.
 - Common/shared variables go in `ansible/group_vars/all.yml`
 - Use `become: true` for tasks requiring root on Linux; macOS Homebrew tasks do NOT use become
 - macOS tasks need `environment: { PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}" }` for brew commands

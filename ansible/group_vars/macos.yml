@@ -12,11 +12,12 @@ common_packages:
   - wget
 
 brew_casks:
-  - ghostty
-  - flameshot
-  - google-chrome
   - legcord
   - font-jetbrains-mono-nerd-font
+
+flameshot_cask: flameshot
+google_chrome_cask: google-chrome
+ghostty_cask: ghostty
 
 dev_tool_packages:
   - go

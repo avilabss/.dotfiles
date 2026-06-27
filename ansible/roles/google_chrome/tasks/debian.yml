@@ -1,0 +1,13 @@
+---
+- name: Check if Google Chrome is installed
+  ansible.builtin.command: which google-chrome
+  register: chrome_check
+  changed_when: false
+  failed_when: false
+
+- name: Install Google Chrome (Debian)
+  ansible.builtin.apt:
+    deb: "{{ chrome_url }}"
+    state: present
+  become: true
+  when: chrome_check.rc != 0

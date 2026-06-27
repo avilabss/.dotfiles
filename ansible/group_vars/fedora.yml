@@ -11,7 +11,6 @@ common_packages:
   - fontconfig
   - ripgrep
   - fastfetch
-  - flameshot
 
 dev_tool_packages:
   - golang
@@ -24,6 +23,8 @@ dev_tool_packages:
 ghostty_copr_repo: "pgdev/ghostty"
 
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
+
+flameshot_package: flameshot
 
 ssh_packages:
   - openssh-server

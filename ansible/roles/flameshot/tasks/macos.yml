@@ -1,7 +1,7 @@
 ---
-- name: Install Ghostty cask
+- name: Install Flameshot cask
   community.general.homebrew_cask:
-    name: "{{ ghostty_cask }}"
+    name: "{{ flameshot_cask }}"
     state: present
   environment:
     PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"

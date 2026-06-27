@@ -1,0 +1,6 @@
+---
+- name: Install Flameshot (Debian)
+  ansible.builtin.apt:
+    name: "{{ flameshot_package }}"
+    state: present
+  become: true

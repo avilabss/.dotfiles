@@ -16,6 +16,7 @@ cd ~/dotfiles
 ./bootstrap.sh                            # Core setup
 ./bootstrap.sh --all                      # Everything (core + optional)
 ./bootstrap.sh --tags docker,ssh          # Specific optional roles
+./bootstrap.sh --tags ghostty,google-chrome,flameshot  # Desktop apps only
 ./bootstrap.sh --tags zsh                 # Re-run a single role
 ./bootstrap.sh --check                    # Dry run
 ```
@@ -30,10 +31,8 @@ cd ~/dotfiles
 | Zsh | Shell with Oh My Zsh framework |
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
-| Ghostty | Terminal emulator |
-| Google Chrome | Browser |
 | JetBrainsMono Nerd Font | Terminal font |
-| fastfetch, ripgrep, flameshot | System info, search, screenshots |
+| fastfetch, ripgrep | System info and search |
 | go, rust, node, python | Language runtimes |
 | pipx, uv, poetry | Package managers |
 | git, git-lfs | Version control |
@@ -43,6 +42,9 @@ cd ~/dotfiles
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
 | `opencode` | AI coding agent (config + agents) | All |
+| `ghostty` | Ghostty terminal emulator + stowed config | All |
+| `google-chrome` / `chrome` | Google Chrome browser | All |
+| `flameshot` | Screenshot tool | All |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
