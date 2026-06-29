@@ -5,25 +5,67 @@
   changed_when: false
   failed_when: false
 
+- name: Track unsupported Sunshine deb target
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['sunshine'] }}"
+  when:
+    - sunshine_check.rc != 0
+    - sunshine_deb_release is not defined or sunshine_deb_release in ['', None]
+
+- name: Warn about unsupported Sunshine deb target
+  ansible.builtin.debug:
+    msg: >-
+      Sunshine release assets are not configured for
+      {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} /
+      {{ ansible_facts.architecture }}; skipping Sunshine package install.
+  when:
+    - sunshine_check.rc != 0
+    - sunshine_deb_release is not defined or sunshine_deb_release in ['', None]
+
 - name: Download Sunshine deb package
   ansible.builtin.get_url:
     url: "{{ sunshine_deb_url }}"
     dest: /tmp/sunshine.deb
     mode: "0644"
-  when: sunshine_check.rc != 0
+  when:
+    - sunshine_check.rc != 0
+    - sunshine_deb_release is defined
+    - sunshine_deb_release not in ['', None]
 
 - name: Install Sunshine
-  ansible.builtin.apt:
-    deb: /tmp/sunshine.deb
-    state: present
-  become: true
-  when: sunshine_check.rc != 0
+  block:
+    - name: Install Sunshine
+      ansible.builtin.apt:
+        deb: /tmp/sunshine.deb
+        state: present
+      become: true
+  rescue:
+    - name: Track failed Sunshine package install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['sunshine'] }}"
+
+    - name: Warn about failed Sunshine package install
+      ansible.builtin.debug:
+        msg: >-
+          Sunshine could not be installed from {{ sunshine_deb_url }} on
+          {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} /
+          {{ ansible_facts.architecture }}; continuing without the package.
+  when:
+    - sunshine_check.rc != 0
+    - sunshine_deb_release is defined
+    - sunshine_deb_release not in ['', None]
 
 - name: Clean up deb package
   ansible.builtin.file:
     path: /tmp/sunshine.deb
     state: absent
   when: sunshine_check.rc != 0
+
+- name: Install Sunshine firewall packages
+  ansible.builtin.apt:
+    name: "{{ sunshine_firewall_packages }}"
+    state: present
+  become: true
 
 - name: Allow Sunshine TCP ports through UFW
   community.general.ufw:

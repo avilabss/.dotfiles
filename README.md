@@ -54,7 +54,16 @@ cd ~/dotfiles
 
 ## Package Failures on Unsupported Hosts
 
-Core packages stay declared in dotfiles even when a host cannot install one of them. For example, `fastfetch` is part of the core package set, but some Raspberry Pi OS / Debian releases may not provide a package for it. In that case the bootstrap warns, skips that package on that host, and prints a failed-package summary at the end instead of removing it from the repo.
+Packages stay declared in dotfiles even when a host cannot install one of them. For example, `fastfetch` is part of the core package set, but some Raspberry Pi OS / Debian releases may not provide a package for it. Optional packages can hit the same case when an upstream repository does not publish a build for a specific release or architecture, such as Ghostty's COPR or Sunshine's release assets. In that case the bootstrap warns, skips that package on that host, and prints a failed-package summary at the end instead of removing it from the repo.
+
+## Install Sources
+
+- **Docker on Debian/Ubuntu:** Official Docker apt repository and signed packages; unsupported Debian-family derivatives skip with a warning.
+- **Ghostty on Fedora:** `scottames/ghostty` COPR.
+- **Ghostty on Ubuntu:** Community Ubuntu installer script; skipped with a warning on unsupported Debian-family distributions.
+- **Sunshine on Ubuntu:** GitHub release `.deb` assets for configured Ubuntu releases and architectures; skipped with a warning otherwise.
+- **Sunshine on Fedora:** LizardByte COPR with graceful skip behavior if the COPR is unavailable for the host.
+- **Google Chrome on Fedora:** Google RPM with the Google Linux signing key imported; GPG checks remain enabled.
 
 ## Adding Packages
 

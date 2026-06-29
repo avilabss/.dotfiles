@@ -1,9 +1,9 @@
 ---
 # macOS gets neovim from Brewfile - nothing to do
-# Linux installs from GitHub release tarball for 0.11+ compatibility
+# Linux installs from GitHub release tarball for pinned-version compatibility
 
 - name: Check current neovim version
-  ansible.builtin.shell: nvim --version | head -1
+  ansible.builtin.shell: nvim --version | sed -n '1s/^NVIM v//p'
   register: nvim_version_check
   changed_when: false
   failed_when: false
@@ -11,7 +11,9 @@
 - name: Install neovim from GitHub release (Linux)
   when:
     - ansible_facts['os_family'] != 'Darwin'
-    - nvim_version_check.rc != 0 or 'v0.11' not in nvim_version_check.stdout
+    - >-
+      nvim_version_check.rc != 0 or
+      (nvim_version_check.stdout | default('0.0.0')) is version(neovim_version | regex_replace('^v', ''), '<')
   block:
     - name: Remove distro neovim if present
       ansible.builtin.package:

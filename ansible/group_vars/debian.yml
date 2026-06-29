@@ -22,7 +22,17 @@ dev_tool_packages:
   - python3-venv
   - pipx
 
+docker_supported_debian_distributions:
+  - Debian
+  - Ubuntu
+  - Pop!_OS
+docker_apt_key_url: "https://download.docker.com/linux/{{ 'ubuntu' if ansible_facts['distribution'] in ['Ubuntu', 'Pop!_OS'] else 'debian' }}/gpg"
+docker_apt_repo_base_url: "https://download.docker.com/linux/{{ 'ubuntu' if ansible_facts['distribution'] in ['Ubuntu', 'Pop!_OS'] else 'debian' }}"
+docker_apt_repo_codename: "{{ ansible_facts['distribution_release'] }}"
+
 ghostty_install_url: "https://raw.githubusercontent.com/mkasberg/ghostty-ubuntu/HEAD/install.sh"
+ghostty_supported_debian_distributions:
+  - Ubuntu
 
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
 
@@ -32,10 +42,20 @@ ssh_packages:
   - openssh-server
   - ufw
 
+sunshine_firewall_packages:
+  - ufw
+
 xrdp_packages:
   - xrdp
 
 qemu_packages:
   - qemu-guest-agent
 
-sunshine_deb_url: "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-ubuntu-24.04-amd64.deb"
+sunshine_deb_arch: "{{ 'arm64' if ansible_facts['architecture'] in ['aarch64', 'arm64'] else 'amd64' }}"
+sunshine_deb_release_map:
+  Ubuntu:
+    "22.04": "ubuntu-22.04"
+    "24.04": "ubuntu-24.04"
+    "26.04": "ubuntu-26.04"
+sunshine_deb_release: "{{ sunshine_deb_release_map.get(ansible_facts['distribution'], {}).get(ansible_facts['distribution_version']) }}"
+sunshine_deb_url: "https://github.com/LizardByte/Sunshine/releases/latest/download/sunshine-{{ sunshine_deb_release }}-{{ sunshine_deb_arch }}.deb"

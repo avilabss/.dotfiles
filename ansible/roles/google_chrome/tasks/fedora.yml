@@ -5,10 +5,16 @@
   changed_when: false
   failed_when: false
 
+- name: Import Google Linux signing key
+  ansible.builtin.rpm_key:
+    key: https://dl.google.com/linux/linux_signing_key.pub
+    state: present
+  become: true
+  when: chrome_check.rc != 0
+
 - name: Install Google Chrome (Fedora)
   ansible.builtin.dnf:
     name: "{{ chrome_url }}"
     state: present
-    disable_gpg_check: true
   become: true
   when: chrome_check.rc != 0

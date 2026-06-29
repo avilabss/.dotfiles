@@ -5,7 +5,39 @@
   changed_when: false
   failed_when: false
 
+- name: Track unsupported Ghostty Debian target
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['ghostty'] }}"
+  when:
+    - ghostty_check.rc != 0
+    - ansible_facts['distribution'] not in ghostty_supported_debian_distributions
+
+- name: Warn about unsupported Ghostty Debian target
+  ansible.builtin.debug:
+    msg: >-
+      Ghostty's configured Debian-family installer is only enabled for
+      {{ ghostty_supported_debian_distributions | join(', ') }}; skipping package
+      install on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}.
+  when:
+    - ghostty_check.rc != 0
+    - ansible_facts['distribution'] not in ghostty_supported_debian_distributions
+
 - name: Install Ghostty (Ubuntu/Debian)
-  ansible.builtin.shell: /bin/bash -c "$(curl -fsSL {{ ghostty_install_url }})"
-  become: true
-  when: ghostty_check.rc != 0
+  block:
+    - name: Install Ghostty (Ubuntu)
+      ansible.builtin.shell: /bin/bash -c "$(curl -fsSL {{ ghostty_install_url }})"
+      become: true
+  rescue:
+    - name: Track failed Ghostty package install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['ghostty'] }}"
+
+    - name: Warn about failed Ghostty package install
+      ansible.builtin.debug:
+        msg: >-
+          Ghostty could not be installed with the configured Ubuntu installer on
+          {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }};
+          continuing without the package.
+  when:
+    - ghostty_check.rc != 0
+    - ansible_facts['distribution'] in ghostty_supported_debian_distributions

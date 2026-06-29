@@ -20,7 +20,7 @@ dev_tool_packages:
   - python3-pip
   - pipx
 
-ghostty_copr_repo: "pgdev/ghostty"
+ghostty_copr_repo: "scottames/ghostty"
 
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
 
@@ -28,6 +28,9 @@ flameshot_package: flameshot
 
 ssh_packages:
   - openssh-server
+  - firewalld
+
+sunshine_firewall_packages:
   - firewalld
 
 xrdp_packages:

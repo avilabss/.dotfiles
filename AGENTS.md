@@ -45,6 +45,8 @@ Stow is handled centrally in the `common` role — not in individual config role
 - Always use fully qualified collection names (e.g., `ansible.builtin.apt`, not `apt`)
 - Per-platform task dispatch: `main.yml` includes platform-specific files (`macos.yml`, `debian.yml`, `fedora.yml`, or `linux.yml`)
 - Package lists go in `ansible/group_vars/<platform>.yml`, not hardcoded in tasks. GUI desktop apps should be optional roles rather than default common/dev packages when they are not useful on headless servers.
+- Optional third-party repositories can disappear or omit a release/architecture. If an optional package cannot be installed because its upstream repo is unavailable for the host, warn, add it to `dotfiles_failed_packages`, and continue rather than failing the whole bootstrap.
+- Prefer official package repositories with signature verification over convenience installer scripts. If a script or community package source is the only configured option, guard it by supported distro/release/architecture and skip with a warning elsewhere.
 - Common/shared variables go in `ansible/group_vars/all.yml`
 - Use `become: true` for tasks requiring root on Linux; macOS Homebrew tasks do NOT use become
 - macOS tasks need `environment: { PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}" }` for brew commands

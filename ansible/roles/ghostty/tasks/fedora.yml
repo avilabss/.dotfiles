@@ -10,19 +10,45 @@
   become: true
   register: copr_enable_result
   failed_when: false
+  changed_when: copr_enable_result.rc == 0
   when: ghostty_check.rc != 0
 
-- name: Enable Ghostty COPR repository (rawhide fallback for unsupported Fedora versions)
-  ansible.builtin.command: >-
-    dnf copr enable -y {{ ghostty_copr_repo }} fedora-rawhide-{{ ansible_facts['architecture'] }}
-  become: true
+- name: Track unavailable Ghostty COPR
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['ghostty'] }}"
   when:
     - ghostty_check.rc != 0
-    - copr_enable_result.rc != 0
+    - copr_enable_result.rc | default(1) != 0
+
+- name: Warn about unavailable Ghostty COPR
+  ansible.builtin.debug:
+    msg: >-
+      Ghostty COPR {{ ghostty_copr_repo }} is not available for
+      {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} /
+      {{ ansible_facts.architecture }}; skipping Ghostty package install.
+      dnf copr output: {{ copr_enable_result.stderr | default(copr_enable_result.stdout) }}
+  when:
+    - ghostty_check.rc != 0
+    - copr_enable_result.rc | default(1) != 0
 
 - name: Install Ghostty from COPR
-  ansible.builtin.dnf:
-    name: ghostty
-    state: present
-  become: true
-  when: ghostty_check.rc != 0
+  block:
+    - name: Install Ghostty from COPR
+      ansible.builtin.dnf:
+        name: ghostty
+        state: present
+      become: true
+  rescue:
+    - name: Track failed Ghostty package install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['ghostty'] }}"
+
+    - name: Warn about failed Ghostty package install
+      ansible.builtin.debug:
+        msg: >-
+          Ghostty could not be installed from COPR {{ ghostty_copr_repo }} on
+          {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} /
+          {{ ansible_facts.architecture }}; continuing without the package.
+  when:
+    - ghostty_check.rc != 0
+    - copr_enable_result.rc | default(1) == 0

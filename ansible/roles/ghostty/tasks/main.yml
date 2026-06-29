@@ -11,29 +11,46 @@
   ansible.builtin.include_tasks: fedora.yml
   when: "'fedora' in group_names"
 
+- name: Check Ghostty config directory
+  ansible.builtin.stat:
+    path: "{{ ansible_facts.env.HOME }}/.config/ghostty"
+  register: ghostty_config_dir
+
+- name: Remove stowed Ghostty directory symlink
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/.config/ghostty"
+    state: absent
+  when: ghostty_config_dir.stat.islnk | default(false)
+
+- name: Ensure Ghostty config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_facts.env.HOME }}/.config/ghostty"
+    state: directory
+    mode: "0755"
+
 - name: Check for conflicting Ghostty config
   ansible.builtin.stat:
-    path: "{{ ansible_env.HOME }}/.config/ghostty/config"
+    path: "{{ ansible_facts.env.HOME }}/.config/ghostty/config"
   register: ghostty_config_conflict
 
 - name: Create Ghostty backup directory
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.dotfiles_backup/{{ ansible_date_time.iso8601_basic_short }}/.config/ghostty"
+    path: "{{ ansible_facts.env.HOME }}/.dotfiles_backup/{{ ansible_facts.date_time.iso8601_basic_short }}/.config/ghostty"
     state: directory
     mode: "0755"
   when: ghostty_config_conflict.stat.exists and not ghostty_config_conflict.stat.islnk
 
 - name: Back up conflicting Ghostty config
   ansible.builtin.copy:
-    src: "{{ ansible_env.HOME }}/.config/ghostty/config"
-    dest: "{{ ansible_env.HOME }}/.dotfiles_backup/{{ ansible_date_time.iso8601_basic_short }}/.config/ghostty/config"
+    src: "{{ ansible_facts.env.HOME }}/.config/ghostty/config"
+    dest: "{{ ansible_facts.env.HOME }}/.dotfiles_backup/{{ ansible_facts.date_time.iso8601_basic_short }}/.config/ghostty/config"
     remote_src: true
     mode: preserve
   when: ghostty_config_conflict.stat.exists and not ghostty_config_conflict.stat.islnk
 
 - name: Remove conflicting Ghostty config so stow can take over
   ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.config/ghostty/config"
+    path: "{{ ansible_facts.env.HOME }}/.config/ghostty/config"
     state: absent
   when: ghostty_config_conflict.stat.exists and not ghostty_config_conflict.stat.islnk
 
