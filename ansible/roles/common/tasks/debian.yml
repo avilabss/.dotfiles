@@ -15,25 +15,29 @@
 
 - name: Install common packages
   ansible.builtin.apt:
-    name: "{{ common_packages }}"
-    state: present
-  become: true
-
-- name: Install optional common packages when available
-  ansible.builtin.apt:
     name: "{{ item }}"
     state: present
-  loop: "{{ optional_common_packages | default([]) }}"
+  loop: "{{ common_packages }}"
   become: true
-  register: optional_common_package_install
+  register: common_package_install
   failed_when: false
   loop_control:
     label: "{{ item }}"
 
-- name: Warn about unavailable optional common packages
+- name: Track failed common packages
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: >-
+      {{ (dotfiles_failed_packages | default([]))
+         + (common_package_install.results | default([])
+            | selectattr('failed', 'defined')
+            | selectattr('failed')
+            | map(attribute='item')
+            | list) }}
+
+- name: Warn about unavailable common packages
   ansible.builtin.debug:
-    msg: "Optional package {{ item.item }} could not be installed on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} / {{ ansible_facts.architecture }}; leaving the dotfiles entry in place."
-  loop: "{{ optional_common_package_install.results | default([]) }}"
+    msg: "Core package {{ item.item }} could not be installed on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} / {{ ansible_facts.architecture }}; leaving it in dotfiles and continuing."
+  loop: "{{ common_package_install.results | default([]) }}"
   when: item.failed | default(false)
   loop_control:
     label: "{{ item.item }}"

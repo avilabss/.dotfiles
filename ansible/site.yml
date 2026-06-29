@@ -73,6 +73,14 @@
       tags: [sunshine, optional]
 
   post_tasks:
+    - name: Summarize package install warnings
+      ansible.builtin.debug:
+        msg:
+          - "Some configured packages could not be installed on this host."
+          - "They remain in dotfiles; install was skipped here instead of removing them."
+          - "Failed packages: {{ dotfiles_failed_packages | unique | join(', ') }}"
+      when: dotfiles_failed_packages | default([]) | length > 0
+
     - name: Installation complete
       ansible.builtin.debug:
         msg:

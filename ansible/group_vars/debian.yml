@@ -11,11 +11,8 @@ common_packages:
   - fontconfig
   - software-properties-common
   - ripgrep
-
-optional_common_packages:
-  # fastfetch is available on Fedora/macOS and some Debian variants, but not
-  # all Raspberry Pi OS releases. Keep it as a wanted nicety; warn instead
-  # of failing/removing it when the package is unavailable.
+  # Core UX package. Some Raspberry Pi OS / Debian variants may not ship it;
+  # keep it wanted and warn/summarize instead of removing it from dotfiles.
   - fastfetch
 
 dev_tool_packages:

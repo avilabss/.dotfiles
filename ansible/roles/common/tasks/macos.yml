@@ -20,10 +20,33 @@
 
 - name: Install common packages (brew)
   community.general.homebrew:
-    name: "{{ common_packages }}"
+    name: "{{ item }}"
     state: present
+  loop: "{{ common_packages }}"
   environment:
     PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
+  register: common_package_install
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
+
+- name: Track failed common packages
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: >-
+      {{ (dotfiles_failed_packages | default([]))
+         + (common_package_install.results | default([])
+            | selectattr('failed', 'defined')
+            | selectattr('failed')
+            | map(attribute='item')
+            | list) }}
+
+- name: Warn about unavailable common packages
+  ansible.builtin.debug:
+    msg: "Core package {{ item.item }} could not be installed on macOS {{ ansible_facts.architecture }}; leaving it in dotfiles and continuing."
+  loop: "{{ common_package_install.results | default([]) }}"
+  when: item.failed | default(false)
+  loop_control:
+    label: "{{ item.item }}"
 
 - name: Install casks
   community.general.homebrew_cask:

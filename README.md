@@ -33,6 +33,7 @@ cd ~/dotfiles
 | Starship | Cross-shell prompt |
 | JetBrainsMono Nerd Font | Terminal font |
 | ripgrep | Fast search |
+| fastfetch | System info summary; kept as core even where a distro package is unavailable |
 | go, rust, node, python | Language runtimes |
 | pipx, uv, poetry | Package managers |
 | git, git-lfs | Version control |
@@ -50,6 +51,10 @@ cd ~/dotfiles
 | `xrdp` | Remote desktop (RDP) | Linux |
 | `sunshine` | Remote desktop (Moonlight/Sunshine) | All |
 | `qemu` | QEMU guest agent (Proxmox/KVM) | Linux |
+
+## Package Failures on Unsupported Hosts
+
+Core packages stay declared in dotfiles even when a host cannot install one of them. For example, `fastfetch` is part of the core package set, but some Raspberry Pi OS / Debian releases may not provide a package for it. In that case the bootstrap warns, skips that package on that host, and prints a failed-package summary at the end instead of removing it from the repo.
 
 ## Adding Packages
 

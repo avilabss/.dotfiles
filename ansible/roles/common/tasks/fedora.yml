@@ -6,6 +6,29 @@
 
 - name: Install common packages
   ansible.builtin.dnf:
-    name: "{{ common_packages }}"
+    name: "{{ item }}"
     state: present
+  loop: "{{ common_packages }}"
   become: true
+  register: common_package_install
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
+
+- name: Track failed common packages
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: >-
+      {{ (dotfiles_failed_packages | default([]))
+         + (common_package_install.results | default([])
+            | selectattr('failed', 'defined')
+            | selectattr('failed')
+            | map(attribute='item')
+            | list) }}
+
+- name: Warn about unavailable common packages
+  ansible.builtin.debug:
+    msg: "Core package {{ item.item }} could not be installed on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} / {{ ansible_facts.architecture }}; leaving it in dotfiles and continuing."
+  loop: "{{ common_package_install.results | default([]) }}"
+  when: item.failed | default(false)
+  loop_control:
+    label: "{{ item.item }}"
