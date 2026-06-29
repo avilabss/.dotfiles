@@ -12,6 +12,12 @@ common_packages:
   - software-properties-common
   - ripgrep
 
+optional_common_packages:
+  # fastfetch is available on Fedora/macOS and some Debian variants, but not
+  # all Raspberry Pi OS releases. Keep it as a wanted nicety; warn instead
+  # of failing/removing it when the package is unavailable.
+  - fastfetch
+
 dev_tool_packages:
   - golang
   - nodejs

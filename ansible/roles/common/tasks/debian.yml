@@ -18,3 +18,22 @@
     name: "{{ common_packages }}"
     state: present
   become: true
+
+- name: Install optional common packages when available
+  ansible.builtin.apt:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ optional_common_packages | default([]) }}"
+  become: true
+  register: optional_common_package_install
+  failed_when: false
+  loop_control:
+    label: "{{ item }}"
+
+- name: Warn about unavailable optional common packages
+  ansible.builtin.debug:
+    msg: "Optional package {{ item.item }} could not be installed on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }} / {{ ansible_facts.architecture }}; leaving the dotfiles entry in place."
+  loop: "{{ optional_common_package_install.results | default([]) }}"
+  when: item.failed | default(false)
+  loop_control:
+    label: "{{ item.item }}"
