@@ -48,6 +48,11 @@ neovim_install_dir: "/opt/nvim"
 # OpenCode
 opencode_install_url: "https://opencode.ai/install"
 
+# Sunshine
+sunshine_service_name: app-dev.lizardbyte.app.Sunshine.service
+sunshine_csrf_allowed_origins:
+  - https://10.11.9.101:47990
+
 # Nerd Font
 nerd_font_name: "JetBrainsMono"
 nerd_font_url: "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"

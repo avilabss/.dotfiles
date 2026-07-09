@@ -67,6 +67,40 @@
     state: present
   become: true
 
+- name: Check if Sunshine command is available
+  ansible.builtin.command: which sunshine
+  register: sunshine_command_check
+  changed_when: false
+  failed_when: false
+
+- name: Ensure Sunshine config directory exists
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.config/sunshine"
+    state: directory
+    mode: "0755"
+  when: sunshine_command_check.rc == 0
+
+- name: Configure Sunshine CSRF allowed origins
+  ansible.builtin.lineinfile:
+    path: "{{ ansible_env.HOME }}/.config/sunshine/sunshine.conf"
+    regexp: "^csrf_allowed_origins\\s*="
+    line: "csrf_allowed_origins = {{ sunshine_csrf_allowed_origins | join(',') }}"
+    create: true
+    mode: "0644"
+  register: sunshine_config
+  when:
+    - sunshine_command_check.rc == 0
+    - sunshine_csrf_allowed_origins | length > 0
+
+- name: Enable and start Sunshine user service
+  ansible.builtin.systemd_service:
+    name: "{{ sunshine_service_name }}"
+    scope: user
+    enabled: true
+    state: "{{ 'restarted' if sunshine_config.changed | default(false) else 'started' }}"
+    daemon_reload: true
+  when: sunshine_command_check.rc == 0
+
 - name: Allow Sunshine TCP ports through UFW
   community.general.ufw:
     rule: allow
