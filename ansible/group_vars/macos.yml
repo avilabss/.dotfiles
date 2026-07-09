@@ -2,6 +2,7 @@
 brew_taps: []
 
 common_packages:
+  - btop
   - fastfetch
   - git
   - git-lfs

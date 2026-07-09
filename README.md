@@ -32,6 +32,7 @@ cd ~/dotfiles
 | Tmux | Terminal multiplexer with vim navigation |
 | Starship | Cross-shell prompt |
 | JetBrainsMono Nerd Font | Terminal font |
+| btop | Resource monitor |
 | ripgrep | Fast search |
 | fastfetch | System info summary; kept as core even where a distro package is unavailable |
 | go, rust, node, python | Language runtimes |

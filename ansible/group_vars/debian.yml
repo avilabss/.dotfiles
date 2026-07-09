@@ -10,6 +10,7 @@ common_packages:
   - unzip
   - fontconfig
   - software-properties-common
+  - btop
   - ripgrep
   # Core UX package. Some Raspberry Pi OS / Debian variants may not ship it;
   # keep it wanted and warn/summarize instead of removing it from dotfiles.

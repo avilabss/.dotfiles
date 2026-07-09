@@ -9,6 +9,7 @@ common_packages:
   - curl
   - unzip
   - fontconfig
+  - btop
   - ripgrep
   - fastfetch
 
