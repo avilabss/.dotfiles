@@ -45,6 +45,9 @@
     - role: opencode
       tags: [opencode, optional]
 
+    - role: openchamber
+      tags: [openchamber, optional]
+
     - role: ghostty
       tags: [ghostty, optional]
 

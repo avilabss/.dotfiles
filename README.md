@@ -44,6 +44,7 @@ cd ~/dotfiles
 | Tag | Description | Platforms |
 |-----|-------------|-----------|
 | `opencode` | AI coding agent (config + agents) | All |
+| `openchamber` | Web/PWA workspace for OpenCode | All |
 | `ghostty` | Ghostty terminal emulator + stowed config | All |
 | `google-chrome` / `chrome` | Google Chrome browser | All |
 | `flameshot` | Screenshot tool | All |
@@ -76,7 +77,7 @@ Edit the `group_vars` file for your platform:
 
 ## OpenCode
 
-Config and agents are managed via stow (`opencode/.config/opencode/`). The opencode role handles stow separately (not via the common role) using `stow --adopt` to safely merge any existing config.
+Config and agents are managed via stow (`opencode/.config/opencode/`). The opencode role handles stow separately from the common role, with the repository remaining the source of truth. Stow reports existing-file conflicts instead of adopting files into the repository.
 
 ### Provider Setup
 
@@ -91,17 +92,19 @@ One provider is used:
 
 Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
 
+OpenCode is restricted to the configured OpenAI provider. Sol is the default model, while Luna handles lightweight internal work such as title generation. Session sharing is disabled, snapshots remain enabled for undo support, old tool output is pruned during automatic context compaction, and common generated directories are excluded from file watching. Exa web search is enabled through `OPENCODE_ENABLE_EXA=1` for interactive, standalone-server, and OpenChamber sessions.
+
 ### Agents
 
-| Agent | Model | Reasoning | Role |
-|-------|-------|-----------|------|
-| `architect` | `openai/gpt-5.5` | xhigh | Primary — plans and delegates tasks |
-| `developer` | `openai/gpt-5.5` | xhigh | Implements tasks from architect |
-| `repo-scouter` | `openai/gpt-5.5` | xhigh | Scans repos for stack/conventions |
-| `code-reviewer-1` | `openai/gpt-5.5` | xhigh | Code review (latest GPT review pass) |
-| `code-reviewer-2` | `openai/gpt-5.4` | xhigh | Code review (secondary GPT review pass) |
+| Agent | Model | Reasoning | Verbosity | Role |
+|-------|-------|-----------|-----------|------|
+| `architect` | `openai/gpt-5.6-sol` | max | medium | Highest-leverage planning and final decisions |
+| `developer` | `openai/gpt-5.6-terra` | max | low | Careful implementation from an approved Task Brief |
+| `repo-scouter` | `openai/gpt-5.6-sol` | max | medium | Builds foundational shared repository context |
+| `code-reviewer-1` | `openai/gpt-5.6-sol` | xhigh | low | Primary deep correctness and security review |
+| `code-reviewer-2` | `openai/gpt-5.6-terra` | xhigh | low | Independent second deep review pass |
 
-Both reviewers run independently on OpenAI GPT models, using different model families for review diversity.
+Both reviewers run independently. The first uses Sol as the strongest quality gate; the second uses Terra for another deep pass without doubling Sol usage. `ARCHITECTURE.md` is the shared repository-context cache: agents read it first and invoke `repo-scouter` only when it is missing, stale, incomplete, or contradicted. Only `repo-scouter` updates it.
 
 ### Workflow
 
@@ -137,6 +140,31 @@ tail -f ~/.local/state/opencode/serve.log
 ```
 
 > **Note:** Requires opencode to be installed first (`--tags opencode` or install manually).
+
+## OpenChamber Server Scripts
+
+The optional `openchamber` role installs the OpenChamber web/PWA interface and helper scripts. OpenChamber manages its own OpenCode process, so it can run independently of `opencode-serve-start`; both interfaces can also run at the same time.
+
+```bash
+openchamber-serve-start
+openchamber-serve-stop
+```
+
+By default, OpenChamber listens on `0.0.0.0:3000`, runs its managed OpenCode child on port `4095`, and writes logs to `~/.local/state/openchamber/serve.log`. The standalone `opencode-serve-start` helper continues using port `4096`, so both can run simultaneously. Because OpenChamber exposes the UI to the network, set a password unless the network is fully trusted:
+
+```bash
+OPENCHAMBER_UI_PASSWORD='choose-a-strong-password' openchamber-serve-start
+```
+
+The bind address and port can be overridden per run:
+
+```bash
+OPENCHAMBER_SERVE_HOST=127.0.0.1 OPENCHAMBER_SERVE_PORT=3000 openchamber-serve-start
+```
+
+Set `OPENCODE_PORT` to override the managed OpenCode port. To connect OpenChamber to an already-running external OpenCode server instead, set `OPENCODE_HOST` and `OPENCODE_SKIP_START=true` as documented by OpenChamber.
+
+> **Note:** The OpenChamber CLI requires Node.js 22 or newer and OpenCode. Install both roles with `./bootstrap.sh --tags opencode,openchamber`.
 
 ## Post-Install
 

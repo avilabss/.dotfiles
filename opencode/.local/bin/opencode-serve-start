@@ -3,6 +3,7 @@ set -euo pipefail
 
 port="${OPENCODE_SERVE_PORT:-4096}"
 hostname="${OPENCODE_SERVE_HOSTNAME:-0.0.0.0}"
+export OPENCODE_ENABLE_EXA="${OPENCODE_ENABLE_EXA:-1}"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/opencode"
 pid_file="$state_dir/serve.pid"
 log_file="$state_dir/serve.log"

@@ -25,7 +25,7 @@ The playbook auto-detects the OS via `group_by` in `pre_tasks` and assigns the h
 There are two kinds of roles:
 
 - **Core roles**: Run by default (`common`, `fonts`, `dev_tools`, `zsh`, `nvim`, `tmux`, `starship`)
-- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `ghostty`, `google_chrome`, `flameshot`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
+- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `openchamber`, `ghostty`, `google_chrome`, `flameshot`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
 - Desktop app roles (`ghostty`, `google_chrome`, `flameshot`) are optional so headless/server installs can keep the normal core dotfiles without pulling GUI packages. Ghostty stows its own config from its role, not from default `stow_packages`.
 
 Some optional roles are Linux-only (restricted via `when: ansible_os_family != 'Darwin'` in `site.yml`).

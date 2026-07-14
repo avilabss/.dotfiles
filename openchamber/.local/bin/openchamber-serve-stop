@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/openchamber"
+pid_file="$state_dir/serve.pid"
+
+if [[ ! -f "$pid_file" ]]; then
+  echo "OpenChamber is not running (no PID file)."
+  exit 0
+fi
+
+pid="$(cat "$pid_file")"
+if [[ -z "$pid" ]] || ! kill -0 "$pid" 2>/dev/null; then
+  rm -f "$pid_file"
+  echo "OpenChamber was not running; removed stale PID file."
+  exit 0
+fi
+
+command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
+if [[ "$command_line" != *"openchamber"* ]]; then
+  rm -f "$pid_file"
+  echo "PID file pointed at a different process; removed stale PID file."
+  exit 0
+fi
+
+kill "$pid"
+
+for _ in {1..20}; do
+  if ! kill -0 "$pid" 2>/dev/null; then
+    rm -f "$pid_file"
+    echo "Stopped OpenChamber (pid $pid)."
+    exit 0
+  fi
+  sleep 0.2
+done
+
+kill -KILL "$pid" 2>/dev/null || true
+rm -f "$pid_file"
+echo "Force stopped OpenChamber (pid $pid)."

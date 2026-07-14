@@ -1,0 +1,61 @@
+---
+- name: Check if OpenChamber is installed
+  ansible.builtin.command: which openchamber
+  register: openchamber_check
+  changed_when: false
+  failed_when: false
+
+- name: Check Node.js version for OpenChamber
+  ansible.builtin.command: node --version
+  register: openchamber_node_version
+  changed_when: false
+  failed_when: false
+  when: openchamber_check.rc != 0
+
+- name: Determine whether Node.js supports OpenChamber
+  ansible.builtin.set_fact:
+    openchamber_node_supported: >-
+      {{ openchamber_node_version.rc == 0 and
+         ((openchamber_node_version.stdout | regex_replace('^v', '')).split('.')[0] | int) >= 22 }}
+  when: openchamber_check.rc != 0
+
+- name: Warn when OpenChamber's Node.js requirement is not met
+  ansible.builtin.debug:
+    msg: "OpenChamber requires Node.js 22 or newer; skipping it without failing the bootstrap."
+  when:
+    - openchamber_check.rc != 0
+    - not openchamber_node_supported
+
+- name: Record unmet OpenChamber Node.js requirement
+  ansible.builtin.set_fact:
+    dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['openchamber'] }}"
+  when:
+    - openchamber_check.rc != 0
+    - not openchamber_node_supported
+
+- name: Install OpenChamber
+  when:
+    - openchamber_check.rc != 0
+    - openchamber_node_supported | default(false)
+  block:
+    - name: Install OpenChamber via official installer
+      ansible.builtin.shell: set -o pipefail && curl -fsSL {{ openchamber_install_url }} | bash
+      args:
+        executable: /bin/bash
+
+  rescue:
+    - name: Warn that OpenChamber installation failed
+      ansible.builtin.debug:
+        msg: "OpenChamber's upstream installer failed on this host; skipping it without failing the bootstrap."
+
+    - name: Record OpenChamber installation failure
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['openchamber'] }}"
+
+- name: Stow OpenChamber helper scripts
+  ansible.builtin.command: stow -R openchamber
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  register: stow_openchamber
+  changed_when: stow_openchamber.rc == 0
+  failed_when: stow_openchamber.rc != 0

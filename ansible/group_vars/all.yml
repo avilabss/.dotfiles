@@ -48,6 +48,9 @@ neovim_install_dir: "/opt/nvim"
 # OpenCode
 opencode_install_url: "https://opencode.ai/install"
 
+# OpenChamber
+openchamber_install_url: "https://raw.githubusercontent.com/openchamber/openchamber/main/scripts/install.sh"
+
 # Sunshine
 sunshine_service_name: app-dev.lizardbyte.app.Sunshine.service
 sunshine_csrf_allowed_origins:

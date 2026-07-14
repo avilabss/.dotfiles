@@ -8,15 +8,9 @@
   when: "'macos' not in group_names"
 
 - name: Stow opencode config
-  ansible.builtin.command: stow --adopt -R opencode
+  ansible.builtin.command: stow -R opencode
   args:
     chdir: "{{ dotfiles_dir }}"
   register: stow_opencode
   changed_when: stow_opencode.rc == 0
   failed_when: stow_opencode.rc != 0
-
-- name: Restore dotfiles version after adopt
-  ansible.builtin.command: git checkout -- opencode/
-  args:
-    chdir: "{{ dotfiles_dir }}"
-  changed_when: false
