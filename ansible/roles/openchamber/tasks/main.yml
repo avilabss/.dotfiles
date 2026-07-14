@@ -38,15 +38,20 @@
     - openchamber_check.rc != 0
     - openchamber_node_supported | default(false)
   block:
-    - name: Install OpenChamber via official installer
-      ansible.builtin.shell: set -o pipefail && curl -fsSL {{ openchamber_install_url }} | bash
-      args:
-        executable: /bin/bash
+    - name: Install OpenChamber to the user-local npm prefix
+      ansible.builtin.command:
+        argv:
+          - npm
+          - install
+          - --global
+          - --prefix
+          - "{{ ansible_facts['env']['HOME'] }}/.local"
+          - "{{ openchamber_npm_package }}"
 
   rescue:
     - name: Warn that OpenChamber installation failed
       ansible.builtin.debug:
-        msg: "OpenChamber's upstream installer failed on this host; skipping it without failing the bootstrap."
+        msg: "OpenChamber's npm package failed to install on this host; skipping it without failing the bootstrap."
 
     - name: Record OpenChamber installation failure
       ansible.builtin.set_fact:

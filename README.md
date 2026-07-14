@@ -66,6 +66,7 @@ Packages stay declared in dotfiles even when a host cannot install one of them. 
 - **Sunshine on Ubuntu:** GitHub release `.deb` assets for configured Ubuntu releases and architectures; skipped with a warning otherwise.
 - **Sunshine on Fedora:** LizardByte COPR with graceful skip behavior if the COPR is unavailable for the host.
 - **Google Chrome on Fedora:** Google RPM with the Google Linux signing key imported; GPG checks remain enabled.
+- **OpenChamber:** Official `@openchamber/web` npm package installed under the user-local `~/.local` prefix; no sudo-owned global npm directory is used.
 
 ## Adding Packages
 
