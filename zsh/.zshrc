@@ -50,6 +50,3 @@ fi
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 export OPENCODE_ENABLE_EXA=1
-
-# opencode
-# export PATH=/home/avi/.opencode/bin:$PATH

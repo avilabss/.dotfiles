@@ -151,7 +151,7 @@ openchamber-serve-start
 openchamber-serve-stop
 ```
 
-By default, OpenChamber listens on `0.0.0.0:3000`, runs its managed OpenCode child on port `4095`, and writes logs to `~/.local/state/openchamber/serve.log`. The standalone `opencode-serve-start` helper continues using port `4096`, so both can run simultaneously. Because OpenChamber exposes the UI to the network, set a password unless the network is fully trusted:
+By default, OpenChamber listens on `0.0.0.0:4097`, runs its managed OpenCode child on port `4095`, and writes logs to `~/.local/state/openchamber/serve.log`. The standalone `opencode-serve-start` helper continues using port `4096`, so both can run simultaneously while leaving common development ports such as `3000` free. Because OpenChamber exposes the UI to the network, set a password unless the network is fully trusted:
 
 ```bash
 OPENCHAMBER_UI_PASSWORD='choose-a-strong-password' openchamber-serve-start
@@ -160,7 +160,7 @@ OPENCHAMBER_UI_PASSWORD='choose-a-strong-password' openchamber-serve-start
 The bind address and port can be overridden per run:
 
 ```bash
-OPENCHAMBER_SERVE_HOST=127.0.0.1 OPENCHAMBER_SERVE_PORT=3000 openchamber-serve-start
+OPENCHAMBER_SERVE_HOST=127.0.0.1 OPENCHAMBER_SERVE_PORT=4097 openchamber-serve-start
 ```
 
 Set `OPENCODE_PORT` to override the managed OpenCode port. To connect OpenChamber to an already-running external OpenCode server instead, set `OPENCODE_HOST` and `OPENCODE_SKIP_START=true` as documented by OpenChamber.

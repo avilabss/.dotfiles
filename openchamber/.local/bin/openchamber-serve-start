@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-port="${OPENCHAMBER_SERVE_PORT:-3000}"
+port="${OPENCHAMBER_SERVE_PORT:-4097}"
 host="${OPENCHAMBER_SERVE_HOST:-0.0.0.0}"
 export OPENCODE_ENABLE_EXA="${OPENCODE_ENABLE_EXA:-1}"
 export OPENCODE_PORT="${OPENCODE_PORT:-4095}"
