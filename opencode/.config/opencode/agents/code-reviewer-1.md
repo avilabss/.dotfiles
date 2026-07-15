@@ -2,7 +2,7 @@
 description: Reviews code for best practices and potential issues.
 mode: subagent
 model: openai/gpt-5.6-sol
-reasoningEffort: high
+variant: high
 textVerbosity: low
 permission:
   edit: deny
