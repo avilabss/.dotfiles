@@ -99,11 +99,11 @@ OpenCode is restricted to the configured OpenAI provider. Sol is the default mod
 
 | Agent | Model | Reasoning | Verbosity | Role |
 |-------|-------|-----------|-----------|------|
-| `architect` | `openai/gpt-5.6-sol` | max | medium | Highest-leverage planning and final decisions |
-| `developer` | `openai/gpt-5.6-terra` | max | low | Careful implementation from an approved Task Brief |
-| `repo-scouter` | `openai/gpt-5.6-sol` | max | medium | Builds foundational shared repository context |
-| `code-reviewer-1` | `openai/gpt-5.6-sol` | xhigh | low | Primary deep correctness and security review |
-| `code-reviewer-2` | `openai/gpt-5.6-terra` | xhigh | low | Independent second deep review pass |
+| `architect` | `openai/gpt-5.6-sol` | high | medium | Highest-leverage planning and final decisions |
+| `developer` | `openai/gpt-5.6-sol` | high | low | Careful implementation from an approved Task Brief |
+| `repo-scouter` | `openai/gpt-5.6-sol` | high | medium | Builds foundational shared repository context |
+| `code-reviewer-1` | `openai/gpt-5.6-sol` | high | low | Primary deep correctness and security review |
+| `code-reviewer-2` | `openai/gpt-5.6-terra` | high | low | Independent second deep review pass |
 
 Both reviewers run independently. The first uses Sol as the strongest quality gate; the second uses Terra for another deep pass without doubling Sol usage. `ARCHITECTURE.md` is the shared repository-context cache: agents read it first and invoke `repo-scouter` only when it is missing, stale, incomplete, or contradicted. Only `repo-scouter` updates it.
 

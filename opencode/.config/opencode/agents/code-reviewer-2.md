@@ -2,7 +2,7 @@
 description: Reviews code for best practices and potential issues.
 mode: subagent
 model: openai/gpt-5.6-terra
-reasoningEffort: xhigh
+reasoningEffort: high
 textVerbosity: low
 permission:
   edit: deny
