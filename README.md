@@ -171,9 +171,12 @@ Set `OPENCODE_PORT` to override the managed OpenCode port. To connect OpenChambe
 ## Post-Install
 
 1. Restart your terminal (or `source ~/.zshrc`)
-2. In tmux, press `Ctrl-a + I` to install plugins
-3. Open neovim — Lazy will auto-install plugins
-4. Run `opencode`, then `/connect` to authenticate OpenAI (ChatGPT Plus/Pro)
+2. Open neovim — Lazy will auto-install plugins
+3. Run `opencode`, then `/connect` to authenticate OpenAI (ChatGPT Plus/Pro)
+
+Tmux plugins, including the Catppuccin theme, are installed automatically by
+the bootstrap. Terminal setup runs before development tools and Neovim so an
+unrelated later failure does not leave the shell prompt or tmux theme missing.
 
 ## Theme
 

@@ -27,20 +27,20 @@
     - role: fonts
       tags: [fonts]
 
-    - role: dev_tools
-      tags: [dev-tools]
-
     - role: zsh
       tags: [zsh]
-
-    - role: nvim
-      tags: [nvim]
 
     - role: tmux
       tags: [tmux]
 
     - role: starship
       tags: [starship]
+
+    - role: dev_tools
+      tags: [dev-tools]
+
+    - role: nvim
+      tags: [nvim]
 
     - role: opencode
       tags: [opencode, optional]
@@ -89,6 +89,5 @@
         msg:
           - "Setup complete! Next steps:"
           - "  1. Restart your terminal (or source ~/.zshrc)"
-          - "  2. In tmux, press Ctrl-a + I to install plugins"
-          - "  3. Open neovim - Lazy will auto-install plugins"
-          - "  4. Run opencode, then /connect to authenticate OpenAI"
+          - "  2. Open neovim - Lazy will auto-install plugins"
+          - "  3. Run opencode, then /connect to authenticate OpenAI"

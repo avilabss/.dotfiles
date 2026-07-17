@@ -10,3 +10,12 @@
     dest: "{{ tpm_dest }}"
     depth: 1
   when: not tpm_check.stat.exists
+
+- name: Install configured tmux plugins
+  ansible.builtin.command:
+    argv:
+      - "{{ tpm_dest }}/bin/install_plugins"
+  environment:
+    TMUX_PLUGIN_MANAGER_PATH: "{{ tpm_dest | dirname }}/"
+  register: tmux_plugin_install
+  changed_when: "'Installing' in tmux_plugin_install.stdout"
