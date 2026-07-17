@@ -93,7 +93,7 @@ One provider is used:
 
 Credentials are stored in `~/.local/share/opencode/auth.json` (not managed by dotfiles).
 
-OpenCode is restricted to the configured OpenAI provider. Sol is the default model, while Luna handles lightweight internal work such as title generation. Session sharing is disabled, snapshots remain enabled for undo support, old tool output is pruned during automatic context compaction, and common generated directories are excluded from file watching. Exa web search is enabled through `OPENCODE_ENABLE_EXA=1` for interactive, standalone-server, and OpenChamber sessions.
+OpenCode is restricted to the configured OpenAI provider. Sol is the default model, while Luna handles lightweight internal work such as title generation. The OpenAI response-header timeout is 60 seconds to tolerate slow request starts without disabling stalled-request detection. Session sharing is disabled, snapshots remain enabled for undo support, old tool output is pruned during automatic context compaction, and common generated directories are excluded from file watching. Exa web search is enabled through `OPENCODE_ENABLE_EXA=1` for interactive, standalone-server, and OpenChamber sessions.
 
 ### Agents
 
@@ -129,9 +129,10 @@ The `opencode` tag installs helper scripts for manually running the OpenCode ser
 ```bash
 opencode-serve-start
 opencode-serve-stop
+opencode-db-vacuum
 ```
 
-By default, `opencode-serve-start` runs `opencode serve` on `0.0.0.0:4096` in the background and writes logs to `~/.local/state/opencode/serve.log`.
+By default, `opencode-serve-start` runs `opencode serve` on `0.0.0.0:4096` in the background and writes logs to `~/.local/state/opencode/serve.log`. Both OpenCode and OpenChamber launchers warn when the OpenCode database reaches 1 GiB; stop both applications and run `opencode-db-vacuum` to integrity-check, checkpoint, and compact it. Override the warning threshold with `OPENCODE_DB_VACUUM_WARN_BYTES`.
 
 Override the bind address or port per run with environment variables:
 
@@ -151,7 +152,7 @@ openchamber-serve-start
 openchamber-serve-stop
 ```
 
-By default, OpenChamber listens on `0.0.0.0:4097`, runs its managed OpenCode child on port `4095`, and writes logs to `~/.local/state/openchamber/serve.log`. The standalone `opencode-serve-start` helper continues using port `4096`, so both can run simultaneously while leaving common development ports such as `3000` free. Because OpenChamber exposes the UI to the network, set a password unless the network is fully trusted:
+By default, OpenChamber listens on `0.0.0.0:4097`, runs its managed OpenCode child on port `4095`, and writes logs to `~/.local/state/openchamber/serve.log`. Before each launch, the helper rotates both that file and OpenCode's `~/.local/share/opencode/log/opencode.log` at 25 MiB, keeping three previous generations; override these defaults with `OPENCHAMBER_LOG_MAX_BYTES` and `OPENCHAMBER_LOG_KEEP`. The standalone `opencode-serve-start` helper continues using port `4096`, so both can run simultaneously while leaving common development ports such as `3000` free. Because OpenChamber exposes the UI to the network, set a password unless the network is fully trusted:
 
 ```bash
 OPENCHAMBER_UI_PASSWORD='choose-a-strong-password' openchamber-serve-start

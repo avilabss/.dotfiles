@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+db="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
+
+if [[ ! -f "$db" ]]; then
+  echo "OpenCode database not found: $db" >&2
+  exit 1
+fi
+
+if pgrep -f 'opencode serve|openchamber.*serve' >/dev/null 2>&1; then
+  echo "Stop OpenCode and OpenChamber before vacuuming the database." >&2
+  exit 1
+fi
+
+python3 - "$db" <<'PY'
+import os
+import sqlite3
+import sys
+import time
+
+path = sys.argv[1]
+connection = sqlite3.connect(path, timeout=60, isolation_level=None)
+
+before = os.path.getsize(path)
+integrity_before = connection.execute("PRAGMA integrity_check").fetchone()[0]
+if integrity_before != "ok":
+    raise SystemExit(f"Database integrity check failed before vacuum: {integrity_before}")
+
+checkpoint = connection.execute("PRAGMA wal_checkpoint(TRUNCATE)").fetchone()
+started = time.time()
+connection.execute("VACUUM")
+
+integrity_after = connection.execute("PRAGMA integrity_check").fetchone()[0]
+if integrity_after != "ok":
+    raise SystemExit(f"Database integrity check failed after vacuum: {integrity_after}")
+
+after = os.path.getsize(path)
+connection.close()
+
+print(f"Integrity: ok")
+print(f"WAL checkpoint: {checkpoint}")
+print(f"Before: {before} bytes")
+print(f"After:  {after} bytes")
+print(f"Reclaimed: {before - after} bytes")
+print(f"Elapsed: {time.time() - started:.1f}s")
+PY

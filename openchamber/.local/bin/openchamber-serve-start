@@ -8,8 +8,34 @@ export OPENCODE_PORT="${OPENCODE_PORT:-4095}"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/openchamber"
 pid_file="$state_dir/serve.pid"
 log_file="$state_dir/serve.log"
+opencode_log="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/log/opencode.log"
+log_max_bytes="${OPENCHAMBER_LOG_MAX_BYTES:-26214400}"
+log_keep="${OPENCHAMBER_LOG_KEEP:-3}"
+db_file="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
+db_vacuum_warn_bytes="${OPENCODE_DB_VACUUM_WARN_BYTES:-1073741824}"
 
 mkdir -p "$state_dir"
+
+if [[ -f "$db_file" ]] && (( $(stat -c %s "$db_file") >= db_vacuum_warn_bytes )); then
+  echo "Warning: OpenCode database is $(numfmt --to=iec-i --suffix=B "$(stat -c %s "$db_file")")." >&2
+  echo "Stop OpenCode/OpenChamber and run: opencode-db-vacuum" >&2
+fi
+
+rotate_log() {
+  local file="$1"
+  local generation
+
+  [[ -f "$file" ]] || return 0
+  (( $(stat -c %s "$file") >= log_max_bytes )) || return 0
+
+  rm -f "$file.$log_keep"
+  for ((generation = log_keep - 1; generation >= 1; generation--)); do
+    if [[ -f "$file.$generation" ]]; then
+      mv "$file.$generation" "$file.$((generation + 1))"
+    fi
+  done
+  mv "$file" "$file.1"
+}
 
 if [[ -f "$pid_file" ]]; then
   pid="$(cat "$pid_file")"
@@ -29,15 +55,26 @@ if ! command -v openchamber >/dev/null 2>&1; then
   exit 1
 fi
 
+rotate_log "$log_file"
+rotate_log "$opencode_log"
+
 args=(serve --host "$host" --port "$port" --foreground)
 if [[ -z "${OPENCHAMBER_UI_PASSWORD:-}" && "$host" == "0.0.0.0" ]]; then
   echo "Warning: OpenChamber will be reachable on every network interface without a UI password." >&2
   echo "Set OPENCHAMBER_UI_PASSWORD to protect it." >&2
+  export OPENCHAMBER_ALLOW_UNAUTHENTICATED_LAN="${OPENCHAMBER_ALLOW_UNAUTHENTICATED_LAN:-true}"
 fi
 
 nohup openchamber "${args[@]}" >>"$log_file" 2>&1 &
 pid="$!"
 printf '%s\n' "$pid" >"$pid_file"
+
+sleep 1
+if ! kill -0 "$pid" 2>/dev/null; then
+  rm -f "$pid_file"
+  echo "OpenChamber exited during startup. Check $log_file." >&2
+  exit 1
+fi
 
 echo "Started OpenChamber on $host:$port (pid $pid)."
 echo "Log: $log_file"

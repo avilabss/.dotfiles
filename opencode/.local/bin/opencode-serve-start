@@ -7,8 +7,15 @@ export OPENCODE_ENABLE_EXA="${OPENCODE_ENABLE_EXA:-1}"
 state_dir="${XDG_STATE_HOME:-$HOME/.local/state}/opencode"
 pid_file="$state_dir/serve.pid"
 log_file="$state_dir/serve.log"
+db_file="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
+db_vacuum_warn_bytes="${OPENCODE_DB_VACUUM_WARN_BYTES:-1073741824}"
 
 mkdir -p "$state_dir"
+
+if [[ -f "$db_file" ]] && (( $(stat -c %s "$db_file") >= db_vacuum_warn_bytes )); then
+  echo "Warning: OpenCode database is $(numfmt --to=iec-i --suffix=B "$(stat -c %s "$db_file")")." >&2
+  echo "Stop OpenCode/OpenChamber and run: opencode-db-vacuum" >&2
+fi
 
 if [[ -f "$pid_file" ]]; then
   pid="$(cat "$pid_file")"
