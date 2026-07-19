@@ -66,7 +66,7 @@ Packages stay declared in dotfiles even when a host cannot install one of them. 
 - **Sunshine on Ubuntu:** GitHub release `.deb` assets for configured Ubuntu releases and architectures; skipped with a warning otherwise.
 - **Sunshine on Fedora:** LizardByte COPR with graceful skip behavior if the COPR is unavailable for the host.
 - **Google Chrome on Fedora:** Google RPM with the Google Linux signing key imported; GPG checks remain enabled.
-- **OpenChamber:** Official `@openchamber/web` npm package installed under the user-local `~/.local` prefix; no sudo-owned global npm directory is used.
+- **OpenChamber:** Official `@openchamber/web` npm package installed under the user-local `~/.local` prefix. The shell also exports `NPM_CONFIG_PREFIX=~/.local`, so OpenChamber's built-in updater does not write to a sudo-owned global npm directory.
 
 ## Adding Packages
 
@@ -167,6 +167,10 @@ OPENCHAMBER_SERVE_HOST=127.0.0.1 OPENCHAMBER_SERVE_PORT=4097 openchamber-serve-s
 Set `OPENCODE_PORT` to override the managed OpenCode port. To connect OpenChamber to an already-running external OpenCode server instead, set `OPENCODE_HOST` and `OPENCODE_SKIP_START=true` as documented by OpenChamber.
 
 > **Note:** The OpenChamber CLI requires Node.js 22 or newer and OpenCode. Install both roles with `./bootstrap.sh --tags opencode,openchamber`.
+
+OpenChamber's built-in updater uses npm's global prefix. After applying these
+dotfiles, start a new login shell (or run `source ~/.zprofile`) before using
+`openchamber update`, so npm targets the user-writable `~/.local` prefix.
 
 ## Post-Install
 

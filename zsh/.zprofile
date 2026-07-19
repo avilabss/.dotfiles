@@ -14,5 +14,9 @@ if [[ $IS_MACOS ]]; then
     source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 fi
 
-# Add local bin to PATH
-export PATH="$PATH:$HOME/.local/bin"
+# Keep user-installed npm packages out of system-owned directories. OpenChamber's
+# built-in updater runs `npm install --global`, so it relies on this prefix too.
+export NPM_CONFIG_PREFIX="$HOME/.local"
+
+# Prefer user-local executables over system-wide versions.
+export PATH="$HOME/.local/bin:$PATH"
