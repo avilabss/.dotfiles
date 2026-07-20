@@ -124,6 +124,32 @@ Both reviewers run independently. The first uses Sol as the strongest quality ga
 
 **Key rules:** architect never writes code (only Task Briefs), developer never expands scope, reviewers can only read and request changes (no file edits).
 
+### Skills
+
+The stowed OpenCode config includes `whitebox-review`, an architecture-aware
+review skill for Whitebox.aero core, kernel, plugin, and cross-repository merge
+requests. OpenChamber uses the same skill because its coding backend is
+OpenCode and reads `~/.config/opencode/skills/`.
+
+Use it in OpenCode by mentioning it explicitly in the prompt:
+
+```text
+Use $whitebox-review to review <merge-request-url>.
+```
+
+In OpenChamber, open the Whitebox repository workspace and send the same prompt
+in chat:
+
+```text
+Use $whitebox-review to review <merge-request-url>.
+```
+
+The skill can also trigger from a direct request to review Whitebox code or a
+Whitebox merge request. Explicit `$whitebox-review` invocation is preferable
+when the current workspace or request does not make the Whitebox context clear.
+After applying the dotfiles, restart OpenCode and OpenChamber so their OpenCode
+processes reload the skill catalog.
+
 ## OpenCode Server Scripts
 
 The `opencode` tag installs helper scripts for manually running the OpenCode server. No systemd or launchd service is created; the server runs only when you start it.

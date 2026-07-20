@@ -1,0 +1,4 @@
+interface:
+  display_name: "Whitebox Review"
+  short_description: "Review Whitebox changes across architecture boundaries"
+  default_prompt: "Use $whitebox-review to review this Whitebox merge request or code change."
