@@ -1,0 +1,57 @@
+---
+- name: Install OpenWhispr
+  block:
+    - name: Check OpenWhispr architecture support
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['architecture'] in ['x86_64', 'amd64']
+        fail_msg: >-
+          OpenWhispr does not publish a Linux package for
+          {{ ansible_facts['architecture'] }}.
+
+    - name: Query latest OpenWhispr release
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/OpenWhispr/openwhispr/releases/latest
+        headers:
+          Accept: application/vnd.github+json
+        return_content: true
+      register: openwhispr_release
+
+    - name: Select OpenWhispr package for this platform
+      ansible.builtin.set_fact:
+        openwhispr_asset_url: >-
+          {{
+            openwhispr_release.json.assets
+            | selectattr('name', 'search', openwhispr_asset_pattern)
+            | map(attribute='browser_download_url')
+            | first
+            | default('')
+          }}
+
+    - name: Verify OpenWhispr release package is available
+      ansible.builtin.assert:
+        that:
+          - openwhispr_asset_url | length > 0
+        fail_msg: >-
+          The latest OpenWhispr release has no asset matching
+          {{ openwhispr_asset_pattern }}.
+
+    - name: Include Fedora OpenWhispr tasks
+      ansible.builtin.include_tasks: fedora.yml
+      when: "'fedora' in group_names"
+
+    - name: Include Debian OpenWhispr tasks
+      ansible.builtin.include_tasks: debian.yml
+      when: "'debian' in group_names"
+  rescue:
+    - name: Track failed OpenWhispr install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ (dotfiles_failed_packages | default([])) + ['openwhispr'] }}"
+
+    - name: Warn about failed OpenWhispr install
+      ansible.builtin.debug:
+        msg: >-
+          OpenWhispr could not be installed on
+          {{ ansible_facts['distribution'] }}
+          {{ ansible_facts['distribution_version'] }} /
+          {{ ansible_facts['architecture'] }}; continuing without it.

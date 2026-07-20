@@ -1,0 +1,19 @@
+---
+- name: Install OpenWhispr runtime packages
+  ansible.builtin.apt:
+    name: "{{ openwhispr_packages }}"
+    state: present
+    update_cache: true
+  become: true
+
+- name: Download latest OpenWhispr DEB
+  ansible.builtin.get_url:
+    url: "{{ openwhispr_asset_url }}"
+    dest: "/tmp/{{ openwhispr_asset_url | basename }}"
+    mode: "0644"
+
+- name: Install latest OpenWhispr DEB
+  ansible.builtin.apt:
+    deb: "/tmp/{{ openwhispr_asset_url | basename }}"
+    state: present
+  become: true

@@ -27,6 +27,10 @@ chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_x86
 
 flameshot_package: flameshot
 
+openwhispr_packages:
+  - wl-clipboard
+openwhispr_asset_pattern: "linux-x86_64\\.rpm$"
+
 ssh_packages:
   - openssh-server
   - firewalld

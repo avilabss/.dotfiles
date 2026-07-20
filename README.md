@@ -16,7 +16,7 @@ cd ~/dotfiles
 ./bootstrap.sh                            # Core setup
 ./bootstrap.sh --all                      # Everything (core + optional)
 ./bootstrap.sh --tags docker,ssh          # Specific optional roles
-./bootstrap.sh --tags ghostty,google-chrome,flameshot  # Desktop apps only
+./bootstrap.sh --tags ghostty,google-chrome,flameshot,openwhispr  # Desktop apps only
 ./bootstrap.sh --tags zsh                 # Re-run a single role
 ./bootstrap.sh --check                    # Dry run
 ```
@@ -48,6 +48,7 @@ cd ~/dotfiles
 | `ghostty` | Ghostty terminal emulator + stowed config | All |
 | `google-chrome` / `chrome` | Google Chrome browser | All |
 | `flameshot` | Screenshot tool | All |
+| `openwhispr` | Local/cloud voice dictation with system-wide text insertion | Linux x86_64 |
 | `docker` | Docker / OrbStack | All |
 | `ssh` | OpenSSH server + firewall | Linux |
 | `xrdp` | Remote desktop (RDP) | Linux |
@@ -66,6 +67,7 @@ Packages stay declared in dotfiles even when a host cannot install one of them. 
 - **Sunshine on Ubuntu:** GitHub release `.deb` assets for configured Ubuntu releases and architectures; skipped with a warning otherwise.
 - **Sunshine on Fedora:** LizardByte COPR with graceful skip behavior if the COPR is unavailable for the host.
 - **Google Chrome on Fedora:** Google RPM with the Google Linux signing key imported; GPG checks remain enabled.
+- **OpenWhispr on Linux:** Latest official GitHub release RPM/DEB for x86_64, plus `wl-clipboard` for Wayland text insertion. Unsupported architectures or unavailable releases are skipped with a warning.
 - **OpenChamber:** Official `@openchamber/web` npm package installed under the user-local `~/.local` prefix. The shell also exports `NPM_CONFIG_PREFIX=~/.local`, so OpenChamber's built-in updater does not write to a sudo-owned global npm directory.
 
 ## Adding Packages

@@ -25,7 +25,8 @@ for arg in "$@"; do
             echo ""
             echo "Examples:"
             echo "  ./bootstrap.sh                  Core setup only"
-            echo "  ./bootstrap.sh --all            Everything (docker, ssh, xrdp, qemu, sunshine)"
+            echo "  ./bootstrap.sh --all            Core setup plus every optional role"
+            echo "  ./bootstrap.sh --tags openwhispr  Only OpenWhispr"
             echo "  ./bootstrap.sh --tags docker    Only Docker"
             echo "  ./bootstrap.sh --check          Dry run"
             exit 0

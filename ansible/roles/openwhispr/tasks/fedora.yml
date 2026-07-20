@@ -1,0 +1,13 @@
+---
+- name: Install OpenWhispr runtime packages
+  ansible.builtin.dnf:
+    name: "{{ openwhispr_packages }}"
+    state: present
+  become: true
+
+- name: Install latest OpenWhispr RPM
+  ansible.builtin.dnf:
+    name: "{{ openwhispr_asset_url }}"
+    state: present
+    disable_gpg_check: true
+  become: true

@@ -57,6 +57,10 @@
     - role: flameshot
       tags: [flameshot, optional]
 
+    - role: openwhispr
+      tags: [openwhispr, optional]
+      when: ansible_facts['os_family'] != 'Darwin'
+
     - role: docker
       tags: [docker, optional]
 
