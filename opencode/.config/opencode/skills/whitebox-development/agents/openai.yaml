@@ -1,0 +1,4 @@
+interface:
+  display_name: "Whitebox Development"
+  short_description: "Develop Whitebox tickets across core and plugins"
+  default_prompt: "Use $whitebox-development to set up and implement this Whitebox ticket across core and any affected plugins."

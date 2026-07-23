@@ -42,7 +42,7 @@ build a ReviewBundle containing:
 2. Parse explicit modern links:
    - Core/parent MRs should list child MRs under `Related MRs` or equivalent
      obvious wording.
-   - Plugin/child MRs should include `Parent MR: <core MR URL>` when they are
+   - Plugin/child MRs should include `PARENT: <core MR URL>` when they are
      part of a core-led bundle.
    - Plugin MRs that need a non-default kernel should include a case-sensitive
      `KERNEL:` line, for example `KERNEL: #feature/whitebox-123` or
@@ -54,13 +54,13 @@ build a ReviewBundle containing:
    `[tool.poetry.group.plugins-temporary.dependencies]`; git dependencies there
    identify plugin repos and branch/rev refs that must be reconciled with
    related plugin MRs.
-4. For a plugin-only MR, prefer explicit `Parent MR:` and `KERNEL:`. If no core
+4. For a plugin-only MR, prefer explicit `PARENT:` and `KERNEL:`. If no core
    parent is found, use core `main` only after checking explicit links, work
    item context, branch correlation, reverse links from other MRs, and
    `plugins-temporary` evidence.
 5. Treat old or loose linking patterns only as discovery clues. If you infer a
    relation that is missing from descriptions, request a description update with
-   exact suggested `Parent MR:`, `KERNEL:`, or `Related MRs` lines.
+   exact suggested `PARENT:`, `KERNEL:`, or `Related MRs` lines.
 6. If associated MRs are still draft or inconsistent, make the bundle/readiness
    issue clear before doing or trusting a full review unless an early pass was
    explicitly requested.
@@ -153,7 +153,7 @@ Check consumers and providers across the whole ReviewBundle.
   versions when CI/sandbox installs with `--with plugins-temporary`.
 - Map each git dependency package to its GitLab repo and branch/rev, then verify:
   - the core MR lists the matching plugin MR;
-  - each plugin MR points back to the parent with `Parent MR:`;
+  - each plugin MR points back to the parent with `PARENT:`;
   - plugin MRs that require the branch use the correct `KERNEL:` value;
   - stale temporary refs are removed or intentionally retained before merge.
 
