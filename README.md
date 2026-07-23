@@ -124,6 +124,22 @@ Both reviewers run independently. The first uses Sol as the strongest quality ga
 
 **Key rules:** architect never writes code (only Task Briefs), developer never expands scope, reviewers can only read and request changes (no file edits).
 
+### Commands
+
+The stowed OpenCode config includes `/harvest`, a read-only post-ticket review
+that identifies reusable development knowledge and proposes the smallest
+maintainable destination for it. It checks existing instructions and artifacts
+before recommending changes and may conclude that no action is needed.
+
+Run it after completing a ticket:
+
+```text
+/harvest
+/harvest <ticket reference, commit range, or other scope context>
+```
+
+The command only produces proposals; it does not modify files.
+
 ### Skills
 
 The stowed OpenCode config includes `whitebox-review`, an architecture-aware
