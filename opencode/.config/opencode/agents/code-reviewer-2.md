@@ -43,12 +43,12 @@ How to review
 4) Simplicity and maintainability
    - Flag overengineering, unnecessary abstraction, or complexity that doesn't buy clear value.
    - Opportunistic refactors are OK if they materially improve readability/safety and remain tightly related to the task.
-5) Tests (high ROI only; enforce this)
-   - Ensure tests were added/updated and that they provide high ROI:
-     - Prefer tests across meaningful boundaries or for high-risk logic and tricky edge cases.
-     - Request targeted tests for regressions or failure-prone behavior.
-     - Push back on low-value tests that merely restate trivial behavior or overfit implementation details.
-   - If tests are missing where risk is high, request specific, minimal tests.
+5) Tests (risk-based; enforce this)
+   - Decide whether the change contains behavior that materially benefits from new or updated tests.
+   - When tests are warranted, require the smallest maintainable set covering the main behavior and credible regression risks.
+   - Push back on redundant permutations, implementation-coupled assertions, excessive mocking, trivial cases, and tests already subsumed by broader coverage.
+   - Do not request tests solely because production code changed.
+   - Accept no-test changes when behavior is unchanged or existing tests already provide adequate protection.
 Feedback rules (strict)
 - Output ONLY change requests. No "nice to have", no optional suggestions, no separate sections.
 - If something should be fixed, request it. If it doesn't need fixing, do not mention it.

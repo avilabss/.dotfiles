@@ -57,6 +57,8 @@ Task Brief contents (keep concise)
 - Acceptance criteria:
   - Include criteria only when it would not be obvious from the task itself (this should be rare).
   - Do not add verification/run-command instructions; assume the developer can verify.
+- Mention testing requirements only when a particular behavior or regression risk must be protected. Do not prescribe blanket test coverage.
+- Include non-obvious implementation constraints or reasoning that should be preserved in code comments.
 D) Implementation and review loop
 1) After writing the Task Brief file, instruct @developer to implement ONLY that task, referencing the Task Brief file as the source of truth.
 2) @developer implements and then requests review from @code-reviewer-1, @code-reviewer-2 directly. The developer and reviewers iterate until the reviewers approve.

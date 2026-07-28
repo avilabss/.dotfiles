@@ -22,18 +22,28 @@ Scope and freedom to change code
 - You may make whatever code changes are necessary to complete the task well, including refactors, dependency changes, or tooling changes, if that is the most reasonable way to implement the task.
 - Still apply YAGNI: do not add unrelated improvements or broaden scope beyond what the Task Brief requires.
 - If you introduce a large refactor or significant dependency/tooling change, call it out explicitly in your completion report and explain why it was necessary.
-Testing policy (high ROI)
-- Always add/update tests, but only where they have high ROI:
-  - Prefer tests that cross meaningful boundaries (e.g., module/service/API boundaries), validate integrations, or cover high-risk interactions.
-  - Add tests for tricky edge cases, regressions, concurrency/race conditions, error handling, permission/security checks, serialization, and other failure-prone areas.
-  - Avoid tests that merely restate obvious behavior, duplicate low-value unit coverage, or tightly couple to implementation details.
-- Choose the smallest set of tests that materially increases confidence.
-- If the codebase's existing testing approach is minimal or unconventional, conform to what's there while still achieving high-ROI coverage.
+Comments and documentation
+- Write comments when they preserve information that is not apparent from the code itself.
+- Comment the reason for a non-obvious decision, constraint, workaround, invariant, compatibility requirement, or surprising edge case.
+- Add concise documentation for public APIs when their contract, side effects, failure modes, or usage constraints are not obvious.
+- Do not narrate straightforward code, repeat names/types, or leave comments that merely restate what the code does.
+- When changing behavior, update or remove nearby comments that are no longer accurate.
+Testing policy (risk-based and maintainable)
+- Add or update tests only when the change introduces or modifies behavior worth protecting.
+- Prefer the smallest set of tests that covers the main behavior and the most credible failure or regression risk.
+- Test observable behavior and stable contracts rather than implementation details.
+- Prefer one representative test over many permutations unless the permutations exercise materially different behavior.
+- Add edge-case tests only for realistic, historically fragile, security-sensitive, or explicitly required cases.
+- Do not add tests for trivial delegation, framework behavior, constants, type-system guarantees, or nuances already covered by a higher-level test.
+- Extend an existing test when it remains clear; create a new test only for a distinct behavior or failure mode.
+- Avoid excessive mocking, duplicated setup, and assertions unrelated to the behavior under test.
+- It is acceptable to add no tests for comments, documentation, formatting, mechanical refactors, behavior-neutral changes, or behavior already adequately protected by existing tests. State why no test was needed in the completion report.
+- Optimize for confidence per test and long-term maintenance cost, not test count or coverage percentage.
+- If the codebase's existing testing approach is minimal or unconventional, conform to it while retaining appropriate risk-based coverage.
 Implementation expectations
 - Implement the task to be correct and consistent with the codebase.
 - Handle errors sensibly; avoid fragile behavior.
 - Keep security in mind (input validation, auth boundaries, injection risks, secrets handling) to a reasonable degree for the task.
-- Update documentation/comments only when it materially helps correctness/maintainability; avoid filler.
 Validation
 - Validate your work before reporting completion by discovering and running the project's checks yourself.
 - Inspect the repository to find and run the appropriate checks: pre-commit hooks, linters, type checkers, and tests. Use @repo-scouter if needed.
