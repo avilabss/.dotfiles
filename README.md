@@ -109,13 +109,13 @@ OpenCode is restricted to the configured OpenAI provider. Sol is the default mod
 | `code-reviewer-1` | `openai/gpt-5.6-sol` | high | low | Primary deep correctness and security review |
 | `code-reviewer-2` | `openai/gpt-5.6-terra` | high | low | Independent second deep review pass |
 
-Both reviewers run independently. The first uses Sol as the strongest quality gate; the second uses Terra for another deep pass without doubling Sol usage. `ARCHITECTURE.md` is the shared repository-context cache: agents read it first and invoke `repo-scouter` only when it is missing, stale, incomplete, or contradicted. Only `repo-scouter` updates it.
+Both reviewers run independently from one shared reviewer prompt, which keeps their review policy synchronized. The first uses Sol as the strongest quality gate; the second uses Terra for another deep pass without doubling Sol usage. `ARCHITECTURE.md` is the shared repository-context cache: agents read it first and invoke `repo-scouter` only when it is missing, stale, incomplete, or contradicted. Only `repo-scouter` updates it.
 
 ### Workflow
 
 1. You describe what you want to `@architect` (the default agent)
 2. Architect asks clarifying questions, then proposes a plan
-3. You say "approved" to greenlight
+3. You explicitly approve the plan to greenlight it
 4. Architect writes a Task Brief and delegates to `@developer`
 5. Developer implements, then sends to both `@code-reviewer-1` and `@code-reviewer-2` in parallel
 6. Reviewers approve or request changes — developer iterates until both approve
