@@ -20,8 +20,8 @@ start_session() {
 
 start_session || exit 1
 
-if [ "$(waydroid prop get persist.waydroid.multi_windows 2>/dev/null)" != "true" ]; then
-    waydroid prop set persist.waydroid.multi_windows true || exit 1
+if [ "$(waydroid prop get persist.waydroid.multi_windows 2>/dev/null)" != "false" ]; then
+    waydroid prop set persist.waydroid.multi_windows false || exit 1
     waydroid session stop
 
     attempts=0

@@ -54,7 +54,7 @@ cd ~/dotfiles
 | `xrdp` | Remote desktop (RDP) | Linux |
 | `sunshine` | Remote desktop (Moonlight/Sunshine) | All |
 | `qemu` | QEMU guest agent (Proxmox/KVM) | Linux |
-| `waydroid` | GAPPS Waydroid, networking, multi-window mode, and KDE session launcher | Fedora |
+| `waydroid` | GAPPS Waydroid, networking, game-compatible single-surface mode, and KDE session launcher | Fedora |
 
 ## Package Failures on Unsupported Hosts
 
