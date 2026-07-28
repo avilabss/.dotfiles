@@ -123,12 +123,30 @@
     - Reload systemd
     - Restart Waydroid Docker firewall
 
-- name: Enable and start Waydroid Docker firewall service
+- name: Install Waydroid network firewall trigger
+  ansible.builtin.copy:
+    src: 90-waydroid-docker-firewall.rules
+    dest: /etc/udev/rules.d/90-waydroid-docker-firewall.rules
+    owner: root
+    group: root
+    mode: "0644"
+  become: true
+  notify: Reload udev
+
+- name: Remove obsolete Waydroid firewall timer
+  ansible.builtin.file:
+    path: /etc/systemd/system/waydroid-docker-firewall.timer
+    state: absent
+  become: true
+  notify: Reload systemd
+
+- name: Disable obsolete Waydroid firewall timer
   ansible.builtin.systemd:
-    name: waydroid-docker-firewall
-    enabled: true
-    state: started
+    name: waydroid-docker-firewall.timer
+    enabled: false
+    state: stopped
     daemon_reload: true
+  failed_when: false
   become: true
 
 - name: Stow Waydroid launchers
