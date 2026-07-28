@@ -40,15 +40,10 @@ build a ReviewBundle containing:
 1. Read the MR metadata: project, source/target branch, draft state,
    description, labels, reviewers, discussions, and changed files.
 2. Parse explicit modern links:
-   - Core/parent MRs should list child MRs under `Related MRs` or equivalent
-     obvious wording.
-   - Plugin/child MRs should include `PARENT: <core MR URL>` when they are
-     part of a core-led bundle.
-   - Plugin MRs that need a non-default kernel should include a case-sensitive
-     `KERNEL:` line, for example `KERNEL: #feature/whitebox-123` or
-     `KERNEL: https://gitlab.com/whitebox-aero/whitebox.git#feature/whitebox-123`.
-     Treat `KERNAL:` as a discovery clue for the same ref, but request correction
-     to `KERNEL:` because plugin CI recognizes only the case-sensitive spelling.
+   - Core/parent MRs should consolidate core and plugin changes in the default
+     template and list child MRs under `Related MRs`.
+   - Plugin/child MR descriptions should contain only `PARENT: <core MR URL>`,
+     a `___` divider, and `KERNEL: <core branch>`. `KERNEL:` is case-sensitive.
 3. For a core MR, treat it as the likely source of truth. Inspect
    `backend/pyproject.toml` changes in
    `[tool.poetry.group.plugins-temporary.dependencies]`; git dependencies there
@@ -58,9 +53,8 @@ build a ReviewBundle containing:
    parent is found, use core `main` only after checking explicit links, work
    item context, branch correlation, reverse links from other MRs, and
    `plugins-temporary` evidence.
-5. Treat old or loose linking patterns only as discovery clues. If you infer a
-   relation that is missing from descriptions, request a description update with
-   exact suggested `PARENT:`, `KERNEL:`, or `Related MRs` lines.
+5. Treat old or loose linking patterns only as discovery clues. Request the
+   expected relationship block or `Related MRs` section when links are missing.
 6. If associated MRs are still draft or inconsistent, make the bundle/readiness
    issue clear before doing or trusting a full review unless an early pass was
    explicitly requested.
@@ -154,7 +148,7 @@ Check consumers and providers across the whole ReviewBundle.
 - Map each git dependency package to its GitLab repo and branch/rev, then verify:
   - the core MR lists the matching plugin MR;
   - each plugin MR points back to the parent with `PARENT:`;
-  - plugin MRs that require the branch use the correct `KERNEL:` value;
+  - each plugin MR uses the correct `KERNEL:` value;
   - stale temporary refs are removed or intentionally retained before merge.
 
 ## Per-review output expectations

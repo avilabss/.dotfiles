@@ -16,8 +16,7 @@ Never publish a core ref to an unpushed plugin commit or branch.
 
 ## Plugin MR description
 
-Use the default MR template, then keep the plugin-specific description short.
-The required relationship block is:
+Use only this relationship block as the plugin MR description:
 
 ```md
 PARENT: https://gitlab.com/whitebox-aero/whitebox/-/merge_requests/xxx
@@ -31,15 +30,10 @@ Replace both placeholders. `PARENT:` points to the core MR. `KERNEL:` names the
 core feature branch required by plugin CI. Keep the spelling and capitalization
 exact.
 
-Put the full ticket-level explanation in the core MR. Include details in a
-plugin MR only when they are necessary to understand, validate, or safely
-review that plugin's change.
-
 ## Core MR description
 
-Use the core repository's `default` MR template and fill it with the relevant
-ticket details. Keep it concise without omitting behavior, validation,
-operational impact, or reviewer-critical context.
+Use the core repository's `default` MR template and consolidate the ticket's
+core and plugin changes there.
 
 Immediately after the template's `What` section, add:
 
@@ -49,8 +43,7 @@ Immediately after the template's `What` section, add:
 - https://gitlab.com/whitebox-aero/whitebox-plugin-name/-/merge_requests/xxx
 ```
 
-List every plugin MR and omit the section when there are none. Do not duplicate
-the same detailed explanation across core and plugin descriptions.
+List every plugin MR and omit the section when there are none.
 
 ## Ticket
 
