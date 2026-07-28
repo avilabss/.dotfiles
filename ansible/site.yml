@@ -76,6 +76,10 @@
       tags: [qemu, optional]
       when: ansible_facts['os_family'] != 'Darwin'
 
+    - role: waydroid
+      tags: [waydroid, optional]
+      when: "'fedora' in group_names"
+
     - role: sunshine
       tags: [sunshine, optional]
 

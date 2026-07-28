@@ -1,0 +1,62 @@
+---
+- name: Install Waydroid packages
+  ansible.builtin.dnf:
+    name: "{{ waydroid_packages }}"
+    state: present
+  become: true
+
+- name: Check whether Waydroid is initialized
+  ansible.builtin.stat:
+    path: /var/lib/waydroid/waydroid.cfg
+  register: waydroid_config
+
+- name: Initialize Waydroid with Google apps
+  ansible.builtin.command: waydroid init -s GAPPS
+  become: true
+  when: not waydroid_config.stat.exists
+
+- name: Enable and start firewalld
+  ansible.builtin.systemd:
+    name: firewalld
+    enabled: true
+    state: started
+  become: true
+
+- name: Enable and start the Waydroid container
+  ansible.builtin.systemd:
+    name: waydroid-container
+    enabled: true
+    state: started
+  become: true
+
+- name: Trust the Waydroid network interface
+  ansible.posix.firewalld:
+    zone: trusted
+    interface: waydroid0
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+
+- name: Enable NAT for Waydroid
+  ansible.posix.firewalld:
+    zone: trusted
+    masquerade: true
+    permanent: true
+    immediate: true
+    state: enabled
+  become: true
+
+- name: Stow Waydroid launchers
+  ansible.builtin.command: stow -R waydroid
+  args:
+    chdir: "{{ dotfiles_dir }}"
+  register: waydroid_stow_result
+  changed_when: waydroid_stow_result.rc == 0
+
+- name: Refresh the desktop application database
+  ansible.builtin.command: >-
+    update-desktop-database
+    {{ ansible_facts.env.HOME }}/.local/share/applications
+  changed_when: false
+  failed_when: false

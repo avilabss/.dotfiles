@@ -1,0 +1,35 @@
+#!/bin/sh
+
+start_session() {
+    if ! waydroid status 2>/dev/null | grep -q 'Session:[[:space:]]*RUNNING'; then
+        systemd-run --user --unit=waydroid-session --collect waydroid session start ||
+            return 1
+    fi
+
+    attempts=0
+    while [ "$attempts" -lt 30 ]; do
+        if waydroid status 2>/dev/null | grep -q 'Session:[[:space:]]*RUNNING'; then
+            return 0
+        fi
+        attempts=$((attempts + 1))
+        sleep 1
+    done
+
+    return 1
+}
+
+start_session || exit 1
+
+if [ "$(waydroid prop get persist.waydroid.multi_windows 2>/dev/null)" != "true" ]; then
+    waydroid prop set persist.waydroid.multi_windows true || exit 1
+    waydroid session stop
+
+    attempts=0
+    while waydroid status 2>/dev/null | grep -q 'Session:[[:space:]]*RUNNING'; do
+        attempts=$((attempts + 1))
+        [ "$attempts" -ge 30 ] && exit 1
+        sleep 1
+    done
+
+    start_session || exit 1
+fi

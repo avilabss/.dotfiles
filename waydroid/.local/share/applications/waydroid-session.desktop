@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=Application
+Name=Waydroid Session
+Comment=Start Waydroid silently in the background
+Exec=waydroid-session-start
+Icon=waydroid
+Terminal=false
+Categories=System;
+Actions=PlayStore;Settings;Stop;
+
+[Desktop Action PlayStore]
+Name=Open Google Play Store
+Exec=waydroid-app-launch com.android.vending
+
+[Desktop Action Settings]
+Name=Open Android Settings
+Exec=waydroid-app-launch com.android.settings
+
+[Desktop Action Stop]
+Name=Stop Waydroid
+Exec=waydroid session stop
