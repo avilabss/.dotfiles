@@ -1,0 +1,16 @@
+---
+- name: Reload firewalld
+  ansible.builtin.command: firewall-cmd --reload
+  become: true
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+
+- name: Restart Waydroid Docker firewall
+  ansible.builtin.systemd:
+    name: waydroid-docker-firewall
+    state: restarted
+    daemon_reload: true
+  become: true

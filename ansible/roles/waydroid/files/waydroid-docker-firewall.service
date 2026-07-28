@@ -1,0 +1,14 @@
+[Unit]
+Description=Allow Waydroid traffic through Docker's forwarding chain
+After=firewalld.service docker.service
+Before=waydroid-container.service
+PartOf=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/libexec/waydroid-docker-firewall apply
+ExecStop=/usr/local/libexec/waydroid-docker-firewall remove
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

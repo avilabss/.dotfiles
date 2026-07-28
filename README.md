@@ -70,7 +70,7 @@ Packages stay declared in dotfiles even when a host cannot install one of them. 
 - **Google Chrome on Fedora:** Google RPM with the Google Linux signing key imported; GPG checks remain enabled.
 - **OpenWhispr on Linux:** Latest official GitHub release RPM/DEB for x86_64, plus `wl-clipboard` for Wayland text insertion. Unsupported architectures or unavailable releases are skipped with a warning.
 - **OpenChamber:** Official `@openchamber/web` npm package installed under the user-local `~/.local` prefix. The shell also exports `NPM_CONFIG_PREFIX=~/.local`, so OpenChamber's built-in updater does not write to a sudo-owned global npm directory.
-- **Waydroid on Fedora:** Fedora's package, initialized with GAPPS. The role enables the container, trusts and masquerades the `waydroid0` firewalld interface, and stows a KDE launcher for background session start/stop and individual apps.
+- **Waydroid on Fedora:** Fedora's package, initialized with GAPPS. The role enables the container, configures firewalld forwarding/NAT, adds an idempotent systemd helper for Docker's earlier `DOCKER-USER` forwarding chain, and stows a KDE launcher for background session start/stop and individual apps.
 
 ## Adding Packages
 
