@@ -30,13 +30,18 @@ restart both OpenCode and OpenChamber so their OpenCode processes reload it.
 
 | Agent | Role | Enforced permissions |
 |-------|------|----------------------|
-| `architect` | Discovery, decisions, planning, and orchestration | Bash requires user approval; may edit only repository-root `task-briefs/*.md`; may delegate only to `developer` and `repo-scouter` |
+| `architect` | Discovery, decisions, planning, and orchestration | Bash requires user approval; may edit only repository-root `task-briefs/*.md` and explicitly requested Markdown handoffs; may delegate only to `developer` and `repo-scouter` |
 | `developer` | Implements one approved Task Brief | Normal implementation edits except `ARCHITECTURE.md` and `task-briefs/*.md`; may delegate only to both code reviewers |
 | `repo-scouter` | Maintains shared repository context when needed | May edit only repository-root `ARCHITECTURE.md`; cannot delegate, use Bash, or use network tools |
 | `code-reviewer-1` | Primary independent correctness and security review | Cannot edit or delegate; Bash requires user approval |
 | `code-reviewer-2` | Independent second deep review | Cannot edit or delegate; Bash requires user approval |
 
-The reviewers share one prompt so policy stays synchronized. Reviewer 1 uses
+The policy-identical reviewers share one prompt so policy stays synchronized.
+Each independently checks both Task/spec fit (the complete brief, interpretation,
+scope, and failure behavior) and Standards/system fit (repository rules,
+architecture and integration boundaries, security, dependencies, and material
+design smells). Findings distinguish hard correctness/spec failures,
+documented-standard violations, and judgment-call heuristics. Reviewer 1 uses
 Sol and reviewer 2 uses Terra for model diversity. `subagent_depth` is 2, which
 supports architect to developer to reviewer delegation. Task permissions govern
 agent-initiated delegation; users can still manually invoke visible subagents
@@ -112,6 +117,28 @@ base, explicitly accounting for staged, unstaged, and untracked files; plain
 
 ## Commands
 
+### `/handoff`
+
+Write one concise, redacted Markdown handoff for continuation in a fresh
+session. Optional arguments identify the intended focus.
+
+```text
+/handoff
+/handoff <focus for the fresh session>
+```
+
+Handoffs are stored outside repositories at
+`~/.local/state/opencode/handoffs/YYYY-MM-DD-<short-name>.md`. The optional
+OpenCode role creates the directory as the normal user with mode `0700`.
+Existing names are never overwritten; a numeric suffix is added on collision.
+OpenCode grants the architect directory-boundary access there, while its actual
+edit permission remains limited to handoff `.md` files; unrelated external
+directories retain their existing approval or denial rules.
+The command reports the absolute path when done. Start a fresh session and
+reference that path. Handoffs are local, unversioned transition artifacts;
+review and delete them when no longer needed, especially if their context has
+become stale.
+
 ### `/harvest`
 
 Run a read-only post-ticket review that finds durable reusable knowledge and
@@ -134,7 +161,29 @@ ticket updates.
 /wb-start <ticket-link> <branch-name> [additional context]
 ```
 
-## Whitebox skills
+## Command and skill authoring rubric
+
+- Put intentional user-invoked orchestration in a command.
+- Put reusable behavior the model should recognize autonomously in a skill.
+- Keep skill descriptions to narrow trigger and context pointers.
+- Give operational steps checkable completion criteria.
+- Give each behavior one authoritative home; progressively disclose
+  branch-specific references instead of duplicating them.
+- Prune no-op instructions. Prefer positive target behavior, retaining explicit
+  prohibitions for genuine safety boundaries.
+- Require every advertised skill to justify its permanent catalog/context load.
+
+## Skills
+
+### `diagnosing-bugs`
+
+Use only for hard, intermittent, recurrent, or performance bugs that need a
+disciplined diagnosis, not obvious one-line failures. It establishes a tight
+feedback command, minimizes the exact symptom, ranks falsifiable hypotheses,
+tests measured predictions one at a time, applies the smallest supported fix,
+and reruns original and minimized reproductions before removing diagnostic
+artifacts. If no meaningful feedback loop is possible, it stops and requests
+the specific missing input rather than guessing.
 
 ### `whitebox-development`
 

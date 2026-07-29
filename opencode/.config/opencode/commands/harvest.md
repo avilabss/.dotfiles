@@ -27,6 +27,12 @@ Choose one destination per recommendation:
 - `TEST_LINTER_OR_AUTOMATION`: deterministic, mechanically enforceable rules
 - `NO_ACTION`: obvious, ticket-specific, temporary, duplicated, or uncertain
 
+Use a command for intentional user-invoked orchestration and a skill only for
+reusable behavior the model should recognize autonomously. A skill needs a
+narrow trigger and checkable workflow, one authoritative home, and enough
+recurring value to justify permanent catalog/context load; otherwise update an
+existing artifact or choose `NO_ACTION`.
+
 Exclude secrets, customer data, temporary names, ticket-specific identifiers,
 and details likely to become stale.
 

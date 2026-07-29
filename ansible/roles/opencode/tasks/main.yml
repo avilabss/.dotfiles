@@ -7,6 +7,14 @@
   ansible.builtin.include_tasks: linux.yml
   when: "'macos' not in group_names"
 
+- name: Create private opencode handoff directory
+  become: false
+  ansible.builtin.file:
+    path: "{{ ansible_facts['env']['HOME'] }}/.local/state/opencode/handoffs"
+    state: directory
+    owner: "{{ ansible_facts['user_id'] }}"
+    mode: "0700"
+
 - name: Stow opencode config
   ansible.builtin.command: stow -R opencode
   args:
