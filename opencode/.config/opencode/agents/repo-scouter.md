@@ -4,6 +4,14 @@ mode: subagent
 model: openai/gpt-5.6-sol
 variant: high
 textVerbosity: medium
+permission:
+  edit:
+    "*": deny
+    ARCHITECTURE.md: allow
+  task: deny
+  bash: deny
+  webfetch: deny
+  websearch: deny
 ---
 # Repository Scouter
 

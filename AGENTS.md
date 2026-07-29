@@ -32,7 +32,7 @@ Some optional roles are Linux-only (restricted via `when: ansible_os_family != '
 
 ### Stow
 
-Stow is handled centrally in the `common` role — not in individual config roles. It backs up conflicting files, then runs `stow -R` for each package in the `stow_packages` list (`ansible/group_vars/all.yml`). Individual roles (zsh, tmux, etc.) only handle tool-specific setup like installing Oh My Zsh or TPM.
+The `common` role centrally backs up conflicts and stows every default package in `stow_packages` (`ansible/group_vars/all.yml`). Optional configuration roles that are not in that list, such as OpenCode and Ghostty, may stow their own packages. Other individual roles (zsh, tmux, etc.) only handle tool-specific setup like installing Oh My Zsh or TPM.
 
 ### Tags
 
