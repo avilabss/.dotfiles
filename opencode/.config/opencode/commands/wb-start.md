@@ -15,15 +15,9 @@ Arguments:
 
 $ARGUMENTS
 
-Parse and restate the ticket link, branch name, and additional context before
-acting. If the ticket link or branch name is missing or ambiguous, ask for it.
-Do not invent either value.
+Restate the ticket link, branch name, and additional context. If the ticket link
+or branch name is missing or ambiguous, ask for it.
 
-Inspect the current repository and worktree state, resolve the ticket and
-acceptance criteria, identify the relevant core/plugin repositories, and
-follow the complete `$whitebox-development` workflow. Ensure the development
-environment works with local plugin changes before implementation.
-
-Preserve unrelated changes. Do not delete or overwrite worktrees, force
-branches, rewrite history, push, create merge requests, or update the ticket
-unless the user's request authorizes that action.
+Follow the complete `$whitebox-development` workflow and verify local plugin
+changes work before implementation. Do not push, create merge requests, or
+update the ticket unless requested.

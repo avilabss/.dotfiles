@@ -5,21 +5,16 @@ description: Develop Whitebox.aero tickets across the core repository and plugin
 
 # Whitebox ticket development
 
-Coordinate a Whitebox ticket across core and every affected plugin without
-mixing parent repositories, feature worktrees, branches, or dependency modes.
-
 ## Establish scope
 
-1. Resolve the ticket, acceptance criteria, requested branch, and supplied
-   context. Ask only for required information that cannot be discovered.
+1. Resolve the ticket, acceptance criteria, and requested branch.
 2. Inspect the current repository, worktree, branch, status, remotes, existing
    worktrees, and relevant plugin dependencies before changing anything.
-3. Identify plugins as relevant from ticket requirements, code references,
-   dependency configuration, or implementation evidence. Do not synchronize or
-   create worktrees for every plugin by default.
-4. State the core and plugin worktrees selected. Preserve unrelated user
-   changes and stop if an existing worktree or branch creates an unsafe
-   conflict.
+3. Identify affected plugins; do not prepare every plugin by default.
+4. Preserve unrelated changes and stop on unsafe worktree or branch conflicts.
+
+If this skill is used outside the architect workflow, present the agreed scope
+and get approval before changing code.
 
 Use the same requested feature branch name in core and every plugin touched,
 unless the ticket explicitly requires a different branch.
@@ -32,9 +27,8 @@ unless the ticket explicitly requires a different branch.
 - Feature plugin worktrees: the active core feature worktree's `plugins`
   directory
 
-Create or reuse each feature plugin worktree from its corresponding parent
-plugin repository. Never treat another feature worktree as the canonical
-parent repository.
+Create plugin worktrees from their corresponding parent repositories. Never use
+another feature worktree as the canonical parent.
 
 ## Synchronize and prepare worktrees
 
@@ -63,13 +57,9 @@ container as an editable local path:
 poetry add -e --group plugins-temporary /plugins/whitebox-plugin-name
 ```
 
-Do this for every modified plugin. Verify that the container path resolves to
-the intended feature plugin worktree and that the resulting Poetry
-configuration and lockfile contain the expected dependency.
-
-Keep editable dependencies while actively developing so core exercises the
-local plugin changes. Implement and validate the complete cross-repository
-behavior, not each repository in isolation.
+Do this for every modified plugin. Verify the path and resulting Poetry
+configuration and lockfile. Keep editable dependencies during development and
+validate cross-repository behavior.
 
 ## Prepare a push
 
@@ -89,12 +79,11 @@ Before pushing core changes:
 5. Validate the resulting Poetry configuration and lockfile, then commit and
    push core.
 
-If plugin commits change after a core push, push the plugins first and refresh
-the core Git dependencies before the next core push.
+If a plugin changes after a core push, push it first and refresh the core Git
+dependency before pushing core again.
 
 If development continues after pushing, switch the dependencies back to
-editable local paths. Repeat the plugin-first ordering and Git-ref conversion
-before each later core push.
+editable local paths. Repeat this push preparation before later core pushes.
 
 ## Validate
 
@@ -102,25 +91,17 @@ before each later core push.
   changed repository.
 - Validate core with the touched plugins installed through the dependency mode
   appropriate to the current phase.
-- Confirm worktree paths, branches, plugin dependency entries, and lockfile
-  changes before reporting readiness.
+- Confirm worktrees, branches, dependency entries, and lockfile changes.
 - Report commands run, results, and any validation that could not be performed.
 
 ## Merge requests and ticket
 
-Before composing or changing merge requests or the ticket, read
-[references/merge-request-workflow.md](references/merge-request-workflow.md).
-Use that file as the canonical format for cross-links and descriptions.
+Use [references/merge-request-workflow.md](references/merge-request-workflow.md)
+as the canonical MR and ticket format.
 
 Creating or updating branches, pushes, merge requests, and tickets changes
 external state. Do it only when the user's request authorizes that phase; never
 infer authorization merely from inspecting or setting up the ticket.
 
-## Non-goals
-
-- Do not review completed MRs with this skill; use `whitebox-review`.
-- Do not encode ticket-specific URLs, branch names, or temporary worktree paths
-  into persistent configuration.
-- Do not move permanent plugin dependencies into `plugins-temporary`.
-- Do not hide missing validation, unresolved dependency refs, or dirty
-  worktrees.
+Do not put ticket-specific refs or paths in persistent configuration, or
+permanent dependencies in `plugins-temporary`.

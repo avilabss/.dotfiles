@@ -3,27 +3,11 @@ name: whitebox-review
 description: Reviews Whitebox.aero merge requests across core, kernel, plugins, and shared architecture boundaries. Use when reviewing Whitebox code changes or merge requests.
 ---
 
-# Whitebox Architecture-Aware Review Skill
-
-Use this skill when reviewing Whitebox.aero merge requests or code changes that
-may affect core, kernel, plugins, frontend module federation, events, data
-models, APIs, deployment, or hardware-facing workflows.
-
-## Review stance
-
-- Review the product-state transition, not just the visible diff.
-- Resolve the full cross-repository context before making final judgments.
-- Prefer precise, actionable findings over generic lint or style comments.
-- Separate merge blockers from acceptable follow-up work, and ask for linked
-  follow-up issues/MRs when risk is deferred.
-- Ground every comment in the relevant code, contract, test evidence, or
-  Whitebox architecture boundary.
+# Whitebox architecture-aware review
 
 ## Resolve the ReviewBundle first
 
-A Whitebox change may span the core repository, plugin repositories, support
-libraries, work items, and temporary plugin overrides. Before detailed review,
-build a ReviewBundle containing:
+Before detailed review, build a ReviewBundle containing:
 
 - the parent/core MR in `whitebox-aero/whitebox`, or core `main` when no parent
   MR exists after discovery;
@@ -61,8 +45,6 @@ build a ReviewBundle containing:
 
 ## Whitebox architecture model for review
 
-Whitebox is a plugin-first, event-driven system:
-
 - **Kernel**: the plugin system. It discovers and manages plugins, handles JSX
   transpilation/module federation, and exposes plugin APIs.
 - **Core**: the kernel plus the default/core plugin set and platform layers that
@@ -71,9 +53,7 @@ Whitebox is a plugin-first, event-driven system:
   behavior, frontend components, state stores, URL/API surfaces, events, models,
   assets, and hardware integrations.
 
-Review implication: moving behavior across core/plugin boundaries or changing a
-shared plugin contract can affect repositories that are not in the current diff.
-Check consumers and providers across the whole ReviewBundle.
+Check cross-repository consumers and providers of changed shared contracts.
 
 ## Architecture-aware checks
 
@@ -151,18 +131,9 @@ Check consumers and providers across the whole ReviewBundle.
   - each plugin MR uses the correct `KERNEL:` value;
   - stale temporary refs are removed or intentionally retained before merge.
 
-## Per-review output expectations
+## Output
 
-When reporting findings:
-
-- Start with bundle status: parent/core, related MRs, kernel ref, draft/readiness,
-  and description hygiene issues if relevant.
-- Call out architecture-level risks before smaller per-file comments.
-- For each finding, state severity, exact location, why it matters in Whitebox,
-  and the concrete change requested.
-- Ask for tests or manual evidence only when tied to a specific risk: migrations,
-  plugin loading/unloading, capability ordering, event payloads, WebSocket flows,
-  module federation, API compatibility, install/sandbox paths, hardware, or mobile
-  behavior.
-- Avoid approving a bundle as complete if related MRs, `plugins-temporary` refs,
-  kernel branch expectations, or cross-plugin contract changes remain unresolved.
+Start with bundle status. Report architecture risks before file-level findings;
+include severity, location, impact, and requested change. Do not approve while
+bundle links, temporary refs, or cross-plugin contracts remain unresolved.
+Request tests or manual evidence only for a specific identified risk.

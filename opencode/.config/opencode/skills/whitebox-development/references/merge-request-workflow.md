@@ -61,11 +61,5 @@ Preserve the rest of the ticket exactly unless another change is explicitly
 requested. Check for an existing `MRs` section and update it instead of adding
 a duplicate.
 
-## Final checks
-
-- Every plugin MR links to the correct core MR and kernel branch.
-- The core MR lists every plugin MR under `Related MRs`.
-- The ticket lists the core MR and all plugin MRs once.
-- Core Git dependencies match the plugin MR repositories and pushed branches.
-- No placeholder URLs, branch names, duplicated sections, or stale links
-  remain.
+Before finishing, check the links, branch names, dependency refs, and duplicate
+sections.
