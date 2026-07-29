@@ -8,7 +8,8 @@ if [[ ! -f "$db" ]]; then
   exit 1
 fi
 
-if pgrep -f 'opencode serve|openchamber.*serve' >/dev/null 2>&1; then
+if pgrep -f '(^|[ /])opencode([[:space:]]|$)' >/dev/null 2>&1 ||
+  pgrep -f '(^|[ /])openchamber([[:space:]]|$)' >/dev/null 2>&1; then
   echo "Stop OpenCode and OpenChamber before vacuuming the database." >&2
   exit 1
 fi

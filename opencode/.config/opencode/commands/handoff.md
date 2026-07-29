@@ -10,8 +10,8 @@ $ARGUMENTS
 
 Write exactly one Markdown file under
 `~/.local/state/opencode/handoffs/`. Name it
-`YYYY-MM-DD-<short-name>.md`, where `<short-name>` is concise, lowercase,
-hyphen-separated, and contains only filesystem-safe ASCII letters and digits.
+`YYYY-MM-DD-<short-name>.md`, where `<short-name>` is concise and
+hyphen-separated, using only lowercase ASCII letters, digits, and hyphens.
 Derive the name from the focus or objective. Inspect candidate paths first and
 never overwrite. Check each exact `.md` candidate in sequence without listing
 or globbing the directory. If the preferred path exists, append `-2`, then

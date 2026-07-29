@@ -4,11 +4,24 @@
   register: opencode_check
   changed_when: false
   failed_when: false
-
-- name: Install opencode via Homebrew
-  community.general.homebrew:
-    name: anomalyco/tap/opencode
-    state: present
   environment:
-    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
+    PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['HOME'] }}/.opencode/bin:{{ ansible_facts['env']['HOME'] }}/.local/bin:{{ ansible_facts['env']['PATH'] }}"
+
+- name: Install opencode
   when: opencode_check.rc != 0
+  block:
+    - name: Install opencode via Homebrew
+      community.general.homebrew:
+        name: anomalyco/tap/opencode
+        state: present
+      environment:
+        PATH: "/opt/homebrew/bin:{{ ansible_facts['env']['PATH'] }}"
+
+  rescue:
+    - name: Warn that opencode installation failed
+      ansible.builtin.debug:
+        msg: "OpenCode's Homebrew tap or formula failed on this host; skipping it without failing the bootstrap."
+
+    - name: Record opencode installation failure
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ ((dotfiles_failed_packages | default([])) + ['opencode']) | unique }}"

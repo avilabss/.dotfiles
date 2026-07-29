@@ -75,6 +75,11 @@ You may suggest simpler or safer requirements during discovery.
 
 ### C. Task Brief files (the only artifact @developer relies on)
 
+Before creating the first Task Brief in a repository, verify whether the
+repository-root `/task-briefs/` path is ignored. If not, make adding
+`/task-briefs/` to the root `.gitignore` the first implementation change in
+that Task Brief; do not edit `.gitignore` yourself.
+
 For each task, write a Task Brief:
 
 - Use the exact repository-root path `task-briefs/NN-task-name.md`, with tasks

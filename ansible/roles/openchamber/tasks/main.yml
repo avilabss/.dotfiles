@@ -4,6 +4,8 @@
   register: openchamber_check
   changed_when: false
   failed_when: false
+  environment:
+    PATH: "{{ ansible_facts['env']['HOME'] }}/.local/bin:{{ ansible_facts['env']['PATH'] }}"
 
 - name: Check Node.js version for OpenChamber
   ansible.builtin.command: node --version

@@ -20,3 +20,15 @@ the user to install, connect, or authenticate it. Do not request new tooling
 when an available method is reliable.
 
 Tool availability does not authorize consequential external actions.
+
+## Process lifecycle
+
+- Run builds, tests, migrations, and similar task commands in the foreground.
+  When legitimate work exceeds the default timeout, set an explicit longer
+  timeout instead of using `&`, `nohup`, `disown`, or `setsid` merely to avoid
+  waiting.
+- Start a persistent background process, service, or container only when the
+  approved task requires it. Record how it was started and how to stop it, and
+  stop it before completion unless the user explicitly wants it left running.
+- After an interruption or timeout that may have spawned workers, check for and
+  clean up owned leftovers before retrying.

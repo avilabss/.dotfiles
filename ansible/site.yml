@@ -98,4 +98,3 @@
           - "Setup complete! Next steps:"
           - "  1. Restart your terminal (or source ~/.zshrc)"
           - "  2. Open neovim - Lazy will auto-install plugins"
-          - "  3. Run opencode, then /connect to authenticate OpenAI"

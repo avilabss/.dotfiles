@@ -64,6 +64,5 @@
   },
   "server": {
     "port": 4096
-  },
-  "shell": "/usr/bin/zsh"
+  }
 }

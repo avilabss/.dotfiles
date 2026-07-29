@@ -4,7 +4,22 @@
   register: opencode_check
   changed_when: false
   failed_when: false
+  environment:
+    PATH: "{{ ansible_facts['env']['HOME'] }}/.opencode/bin:{{ ansible_facts['env']['HOME'] }}/.local/bin:{{ ansible_facts['env']['PATH'] }}"
 
-- name: Install opencode via install script
-  ansible.builtin.shell: curl -fsSL {{ opencode_install_url }} | bash
+- name: Install opencode
   when: opencode_check.rc != 0
+  block:
+    - name: Install opencode via install script
+      ansible.builtin.shell: set -o pipefail && curl -fsSL {{ opencode_install_url | quote }} | bash
+      args:
+        executable: /bin/bash
+
+  rescue:
+    - name: Warn that opencode installation failed
+      ansible.builtin.debug:
+        msg: "OpenCode's official installer failed on this host; skipping it without failing the bootstrap."
+
+    - name: Record opencode installation failure
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ ((dotfiles_failed_packages | default([])) + ['opencode']) | unique }}"

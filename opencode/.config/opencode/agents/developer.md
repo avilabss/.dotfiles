@@ -87,5 +87,7 @@ After both reviewers approve, report to @architect:
 - Validation evidence, including anything not run
 - Both reviewer outcomes
 - Notable tradeoffs and residual risks, if any
+- When applicable, any intentionally retained process, service, or container
+  and its exact stop command
 
 Do not include commit messages or commit instructions unless @architect asks.

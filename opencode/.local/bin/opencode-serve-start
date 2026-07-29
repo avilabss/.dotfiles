@@ -9,13 +9,41 @@ pid_file="$state_dir/serve.pid"
 log_file="$state_dir/serve.log"
 db_file="${XDG_DATA_HOME:-$HOME/.local/share}/opencode/opencode.db"
 db_vacuum_warn_bytes="${OPENCODE_DB_VACUUM_WARN_BYTES:-1073741824}"
+log_max_bytes="${OPENCODE_SERVE_LOG_MAX_BYTES:-26214400}"
+log_keep="${OPENCODE_SERVE_LOG_KEEP:-3}"
+
+if [[ -z "${OPENCODE_SERVER_PASSWORD:-}" ]]; then
+  echo "OPENCODE_SERVER_PASSWORD is required." >&2
+  exit 1
+fi
 
 mkdir -p "$state_dir"
 
-if [[ -f "$db_file" ]] && (( $(stat -c %s "$db_file") >= db_vacuum_warn_bytes )); then
-  echo "Warning: OpenCode database is $(numfmt --to=iec-i --suffix=B "$(stat -c %s "$db_file")")." >&2
-  echo "Stop OpenCode/OpenChamber and run: opencode-db-vacuum" >&2
+if [[ -f "$db_file" ]]; then
+  db_size="$(wc -c <"$db_file")"
+  if (( db_size >= db_vacuum_warn_bytes )); then
+    echo "Warning: OpenCode database is $db_size bytes." >&2
+    echo "Stop OpenCode/OpenChamber and run: opencode-db-vacuum" >&2
+  fi
 fi
+
+rotate_log() {
+  local file="$1"
+  local file_size
+  local generation
+
+  [[ -f "$file" ]] || return 0
+  file_size="$(wc -c <"$file")"
+  (( file_size >= log_max_bytes )) || return 0
+
+  rm -f "$file.$log_keep"
+  for ((generation = log_keep - 1; generation >= 1; generation--)); do
+    if [[ -f "$file.$generation" ]]; then
+      mv "$file.$generation" "$file.$((generation + 1))"
+    fi
+  done
+  mv "$file" "$file.1"
+}
 
 if [[ -f "$pid_file" ]]; then
   pid="$(cat "$pid_file")"
@@ -35,9 +63,18 @@ if ! command -v opencode >/dev/null 2>&1; then
   exit 1
 fi
 
+rotate_log "$log_file"
+
 nohup opencode serve --hostname "$hostname" --port "$port" >>"$log_file" 2>&1 &
 pid="$!"
 printf '%s\n' "$pid" >"$pid_file"
+
+sleep 1
+if ! kill -0 "$pid" 2>/dev/null; then
+  rm -f "$pid_file"
+  echo "opencode serve exited during startup. Check $log_file." >&2
+  exit 1
+fi
 
 echo "Started opencode serve on $hostname:$port (pid $pid)."
 echo "Log: $log_file"

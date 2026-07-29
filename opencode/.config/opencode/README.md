@@ -37,6 +37,11 @@ You + @architect
 4. Any implementation change starts a fresh review by both reviewers. Once both
    approve the same state, developer reports back to architect.
 
+Run long builds, tests, migrations, and similar work in the foreground with an
+explicit larger timeout when needed. Start persistent processes, services, or
+containers only deliberately, record their owner and stop command, and clean
+them up unless the user explicitly wants them retained.
+
 ## Agents
 
 | Agent | Normal use |
@@ -102,15 +107,24 @@ The helpers run manually; they do not install a system service.
 | `openchamber-serve-start` | Starts OpenChamber on `0.0.0.0:4097` with its managed OpenCode process on port `4095` |
 | `openchamber-serve-stop` | Stops the helper-managed OpenChamber process |
 
-Override the OpenCode bind with `OPENCODE_SERVE_HOSTNAME` and
-`OPENCODE_SERVE_PORT`. Because the helper binds to every interface by default,
-set `OPENCODE_SERVER_PASSWORD` unless the network is fully trusted. See
+Both start helpers bind to `0.0.0.0` by default and refuse to launch without a
+non-empty password: `OPENCODE_SERVER_PASSWORD` for `opencode-serve-start` and
+`OPENCHAMBER_UI_PASSWORD` for `openchamber-serve-start`. There is no
+helper-supported passwordless launch; provide secrets through the environment
+and keep them uncommitted. See
 [OpenCode server authentication](https://opencode.ai/docs/server/#authentication).
-OpenChamber logs to
+
+Override the OpenCode bind with `OPENCODE_SERVE_HOSTNAME` and
+`OPENCODE_SERVE_PORT`. OpenChamber logs to
 `~/.local/state/openchamber/serve.log`; override its bind with
 `OPENCHAMBER_SERVE_HOST` and `OPENCHAMBER_SERVE_PORT`, and its managed OpenCode
-port with `OPENCODE_PORT`. Set `OPENCHAMBER_UI_PASSWORD` unless the network is
-fully trusted.
+port with `OPENCODE_PORT`.
+
+Session interruption and OpenChamber shutdown perform best-effort cleanup of
+owned foreground or managed processes, but detached daemons, containers,
+system services, and similar external state can survive. OpenChamber stops only
+the OpenCode server it manages; an explicitly external OpenCode server remains
+running.
 
 OpenCode and OpenChamber launchers warn when the OpenCode database reaches 1
 GiB. Stop both applications before running `opencode-db-vacuum`.
