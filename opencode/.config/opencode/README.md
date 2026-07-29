@@ -134,6 +134,11 @@ Existing names are never overwritten; a numeric suffix is added on collision.
 OpenCode grants the architect directory-boundary access there, while its actual
 edit permission remains limited to handoff `.md` files; unrelated external
 directories retain their existing approval or denial rules.
+Architect creates allowed Task Briefs and handoffs, updates them in place, or
+deletes them; it does not move or rename them. OpenCode 1.18.9 authorizes an
+`apply_patch` move from its source without separately authorizing the
+destination. This prompt guardrail is the accepted residual risk for this
+trusted local-model workflow; no enforcement plugin or wrapper is installed.
 The command reports the absolute path when done. Start a fresh session and
 reference that path. Handoffs are local, unversioned transition artifacts;
 review and delete them when no longer needed, especially if their context has

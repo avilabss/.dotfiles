@@ -16,6 +16,8 @@ Derive the name from the focus or objective. Inspect candidate paths first and
 never overwrite. Check each exact `.md` candidate in sequence without listing
 or globbing the directory. If the preferred path exists, append `-2`, then
 `-3`, and so on before `.md` until the path is unused.
+Create the selected path directly; do not move or rename an existing file into
+place.
 
 Include only what a fresh session needs:
 
