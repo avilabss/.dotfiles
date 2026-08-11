@@ -144,6 +144,15 @@ nvim-treesitter`, or run `:TSInstall <language>` after fixing a prerequisite.
 `<leader>` is **Space** and `<localleader>` is **backslash**. `<C-x>` means
 Ctrl+x and `<M-x>` means Alt+x. Pause after Space to see the which-key menu.
 
+Press `<leader>ch` in Normal mode to search described keymaps active in the
+current context. The Telescope picker includes global mappings plus
+buffer-local mappings currently provided by features such as LSP and Gitsigns,
+across Normal, Insert, Visual, operator-pending, and Terminal modes. Type to
+fuzzy-filter the results, press Enter to execute the selected mapping, or press
+Escape twice from the initial Insert mode to close the picker. Lazy or
+buffer-local mappings that are not active in the current buffer do not appear
+here; the sections below remain the cross-context reference.
+
 ### Native commenting
 
 Commenting uses the buffer's `commentstring` and Neovim's built-in mappings.
