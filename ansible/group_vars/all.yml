@@ -39,10 +39,13 @@ rustup_install_url: "https://sh.rustup.rs"
 # Poetry
 poetry_install_url: "https://install.python-poetry.org"
 
-# Neovim (Linux - installed from GitHub release for 0.11+)
-neovim_version: "v0.11.0"
-neovim_arch: "{{ 'arm64' if ansible_facts['architecture'] in ['aarch64', 'arm64'] else 'x86_64' }}"
-neovim_tarball_url: "https://github.com/neovim/neovim/releases/download/{{ neovim_version }}/nvim-linux-{{ neovim_arch }}.tar.gz"
+# Neovim (Linux)
+neovim_release_api_url: "https://api.github.com/repos/neovim/neovim/releases/latest"
+neovim_linux_architectures:
+  x86_64: x86_64
+  amd64: x86_64
+  aarch64: arm64
+  arm64: arm64
 neovim_install_dir: "/opt/nvim"
 
 # OpenCode

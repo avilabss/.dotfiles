@@ -17,6 +17,7 @@ common_packages:
   - fastfetch
 
 dev_tool_packages:
+  - build-essential
   - golang
   - nodejs
   - python3

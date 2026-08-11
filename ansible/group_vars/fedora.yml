@@ -14,6 +14,9 @@ common_packages:
   - fastfetch
 
 dev_tool_packages:
+  - gcc
+  - gcc-c++
+  - make
   - golang
   - nodejs
   - npm

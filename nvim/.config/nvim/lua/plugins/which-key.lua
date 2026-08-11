@@ -1,3 +1,6 @@
+-- which-key displays a popup of available keybindings after a partial key sequence.
+-- It makes the <leader> groups discoverable, which is especially useful when returning
+-- to this configuration after time away. Wait briefly after <leader> to see the menu.
 return {
     {
         "folke/which-key.nvim",

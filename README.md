@@ -27,7 +27,7 @@ The default run installs the core setup. Common alternatives are:
 | Area | Tools |
 |---|---|
 | Shell and terminal | Zsh, Oh My Zsh, Tmux, Starship, JetBrainsMono Nerd Font |
-| Editor | Neovim with LSP, completion, debugging, and Telescope |
+| Editor | [Neovim](docs/neovim.md) with LSP, debugging, Telescope, and Gitsigns/Fugitive Git workflows |
 | Development | Git, Go, Rust, Node.js, Python, pipx, uv, and Poetry |
 | Utilities | btop, ripgrep, fastfetch, GNU Stow, and platform essentials |
 
@@ -78,7 +78,7 @@ Run `opencode`, enter `/connect`, choose **OpenAI (ChatGPT Plus/Pro)**, and
 complete browser OAuth. Credentials stay outside this repository at
 `~/.local/share/opencode/auth.json`.
 
-See the [OpenCode usage guide](opencode/.config/opencode/README.md) for the
+See the [OpenCode usage guide](docs/opencode.md) for the
 agent workflow, commands, skills, models, and server helpers.
 
 ## After installation

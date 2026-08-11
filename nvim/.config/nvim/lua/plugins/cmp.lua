@@ -1,3 +1,6 @@
+-- nvim-cmp provides the completion popup; LuaSnip expands code snippets.
+-- Suggestions come from the active LSP, snippets, file paths, and current buffer.
+-- Use Ctrl+Space to open it, Ctrl+n/p or Tab/Shift-Tab to navigate, and Enter to accept.
 return {
     -- LuaSnip: Snippet engine
     {
@@ -41,12 +44,9 @@ return {
                     -- Confirm completion
                     ['<CR>'] = cmp.mapping.confirm({ select = false }), -- Don't auto-select
 
-                    -- Tab/Shift-Tab: Accept Copilot, navigate cmp, or expand snippet
+                    -- Tab/Shift-Tab: Navigate cmp or expand snippets
                     ['<Tab>'] = cmp.mapping(function(fallback)
-                        local copilot = require("copilot.suggestion")
-                        if copilot.is_visible() then
-                            copilot.accept()
-                        elseif cmp.visible() then
+                        if cmp.visible() then
                             cmp.select_next_item()
                         elseif luasnip.expand_or_jumpable() then
                             luasnip.expand_or_jump()

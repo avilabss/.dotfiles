@@ -1,3 +1,6 @@
+-- Telescope is a fuzzy-finder for quickly searching files and project content.
+-- Use <leader>ff for files, <leader>fg for text, <leader>fb for open buffers,
+-- and <leader>fh for Neovim help topics.
 return {
     {
         'nvim-telescope/telescope.nvim', 

@@ -1,3 +1,6 @@
+-- toggleterm manages terminal windows inside Neovim.
+-- Ctrl+\ toggles the default floating terminal; <leader>tf/th/tv opens a floating,
+-- horizontal, or vertical terminal. Escape returns from terminal mode to Normal mode.
 return {
     {
         "akinsho/toggleterm.nvim",
@@ -36,17 +39,20 @@ return {
             map('n', '<leader>th', ':ToggleTerm direction=horizontal<CR>', { desc = 'Horizontal terminal', noremap = true, silent = true })
             map('n', '<leader>tv', ':ToggleTerm direction=vertical<CR>', { desc = 'Vertical terminal', noremap = true, silent = true })
 
-            -- Terminal mode mappings
-            function _G.set_terminal_keymaps()
-                local opts = { buffer = 0 }
-                vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts) -- ESC to exit terminal mode
-                vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-                vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
-                vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
-                vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
-            end
-
-            vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
+            -- Terminal mode mappings, scoped only to Toggleterm buffers.
+            local terminal_group = vim.api.nvim_create_augroup("ToggletermMappings", { clear = true })
+            vim.api.nvim_create_autocmd("TermOpen", {
+                group = terminal_group,
+                pattern = "term://*toggleterm#*",
+                callback = function(event)
+                    local opts = { buffer = event.buf }
+                    vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts) -- ESC to exit terminal mode
+                    vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+                    vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+                    vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+                    vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+                end,
+            })
         end,
     },
 }

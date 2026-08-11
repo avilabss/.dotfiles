@@ -1,8 +1,13 @@
+-- nvim-dap adds debugger support using the Debug Adapter Protocol.
+-- Its companion plugins install adapters, provide debugger panels, and show variable
+-- values inline. Debug commands use the <leader>d prefix.
 return {
     -- DAP (Debug Adapter Protocol)
     {
         "mfussenegger/nvim-dap",
         dependencies = {
+            "mason-org/mason.nvim",
+
             -- UI for DAP
             "rcarriga/nvim-dap-ui",
             "nvim-neotest/nvim-nio",
@@ -16,9 +21,54 @@ return {
         config = function()
             local dap = require("dap")
             local dapui = require("dapui")
+            local mason_dap = require("mason-nvim-dap")
+
+            local function environment_python(prefix)
+                if not prefix or prefix == "" then
+                    return nil
+                end
+
+                local path = vim.fn.has("win32") == 1
+                    and vim.fs.joinpath(prefix, "Scripts", "python.exe")
+                    or vim.fs.joinpath(prefix, "bin", "python")
+                return vim.fn.executable(path) == 1 and path or nil
+            end
+
+            local function resolve_python()
+                local active_python = environment_python(vim.env.VIRTUAL_ENV)
+                    or environment_python(vim.env.CONDA_PREFIX)
+                if active_python then
+                    return active_python
+                end
+
+                local filename = vim.api.nvim_buf_get_name(0)
+                local project_root = vim.fs.root(filename ~= "" and filename or 0, {
+                    "pyproject.toml",
+                    "setup.py",
+                    "setup.cfg",
+                    "requirements.txt",
+                    ".git",
+                }) or vim.fn.getcwd()
+                for _, directory in ipairs({ ".venv", "venv" }) do
+                    local project_python = environment_python(vim.fs.joinpath(project_root, directory))
+                    if project_python then
+                        return project_python
+                    end
+                end
+
+                for _, executable in ipairs({ "python3", "python" }) do
+                    local system_python = vim.fn.exepath(executable)
+                    if system_python ~= "" then
+                        return system_python
+                    end
+                end
+
+                vim.notify("No Python interpreter is available for debugpy", vim.log.levels.ERROR)
+                return dap.ABORT
+            end
 
             -- Setup mason-nvim-dap for auto-installing debuggers
-            require("mason-nvim-dap").setup({
+            mason_dap.setup({
                 ensure_installed = {
                     "python",      -- debugpy for Python
                     "codelldb",    -- for Rust, C, C++
@@ -26,8 +76,100 @@ return {
                     "js",          -- for JavaScript/TypeScript
                 },
                 automatic_installation = true,
-                handlers = {},
+                handlers = {
+                    function(config)
+                        mason_dap.default_setup(config)
+                    end,
+                    python = function(config)
+                        for _, configuration in ipairs(config.configurations or {}) do
+                            configuration.pythonPath = resolve_python
+                        end
+                        mason_dap.default_setup(config)
+                    end,
+                },
             })
+
+            local function js_debug_adapter(translated_type)
+                return function(callback)
+                    local command = vim.fn.exepath("js-debug-adapter")
+                    if command == "" then
+                        vim.notify(
+                            "Mason's js-debug-adapter is unavailable; install it with :DapInstall js",
+                            vim.log.levels.ERROR
+                        )
+                        return
+                    end
+
+                    local adapter = {
+                        type = "server",
+                        host = "127.0.0.1",
+                        port = "${port}",
+                        executable = {
+                            command = command,
+                            args = { "${port}", "127.0.0.1" },
+                        },
+                    }
+                    if translated_type then
+                        adapter.enrich_config = function(config, on_config)
+                            local translated = vim.deepcopy(config)
+                            translated.type = translated_type
+                            on_config(translated)
+                        end
+                    end
+                    callback(adapter)
+                end
+            end
+
+            -- vscode-js-debug's standalone server uses the pwa-* types. The
+            -- aliases keep common VS Code launch.json types usable without
+            -- mutating the project configurations that nvim-dap loads on demand.
+            dap.adapters["pwa-node"] = js_debug_adapter()
+            dap.adapters["pwa-chrome"] = js_debug_adapter()
+            dap.adapters.node = js_debug_adapter("pwa-node")
+            dap.adapters.chrome = js_debug_adapter("pwa-chrome")
+
+            local javascript_configurations = {
+                {
+                    type = "pwa-node",
+                    request = "launch",
+                    name = "Node: Launch current file",
+                    program = "${file}",
+                    cwd = "${workspaceFolder}",
+                    sourceMaps = true,
+                    console = "integratedTerminal",
+                },
+                {
+                    type = "pwa-node",
+                    request = "attach",
+                    name = "Node: Attach to process",
+                    processId = require("dap.utils").pick_process,
+                    cwd = "${workspaceFolder}",
+                    sourceMaps = true,
+                },
+                {
+                    type = "pwa-chrome",
+                    request = "launch",
+                    name = "Chrome: Launch URL",
+                    url = function()
+                        return vim.fn.input("URL: ", "http://localhost:3000")
+                    end,
+                    webRoot = "${workspaceFolder}",
+                    sourceMaps = true,
+                },
+                {
+                    type = "pwa-chrome",
+                    request = "attach",
+                    name = "Chrome: Attach to debug port",
+                    port = function()
+                        return tonumber(vim.fn.input("Chrome debug port: ", "9222")) or 9222
+                    end,
+                    webRoot = "${workspaceFolder}",
+                    sourceMaps = true,
+                },
+            }
+            for _, filetype in ipairs({ "javascript", "typescript", "javascriptreact", "typescriptreact" }) do
+                dap.configurations[filetype] = vim.deepcopy(javascript_configurations)
+            end
 
             -- Setup DAP UI
             dapui.setup({

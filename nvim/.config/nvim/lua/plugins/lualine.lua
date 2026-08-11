@@ -1,3 +1,6 @@
+-- lualine replaces Neovim's status line with useful editor and project information.
+-- It shows the current mode, Git branch/diff, diagnostics, file path/type, progress,
+-- and cursor location in one global Catppuccin-themed status line.
 return {
     {
         "nvim-lualine/lualine.nvim",
@@ -5,7 +8,7 @@ return {
         config = function()
             require("lualine").setup({
                 options = {
-                    theme = "catppuccin", -- Match your colorscheme
+                    theme = "catppuccin-nvim", -- Match the configured Catppuccin flavour
                     component_separators = { left = '|', right = '|' },
                     section_separators = { left = '', right = '' },
                     globalstatus = true, -- Single statusline for all windows

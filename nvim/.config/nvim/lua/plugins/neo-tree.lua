@@ -1,3 +1,6 @@
+-- Neo-tree is the file explorer shown beside the editor.
+-- Hidden and gitignored files remain visible in this setup.
+-- Press Ctrl+n in Normal mode to open or close it.
 return {
     {
         "nvim-neo-tree/neo-tree.nvim",

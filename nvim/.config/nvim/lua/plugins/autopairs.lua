@@ -1,3 +1,6 @@
+-- nvim-autopairs inserts matching brackets, quotes, and parentheses as you type.
+-- It loads only when entering Insert mode and cooperates with nvim-cmp so that
+-- confirming a completion can also insert the appropriate closing character.
 return {
     {
         "windwp/nvim-autopairs",

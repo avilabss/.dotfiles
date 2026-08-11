@@ -1,3 +1,5 @@
+-- vim-sleuth detects whether each file uses tabs or spaces and chooses the matching
+-- indentation width automatically. It works in the background with no keybindings.
 return {
     {
         "tpope/vim-sleuth",

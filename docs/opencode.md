@@ -1,8 +1,8 @@
 # OpenCode setup
 
-This is a stowed OpenCode configuration for planning, implementation, and two
-independent reviews. The optional Ansible role links this directory to
-`~/.config/opencode/`.
+This repository includes a stowed OpenCode configuration for planning,
+implementation, and two independent reviews. The optional Ansible role links
+the configuration to `~/.config/opencode/`.
 
 ## Install and authenticate
 
@@ -52,24 +52,25 @@ them up unless the user explicitly wants them retained.
 | `code-reviewer-1` | First independent correctness and standards review |
 | `code-reviewer-2` | Second independent review using the same review policy |
 
-The detailed contracts live in the [agent prompts](agents/) and the
-[shared reviewer prompt](prompts/code-reviewer.md).
+The detailed contracts live in the
+[agent prompts](../opencode/.config/opencode/agents/) and the
+[shared reviewer prompt](../opencode/.config/opencode/prompts/code-reviewer.md).
 
 ## Commands
 
 | Command | Purpose | Example |
 |---|---|---|
-| [`/handoff`](commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
-| [`/harvest`](commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
-| [`/wb-start`](commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
+| [`/handoff`](../opencode/.config/opencode/commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
+| [`/harvest`](../opencode/.config/opencode/commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
+| [`/wb-start`](../opencode/.config/opencode/commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
 
 ## Skills
 
 | Skill | Use it when |
 |---|---|
-| [`diagnosing-bugs`](skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
-| [`whitebox-development`](skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
-| [`whitebox-review`](skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
+| [`diagnosing-bugs`](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
+| [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
+| [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 
 Skills can trigger from context. When you want one explicitly, say, for example,
 `Use $whitebox-review to review <merge-request-url>`.
@@ -79,11 +80,13 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 - Task Briefs are temporary local files at `task-briefs/NN-task-name.md`. They
   are ignored by Git. Architect creates, revises, and removes them; developer
   and reviewers use the exact path as read-only input. See the
-  [architect prompt](agents/architect.md) for the lifecycle.
+  [architect prompt](../opencode/.config/opencode/agents/architect.md) for the
+  lifecycle.
 - `/handoff [focus]` writes a redacted note under
   `~/.local/state/opencode/handoffs/`. Start a fresh session, reference the path
   it reports, and delete the note when it is no longer useful. The
-  [command source](commands/handoff.md) owns the file format and naming rules.
+  [command source](../opencode/.config/opencode/commands/handoff.md) owns the
+  file format and naming rules.
 
 ## Models
 
@@ -93,7 +96,8 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 | Reviewer 2 | `openai/gpt-5.6-terra` |
 | Lightweight internal work | `openai/gpt-5.6-luna` |
 
-Assignments and runtime settings are defined in [`opencode.json`](opencode.json).
+Assignments and runtime settings are defined in
+[`opencode.json`](../opencode/.config/opencode/opencode.json).
 
 ## Server helpers
 

@@ -1,37 +1,46 @@
+-- auto-session remembers the files and window layout for each project.
+-- It saves automatically when leaving and restores automatically when returning.
+-- Use <leader>s followed by s/r/d/f to save, restore, delete, or find sessions.
 return {
     {
         "rmagatti/auto-session",
         config = function()
+            -- Preserve local buffer options so restored sessions retain filetypes and highlighting.
+            vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal,localoptions"
+
             require("auto-session").setup({
                 log_level = "error",
-                auto_session_enabled = true,
-                auto_save_enabled = true,
-                auto_restore_enabled = true,
-                auto_session_suppress_dirs = {
+                enabled = true,
+                auto_save = true,
+                auto_restore = true,
+                legacy_cmds = false,
+                suppressed_dirs = {
                     "~/",
                     "~/Downloads",
                     "~/Documents",
                     "/tmp",
                 },
-                auto_session_use_git_branch = false,
-                bypass_session_save_file_types = {
+                git_use_branch_name = false,
+                bypass_save_filetypes = {
                     "neo-tree",
                 },
 
                 -- Session lens (telescope integration)
                 session_lens = {
                     load_on_setup = true,
-                    theme_conf = { border = true },
-                    previewer = false,
+                    picker_opts = {
+                        border = true,
+                        previewer = false,
+                    },
                 },
             })
 
             -- Keybindings
             local map = vim.keymap.set
-            map('n', '<leader>ss', ':SessionSave<CR>', { desc = 'Save session', noremap = true, silent = true })
-            map('n', '<leader>sr', ':SessionRestore<CR>', { desc = 'Restore session', noremap = true, silent = true })
-            map('n', '<leader>sd', ':SessionDelete<CR>', { desc = 'Delete session', noremap = true, silent = true })
-            map('n', '<leader>sf', ':SessionSearch<CR>', { desc = 'Find sessions', noremap = true, silent = true })
+            map('n', '<leader>ss', '<cmd>AutoSession save<CR>', { desc = 'Save session', noremap = true, silent = true })
+            map('n', '<leader>sr', '<cmd>AutoSession restore<CR>', { desc = 'Restore session', noremap = true, silent = true })
+            map('n', '<leader>sd', '<cmd>AutoSession delete<CR>', { desc = 'Delete session', noremap = true, silent = true })
+            map('n', '<leader>sf', '<cmd>AutoSession search<CR>', { desc = 'Find sessions', noremap = true, silent = true })
         end,
     },
 }
