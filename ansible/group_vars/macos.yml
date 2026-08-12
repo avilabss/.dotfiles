@@ -19,6 +19,7 @@ brew_casks:
 flameshot_cask: flameshot
 google_chrome_cask: google-chrome
 ghostty_cask: ghostty
+zen_browser_cask: zen
 
 dev_tool_packages:
   - go

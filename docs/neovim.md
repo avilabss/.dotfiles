@@ -2,7 +2,18 @@
 
 This repository installs the latest stable Neovim, stows its configuration to
 `~/.config/nvim`, and provides an IDE-like setup without hiding the underlying
-Neovim workflows.
+Neovim workflows. New users should install it, open `nvim` once to fetch the
+locked plugins, and then start with the keymap cheat sheet.
+
+## Find what you need
+
+| Goal | Go to |
+|---|---|
+| Install or update Neovim | [Install and update Neovim](#install-and-update-neovim) |
+| Learn everyday navigation and editing keys | [Cheat sheet](#cheat-sheet) |
+| Check language support and prerequisites | [Language workflows](#language-workflows) |
+| Understand plugin and session behavior | [Configuration and plugins](#configuration-and-plugins) and [Automatic behavior](#automatic-behavior) |
+| Diagnose a missing tool, mapping, or formatter | [Management and troubleshooting](#management-and-troubleshooting) |
 
 ## Install and update Neovim
 
@@ -36,11 +47,12 @@ The configuration lives under [`nvim/.config/nvim/`](../nvim/.config/nvim/):
 - `lazy-lock.json` is committed and pins plugin revisions for reproducible
   installs.
 
-On first launch, lazy.nvim bootstraps itself and installs the locked plugins, so
-Git and network access are required. Its update checker reports available
-updates but does not install them. Use `:Lazy update` when intentionally
-updating plugins, review the resulting lockfile, and commit it. After pulling a
-changed lockfile, `:Lazy restore` returns installed plugins to those revisions.
+On first launch, run `nvim` with Git and network access available. lazy.nvim
+then bootstraps itself and installs the locked plugins. Its update checker
+reports available updates but does not install them. Use `:Lazy update` when
+intentionally updating plugins, review the resulting lockfile, and commit it.
+After pulling a changed lockfile, `:Lazy restore` returns installed plugins to
+those revisions.
 
 The interface uses **Catppuccin Mocha**, with lualine, indentation guides,
 icons, and which-key. The main functionality groups are:

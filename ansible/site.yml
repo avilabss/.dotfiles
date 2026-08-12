@@ -54,6 +54,9 @@
     - role: google_chrome
       tags: [google-chrome, chrome, optional]
 
+    - role: zen_browser
+      tags: [zen, zen-browser, optional]
+
     - role: flameshot
       tags: [flameshot, optional]
 

@@ -1,58 +1,80 @@
-# Dotfiles Project - Agent Guide
+# Dotfiles maintainer guide
 
-## Project Overview
+This guide is for contributors and coding agents changing the dotfiles
+repository. Before editing, identify whether the change belongs in an Ansible
+role, a platform variable file, or a stowed configuration directory. Run the
+checks in [Mandatory checks](#mandatory-checks) before reporting completion.
 
-Personal dotfiles repo managed with **Ansible** (system setup, package install) and **GNU Stow** (config symlinking). Supports **macOS**, **Debian/Ubuntu**, and **Fedora**.
-
-Entry point: `./bootstrap.sh` installs Ansible, then runs `ansible/site.yml`.
+The repository uses **Ansible** for system setup and package installation and
+**GNU Stow** for configuration symlinks. It supports **macOS**,
+**Debian/Ubuntu**, and **Fedora**. The entry point, `./bootstrap.sh`, installs
+Ansible when needed and then runs `ansible/site.yml`.
 
 ## Architecture
 
 ```
-bootstrap.sh          → Installs Ansible, runs playbook
-ansible/site.yml      → Main playbook, defines roles and tags
-ansible/group_vars/   → Per-platform package lists and variables
-ansible/roles/        → One role per tool/feature
-nvim/, zsh/, tmux/, starship/, ghostty/  → Stow directories (symlinked to ~)
+bootstrap.sh        → Installs Ansible and runs the playbook
+ansible/site.yml    → Classifies the platform and defines roles and tags
+ansible/group_vars/ → Shared and per-platform variables and package lists
+ansible/roles/      → One role per tool or feature
+<tool>/             → Stow package mirroring paths below the home directory
 ```
 
 ### Platform Detection
 
-The playbook auto-detects the OS via `group_by` in `pre_tasks` and assigns the host to one of: `macos`, `debian`, `fedora`. This triggers automatic loading of the matching `ansible/group_vars/<platform>.yml`.
+The playbook uses `ansible.builtin.group_by` in `pre_tasks` to assign the host
+to `macos`, `debian`, or `fedora`. Ansible then loads the matching
+`ansible/group_vars/<platform>.yml`. Unsupported systems fail before roles run.
 
 ### Roles
 
-There are two kinds of roles:
+Roles fall into two groups:
 
-- **Core roles**: Run by default (`common`, `fonts`, `dev_tools`, `zsh`, `nvim`, `tmux`, `starship`)
-- **Optional roles**: Tagged `optional`, skipped unless `--all` or `--tags <name>` is used (`opencode`, `openchamber`, `ghostty`, `google_chrome`, `flameshot`, `openwhispr`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine`)
-- Desktop app roles (`ghostty`, `google_chrome`, `flameshot`, `openwhispr`) are optional so headless/server installs can keep the normal core dotfiles without pulling GUI packages. Ghostty stows its own config from its role, not from default `stow_packages`.
+| Type | Roles | Behavior |
+|---|---|---|
+| Core | `common`, `fonts`, `zsh`, `tmux`, `starship`, `dev_tools`, `nvim` | Run during the default bootstrap |
+| Optional | `opencode`, `openchamber`, `ghostty`, `google_chrome`, `zen_browser`, `flameshot`, `openwhispr`, `docker`, `ssh`, `xrdp`, `qemu`, `waydroid`, `sunshine` | Carry the `optional` tag and run only with `--all` or a selected role tag |
 
-Some optional roles are Linux-only (restricted via `when: ansible_os_family != 'Darwin'` in `site.yml`).
+`openwhispr`, `ssh`, `xrdp`, and `qemu` are Linux-only. `waydroid` is
+Fedora-only. The remaining optional roles are registered for every supported
+platform. `zen_browser` uses the `zen` and `zen-browser` tags; the role names
+and complete tag list are authoritative in `ansible/site.yml`.
+
+Desktop app roles are optional so headless systems can retain the core setup
+without pulling GUI packages. Ghostty stows its own configuration from its
+role rather than through the default `stow_packages` list.
 
 ### Stow
 
-The `common` role centrally backs up conflicts and stows every default package in `stow_packages` (`ansible/group_vars/all.yml`). Optional configuration roles that are not in that list, such as OpenCode and Ghostty, may stow their own packages. Other individual roles (zsh, tmux, etc.) only handle tool-specific setup like installing Oh My Zsh or TPM.
+The `common` role backs up paths listed in `stow_conflict_files` and stows each
+default package in `stow_packages`; both variables live in
+`ansible/group_vars/all.yml`. Optional configuration roles outside that list,
+including OpenCode, OpenChamber, and Ghostty, stow their own packages. Other
+roles handle only tool-specific setup, such as installing Oh My Zsh or TPM.
 
 ### Tags
 
-`bootstrap.sh` passes `--skip-tags optional` by default. The `--all` flag removes that skip. Individual roles can be targeted with `--tags <name>`.
+`bootstrap.sh` passes `--skip-tags optional` by default. `--all` removes that
+skip. `--tags <name>` targets individual roles, while `common` still runs
+because it carries the `always` tag.
 
 ## Conventions
 
 ### Ansible
 
-- Always use fully qualified collection names (e.g., `ansible.builtin.apt`, not `apt`)
-- Per-platform task dispatch: `main.yml` includes platform-specific files (`macos.yml`, `debian.yml`, `fedora.yml`, or `linux.yml`)
+- Always use fully qualified collection names, such as `ansible.builtin.apt`.
+- Dispatch platform-specific work from `main.yml` to `macos.yml`,
+  `debian.yml`, `fedora.yml`, or `linux.yml`.
 - Package lists go in `ansible/group_vars/<platform>.yml`, not hardcoded in tasks. GUI desktop apps should be optional roles rather than default common/dev packages when they are not useful on headless servers.
 - Optional third-party repositories can disappear or omit a release/architecture. If an optional package cannot be installed because its upstream repo is unavailable for the host, warn, add it to `dotfiles_failed_packages`, and continue rather than failing the whole bootstrap.
 - Prefer official package repositories with signature verification over convenience installer scripts. If a script or community package source is the only configured option, guard it by supported distro/release/architecture and skip with a warning elsewhere.
 - Common/shared variables go in `ansible/group_vars/all.yml`
-- Use `become: true` for tasks requiring root on Linux; macOS Homebrew tasks do NOT use become
+- Use `become: true` for tasks requiring root on Linux. macOS Homebrew tasks do
+  not use `become`.
 - macOS tasks need `environment: { PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}" }` for brew commands
 - Check if a tool is already installed before installing (idempotency)
 
-### Adding a New Role
+### Add a role
 
 1. Create `ansible/roles/<name>/tasks/main.yml`
 2. If per-platform logic is needed, create `macos.yml`, `debian.yml`, `fedora.yml` and dispatch from `main.yml`
@@ -61,31 +83,34 @@ The `common` role centrally backs up conflicts and stows every default package i
 5. If it's optional, add the `optional` tag alongside its name tag
 6. If it's Linux-only, add `when: ansible_os_family != 'Darwin'`
 
-### Adding a New Stow Package
+### Add a Stow package
 
 1. Create a directory at the repo root mirroring the home directory structure (e.g., `toolname/.config/toolname/config`)
 2. Add the directory name to `stow_packages` in `ansible/group_vars/all.yml`
 3. If it creates files that conflict with stow (like `.zshrc`), add them to `stow_conflict_files` in `ansible/group_vars/all.yml`
 
-### Adding a New Platform
+### Add a platform
 
 1. Create `ansible/group_vars/<platform>.yml` with package lists
 2. Add the distribution name to the `group_by` key in `ansible/site.yml` pre_tasks
 3. Add `<platform>.yml` task files to roles that need platform-specific logic (at minimum: `common`, `dev_tools`)
 
-### Adding Packages to an Existing Platform
+### Add platform packages
 
 - **macOS**: Edit `ansible/group_vars/macos.yml` — use `common_packages` (brew), `brew_casks` (cask), `dev_tool_packages`, or `brew_taps`
 - **Debian/Ubuntu**: Edit `ansible/group_vars/debian.yml` — use `common_packages` or `dev_tool_packages`
 - **Fedora**: Edit `ansible/group_vars/fedora.yml` — use `common_packages` or `dev_tool_packages`
 
-## Mandatory Checks After Changes
+## Mandatory checks
 
-1. **Update README.md** — if you add/remove a role, tool, or change usage, update the README tables and usage examples
-2. **Update AGENTS.md** — if you change conventions, add new patterns, or alter the architecture, keep this file in sync
-3. **Update site.yml** — if you add a new role, register it with proper tags
-4. **Update group_vars** — if a new role needs packages, add variables to the relevant platform files
-5. **YAML validity** — ensure all `.yml` files are valid YAML (no tab indentation, proper structure)
+1. Update `README.md` when adding or removing a role or tool, or when changing
+   user-facing usage.
+2. Update `AGENTS.md` when conventions, patterns, or architecture change.
+3. Register every new role in `ansible/site.yml` with the correct tags and
+   platform condition.
+4. Put package variables in the relevant `ansible/group_vars/` files.
+5. Validate every changed YAML file; use spaces for indentation and preserve
+   valid YAML structure.
 
 ## Theme
 

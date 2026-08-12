@@ -29,6 +29,7 @@ ghostty_copr_repo: "scottames/ghostty"
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm"
 
 flameshot_package: flameshot
+zen_browser_flatpak_package: flatpak
 
 openwhispr_packages:
   - wl-clipboard

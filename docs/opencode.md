@@ -2,7 +2,18 @@
 
 This repository includes a stowed OpenCode configuration for planning,
 implementation, and two independent reviews. The optional Ansible role links
-the configuration to `~/.config/opencode/`.
+the configuration to `~/.config/opencode/`. Start by installing the role,
+authenticating, and asking `@architect` to define one task.
+
+## Find what you need
+
+| Goal | Go to |
+|---|---|
+| Install and complete first-use authentication | [Install and authenticate](#install-and-authenticate) |
+| Run the normal agent process | [Everyday workflow](#everyday-workflow) |
+| Choose an agent, command, or skill | [Agents](#agents), [Commands](#commands), or [Skills](#skills) |
+| Run a password-protected web helper | [Server helpers](#server-helpers) |
+| Update configuration safely | [Restart after configuration changes](#restart-after-configuration-changes) |
 
 ## Install and authenticate
 
@@ -15,6 +26,10 @@ From the dotfiles repository:
 Start `opencode`, enter `/connect`, select **OpenAI (ChatGPT Plus/Pro)**, and
 complete browser OAuth. Credentials are stored outside the repository at
 `~/.local/share/opencode/auth.json`.
+
+For a first task, open the target repository in OpenCode and ask `@architect`
+to inspect it and help define the requirements. Do not start implementation
+until requirements and the resulting plan have each been approved.
 
 ## Everyday workflow
 
@@ -101,7 +116,10 @@ Assignments and runtime settings are defined in
 
 ## Server helpers
 
-The helpers run manually; they do not install a system service.
+The helpers run manually; they do not install a system service. Their default
+`0.0.0.0` binds accept network connections, so set a strong password, keep the
+secret out of the repository and shell history, and restrict access with the
+host firewall or a trusted network.
 
 | Helper | What it does |
 |---|---|

@@ -1,0 +1,8 @@
+---
+- name: Include macOS Zen Browser tasks
+  ansible.builtin.include_tasks: macos.yml
+  when: "'macos' in group_names"
+
+- name: Include Linux Zen Browser tasks
+  ansible.builtin.include_tasks: linux.yml
+  when: "group_names | intersect(['debian', 'fedora']) | length > 0"

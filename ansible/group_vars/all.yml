@@ -54,6 +54,11 @@ opencode_install_url: "https://opencode.ai/install"
 # OpenChamber
 openchamber_npm_package: "@openchamber/web"
 
+# Zen Browser (Linux)
+zen_browser_flatpak_id: app.zen_browser.zen
+zen_browser_flatpak_remote: flathub
+zen_browser_flathub_url: https://dl.flathub.org/repo/flathub.flatpakrepo
+
 # Sunshine
 sunshine_service_name: app-dev.lizardbyte.app.Sunshine.service
 sunshine_csrf_allowed_origins:

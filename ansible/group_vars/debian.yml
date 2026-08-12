@@ -39,6 +39,7 @@ ghostty_supported_debian_distributions:
 chrome_url: "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
 
 flameshot_package: flameshot
+zen_browser_flatpak_package: flatpak
 
 openwhispr_packages:
   - wl-clipboard

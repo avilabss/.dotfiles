@@ -1,0 +1,20 @@
+---
+- name: Install Zen Browser on macOS
+  block:
+    - name: Install Zen Browser cask
+      community.general.homebrew_cask:
+        name: "{{ zen_browser_cask }}"
+        state: present
+      environment:
+        PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}"
+
+  rescue:
+    - name: Track failed Zen Browser install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ ((dotfiles_failed_packages | default([])) + ['zen']) | unique }}"
+
+    - name: Warn about unavailable Zen Browser cask
+      ansible.builtin.debug:
+        msg: >-
+          Homebrew cask {{ zen_browser_cask }} could not be installed on macOS;
+          continuing without Zen Browser. {{ ansible_failed_result.msg | default('') }}

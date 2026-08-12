@@ -1,0 +1,34 @@
+---
+- name: Install Zen Browser on Linux
+  become: true
+  block:
+    - name: Ensure Flatpak is installed
+      ansible.builtin.package:
+        name: "{{ zen_browser_flatpak_package }}"
+        state: present
+
+    - name: Configure Flathub remote
+      community.general.flatpak_remote:
+        name: "{{ zen_browser_flatpak_remote }}"
+        flatpakrepo_url: "{{ zen_browser_flathub_url }}"
+        method: system
+        state: present
+
+    - name: Install Zen Browser from Flathub
+      community.general.flatpak:
+        name: "{{ zen_browser_flatpak_id }}"
+        remote: "{{ zen_browser_flatpak_remote }}"
+        method: system
+        state: present
+
+  rescue:
+    - name: Track failed Zen Browser install
+      ansible.builtin.set_fact:
+        dotfiles_failed_packages: "{{ ((dotfiles_failed_packages | default([])) + ['zen']) | unique }}"
+
+    - name: Warn about failed Zen Browser installation
+      ansible.builtin.debug:
+        msg: >-
+          Zen Browser installation failed during {{ ansible_failed_task.name | default('Flatpak setup') }}
+          on {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }};
+          continuing without Zen Browser. {{ ansible_failed_result.msg | default('') }}

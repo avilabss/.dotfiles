@@ -1,9 +1,13 @@
 # Dotfiles
 
-Personal macOS, Debian/Ubuntu, and Fedora setup managed with Ansible and GNU
-Stow.
+This repository bootstraps a personal macOS, Debian/Ubuntu, or Fedora system
+with Ansible, then links user configuration with GNU Stow. A default run
+installs the command-line core only; desktop apps, servers, and other optional
+roles run only when selected.
 
-## Quick install
+## Install the core setup
+
+Clone the repository and run the bootstrap from its root:
 
 ```bash
 git clone https://github.com/avilabss/.dotfiles.git ~/dotfiles
@@ -11,14 +15,18 @@ cd ~/dotfiles
 ./bootstrap.sh
 ```
 
-The default run installs the core setup. Common alternatives are:
+The script installs Ansible when needed and runs `ansible/site.yml`. Choose a
+different mode only when you want optional roles or a dry run:
 
 ```bash
-./bootstrap.sh --all                 # Core setup and every optional role
-./bootstrap.sh --tags docker,ssh     # Selected optional roles
-./bootstrap.sh --tags zsh            # Re-run one core role
+./bootstrap.sh --all                 # Core setup and every applicable optional role
+./bootstrap.sh --tags docker,ssh     # Selected roles, plus the always-run common role
+./bootstrap.sh --tags zsh            # Re-run Zsh, plus the common role
 ./bootstrap.sh --check               # Ansible dry run
 ```
+
+`--all` removes the default `optional` skip. `--tags` passes the selected tags
+to Ansible; the `common` role is tagged `always` and still runs.
 
 ## What it installs
 
@@ -32,7 +40,7 @@ The default run installs the core setup. Common alternatives are:
 | Utilities | btop, ripgrep, fastfetch, GNU Stow, and platform essentials |
 
 The core Ansible role tags are `common`, `fonts`, `zsh`, `tmux`, `starship`,
-`dev-tools`, and `nvim`.
+`dev-tools`, and `nvim`. They run during the default bootstrap.
 
 ### Optional tools
 
@@ -44,19 +52,29 @@ Optional roles are skipped unless you use `--all` or select their tag.
 | `openchamber` | OpenCode web/PWA workspace | All supported platforms |
 | `ghostty` | Ghostty and its stowed configuration | All supported platforms |
 | `google-chrome` or `chrome` | Google Chrome | All supported platforms |
+| `zen` or `zen-browser` | Zen Browser | All supported platforms |
 | `flameshot` | Screenshots | All supported platforms |
 | `openwhispr` | Voice dictation and system-wide text insertion | Linux, x86_64 |
 | `docker` | Docker on Linux or OrbStack on macOS | All supported platforms |
 | `ssh` | OpenSSH server and firewall setup | Linux |
 | `xrdp` | RDP server | Linux |
 | `qemu` | QEMU guest agent | Linux |
-| `sunshine` | Sunshine game streaming server | All supported platforms |
+| `sunshine` | Sunshine game-streaming server | All supported platforms |
 | `waydroid` | Waydroid with Google apps and desktop launchers | Fedora |
 
 Some distributions, releases, or architectures do not publish every configured
 package. Where the role supports it, bootstrap prints a warning, skips the
 unavailable package, and summarizes the failure instead of stopping the rest of
 the setup.
+
+## User guides
+
+- [Neovim](docs/neovim.md): first launch, language tooling, keymaps, plugin
+  management, and troubleshooting.
+- [OpenCode](docs/opencode.md): first authentication, the agent workflow,
+  commands, skills, models, server helpers, and security boundaries.
+- [Sunshine](docs/sunshine.md): unattended Fedora host setup with NVIDIA, KDE
+  Plasma, Wayland, SDDM, and Moonlight.
 
 ## Platform packages
 
@@ -66,7 +84,7 @@ Package lists live in:
 - Debian/Ubuntu: `ansible/group_vars/debian.yml`
 - Fedora: `ansible/group_vars/fedora.yml`
 
-## OpenCode
+## Set up OpenCode
 
 Install OpenCode and stow its configuration:
 
@@ -78,13 +96,14 @@ Run `opencode`, enter `/connect`, choose **OpenAI (ChatGPT Plus/Pro)**, and
 complete browser OAuth. Credentials stay outside this repository at
 `~/.local/share/opencode/auth.json`.
 
-See the [OpenCode usage guide](docs/opencode.md) for the
-agent workflow, commands, skills, models, and server helpers.
+Continue with the [OpenCode guide](docs/opencode.md) before starting an agent
+workflow or exposing either server helper on the network.
 
 ## After installation
 
-1. Restart the terminal, or run `source ~/.zshrc`.
-2. Open Neovim and let Lazy install its plugins.
+1. Restart the terminal, or run `source ~/.zshrc`, to load the linked shell
+   configuration.
+2. Open Neovim and allow lazy.nvim to install its locked plugins.
 
 Tmux plugins are installed by bootstrap.
 
