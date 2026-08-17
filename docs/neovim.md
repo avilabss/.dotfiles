@@ -232,6 +232,14 @@ and index operations or native Vim diff splits.
 The Gitsigns mappings through `ih` are buffer-local to attached files;
 `<leader>gg` is the global Fugitive entry point.
 
+By default, Git and Fugitive collapse a wholly untracked directory into one
+status entry. To list every untracked file individually, matching VS Code's
+Source Control view, enable the setting globally:
+
+```bash
+git config --global status.showUntrackedFiles all
+```
+
 | Mode | Keys | Action |
 |---|---|---|
 | Normal | `]c` / `[c` | Go to next / previous Git hunk |

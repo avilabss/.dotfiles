@@ -84,6 +84,7 @@ The detailed contracts live in the
 | Skill | Use it when |
 |---|---|
 | [`diagnosing-bugs`](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
+| [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An explicit SSH worker should run resource-heavy commands while the local Git worktree remains authoritative |
 | [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
 | [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 
