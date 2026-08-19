@@ -32,7 +32,3 @@ implementation guesses.
 
 Do not impose blanket TDD, launch extra review agents, commit, push, publish, or
 mutate external systems.
-
-Adapted from diagnostic patterns reviewed in
-[`mattpocock/skills`](https://github.com/mattpocock/skills) at revision
-`2ab958093e83e0ec752e6c1c5932da465bf23e0c` (2026-07-28).
