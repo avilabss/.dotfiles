@@ -77,6 +77,8 @@ The detailed contracts live in the
 |---|---|---|
 | [`/handoff`](../opencode/.config/opencode/commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
 | [`/harvest`](../opencode/.config/opencode/commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
+| [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Clean up resources owned by the active remote-compute workspace | `/remote-compute-cleanup` |
+| [`/wb-review`](../opencode/.config/opencode/commands/wb-review.md) | Review a Whitebox merge request without changing source or external systems | `/wb-review <merge-request-url>` |
 | [`/wb-start`](../opencode/.config/opencode/commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
 
 ## Skills
@@ -84,7 +86,7 @@ The detailed contracts live in the
 | Skill | Use it when |
 |---|---|
 | [`diagnosing-bugs`](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
-| [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An explicit SSH worker should run resource-heavy commands while the local Git worktree remains authoritative |
+| [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An explicit SSH worker should run every project execution command while the current local Git worktree remains authoritative |
 | [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
 | [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 

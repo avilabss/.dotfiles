@@ -1,22 +1,29 @@
 ---
 name: remote-compute
-description: Use `$remote-compute user@host` to activate a session-wide SSH worker for subsequent resource-heavy commands while keeping the local Git worktree authoritative.
+description: Use `$remote-compute user@host` to run all project execution on a session-scoped SSH worker while keeping the current local Git worktree authoritative.
 ---
 
 # Remote compute
 
-## Activate and delegate
+## Activate and scope
 
 `$remote-compute user@host` activates remote-compute mode for the rest of the
-current session. Treat `user@host` as one quoted SSH destination. Ask only when
-the destination is missing or ambiguous.
+current session and only for the current canonical local Git worktree. Treat
+`user@host` as one quoted SSH destination. Ask only when the destination or
+worktree is missing or ambiguous.
+
+Resolve the canonical worktree path and derive a stable, collision-resistant
+workspace identifier from it. Keep the active worker, canonical path, workspace
+identifier, and exact remote child as the session's remote-compute context. Do
+not apply that context to another worktree or persist or reuse it across
+sessions.
 
 Confirm SSH access and the tools needed for the intended work before using the
 worker. Stop and report any failed check rather than changing the worker. A
 later invocation with another destination switches workers after these checks.
 
-Never persist or reuse a worker across sessions. Activation does not stop,
-migrate, or restart work already running locally.
+Activation and worker switching do not stop, migrate, or restart existing work.
+Report any attributable persistent work left on the previous worker.
 
 Under the architect workflow, carry the active worker and remote-execution
 constraint into the Task Brief. The architect runs no implementation commands;
@@ -24,9 +31,8 @@ the executing agent applies this workflow.
 
 ## Prepare and synchronize
 
-Resolve the canonical local Git worktree and derive a stable identifier from
-its canonical path. Use only the resulting isolated child beneath this fixed
-remote base:
+Use only the isolated child for the active workspace beneath this fixed remote
+base:
 
 ```text
 $HOME/.opencode-remote-compute/worktrees/<workspace-id>
@@ -44,12 +50,58 @@ never use deletion against the fixed base, remote home, or another destination.
 
 ## Execute
 
-Keep edits, source inspection, and Git state in the local worktree. Refresh the
-snapshot as needed, then run applicable builds, tests, Docker, FFmpeg, and
-similar resource-heavy commands from the remote child. Do not treat remote
-source changes as authoritative.
+While mode is active, keep only authoritative source editing and inspection,
+Git state, snapshot creation, synchronization, and lightweight coordination
+local. Coordination includes deriving paths and identities, checking SSH and
+tools, invoking commands on the worker, and reporting results; it must not run
+the project locally.
 
-Do not automatically clean up the remote child or stop persistent work.
+Run every project execution command from the exact remote child. This includes
+builds, tests, linting, formatting, type checks, package and dependency
+operations, migrations, data processing, Docker and other container operations,
+media or compute tools such as FFmpeg, and deployment commands. Do not run heavy
+or project-runtime commands locally while mode is active.
+
+The local worktree and its Git state remain authoritative. Never treat remote
+source or Git changes as authoritative and never synchronize them back. When a
+remote command proposes a source change, inspect its result and reproduce the
+intended edit in the local worktree before creating a new snapshot.
+
+Before creating a remote process, persistent workload, container, image,
+volume, network, generated or deployment artifact, or other worker-local state,
+associate it with the stable workspace identifier whenever the tool supports
+labels, names, paths, metadata, or ownership records. Record exact resource
+identities and inspection and removal details as they become available. Use
+this attribution for later cleanup; do not rely on broad host-wide discovery.
+Also record known effects on external or shared deployment systems without
+including secrets.
+
+## Clean up intentionally
+
+Run cleanup only when explicitly requested, including through
+`/remote-compute-cleanup`. Use the active session context: the current canonical
+worktree, its recomputed workspace identifier and exact remote child, and the
+active worker. Refuse cleanup if that context is missing or ambiguous, if the
+current worktree does not match it, or if the target cannot be verified as the
+isolated child beneath the fixed remote base.
+
+Use established labels, names, paths, metadata, and ownership records to
+identify attributable resources. Refuse ambiguous, host-wide, or unrelated
+deletion; preserve other worktrees and unrelated worker state. Report anything
+that cannot be attributed or safely removed instead of guessing.
+
+In this order:
+
+1. Stop attributable processes and persistent workloads.
+2. Remove attributable containers, worktree-specific images, volumes, and
+   networks.
+3. Remove attributable generated and deployment artifacts and any other
+   attributable worker-local state outside the remote child.
+4. Remove only the verified isolated remote child, and remove it last.
+
+Do not automatically roll back Kubernetes clusters, registries, cloud accounts,
+shared deployment environments, or other external/shared systems. Report known
+external effects that may need manual rollback.
 
 ## Report
 
@@ -58,3 +110,7 @@ context for the user to act.
 
 If a workload is intentionally left running, report the worker, workspace,
 workload identity, and how to inspect its status or logs and stop it.
+
+After cleanup, report the worker and workspace, what was stopped and removed,
+anything that could not be safely removed, and known external effects requiring
+manual review or rollback.
