@@ -60,6 +60,21 @@ because it carries the `always` tag.
 
 ## Conventions
 
+### Documentation
+
+- Preserve each document's established structure, tone, audience, and level of
+  detail.
+- Put new information in the most relevant existing section instead of
+  appending disconnected notes.
+- Keep `README.md` focused on the project overview, primary setup and usage,
+  and links to detailed guides.
+- Keep detailed operational behavior in the relevant guide or authoritative
+  workflow source.
+- Avoid duplicating details across the README, guides, commands, skills, and
+  other sources; link to the authoritative detail when useful.
+- Make narrow, task-relevant edits instead of rewriting or reorganizing
+  unrelated documentation.
+
 ### Ansible
 
 - Always use fully qualified collection names, such as `ansible.builtin.apt`.
@@ -104,7 +119,7 @@ because it carries the `always` tag.
 ## Mandatory checks
 
 1. Update `README.md` when adding or removing a role or tool, or when changing
-   user-facing usage.
+   top-level setup or usage.
 2. Update `AGENTS.md` when conventions, patterns, or architecture change.
 3. Register every new role in `ansible/site.yml` with the correct tags and
    platform condition.

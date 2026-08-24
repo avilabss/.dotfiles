@@ -77,9 +77,14 @@ The detailed contracts live in the
 |---|---|---|
 | [`/handoff`](../opencode/.config/opencode/commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
 | [`/harvest`](../opencode/.config/opencode/commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
-| [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Clean up resources owned by the active remote-compute workspace | `/remote-compute-cleanup` |
+| [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Explicitly clean up the active remote-compute worker | `/remote-compute-cleanup` |
 | [`/wb-review`](../opencode/.config/opencode/commands/wb-review.md) | Review one Whitebox effort from one or more work-item/MR URLs without external changes | `/wb-review <work-item-url> [<work-item-or-mr-url> ...]` |
 | [`/wb-start`](../opencode/.config/opencode/commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
+
+Remote-compute assumes each worker machine is dedicated. Its explicit cleanup
+destructively prunes all unused Docker state machine-wide, including unused
+volumes. Running Docker resources are not removed by that prune, and external
+systems are not automatically rolled back.
 
 ## Skills
 

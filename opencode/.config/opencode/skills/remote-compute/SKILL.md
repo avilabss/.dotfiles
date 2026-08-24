@@ -72,9 +72,9 @@ volume, network, generated or deployment artifact, or other worker-local state,
 associate it with the stable workspace identifier whenever the tool supports
 labels, names, paths, metadata, or ownership records. Record exact resource
 identities and inspection and removal details as they become available. Use
-this attribution for later cleanup; do not rely on broad host-wide discovery.
-Also record known effects on external or shared deployment systems without
-including secrets.
+this attribution for targeted cleanup; the machine-wide Docker prune defined
+below is the only exception. Also record known effects on external or shared
+deployment systems without including secrets.
 
 ## Clean up intentionally
 
@@ -85,9 +85,15 @@ active worker. Refuse cleanup if that context is missing or ambiguous, if the
 current worktree does not match it, or if the target cannot be verified as the
 isolated child beneath the fixed remote base.
 
+Remote-compute assumes each worker machine is dedicated to that worker. On the
+verified active worker, machine-wide Docker pruning is therefore intentionally
+allowed during explicit cleanup. This does not weaken boundaries around another
+worker's files or external/shared systems.
+
 Use established labels, names, paths, metadata, and ownership records to
-identify attributable resources. Refuse ambiguous, host-wide, or unrelated
-deletion; preserve other worktrees and unrelated worker state. Report anything
+identify attributable resources. Except for the required Docker prune below,
+refuse ambiguous, host-wide, or unrelated deletion; preserve other worktrees,
+another worker's files, and unrelated non-Docker worker state. Report anything
 that cannot be attributed or safely removed instead of guessing.
 
 In this order:
@@ -97,7 +103,17 @@ In this order:
    networks.
 3. Remove attributable generated and deployment artifacts and any other
    attributable worker-local state outside the remote child.
-4. Remove only the verified isolated remote child, and remove it last.
+4. On the active worker, remove all unused Docker containers, images, networks,
+   build cache, and volumes with this exact command, and record whether it
+   succeeds:
+
+   ```bash
+   docker system prune -af --volumes
+   ```
+
+   This machine-wide prune is intentionally broader than workspace attribution,
+   but it does not remove running Docker resources.
+5. Remove only the verified isolated remote child, and remove it last.
 
 Do not automatically roll back Kubernetes clusters, registries, cloud accounts,
 shared deployment environments, or other external/shared systems. Report known
@@ -112,5 +128,7 @@ If a workload is intentionally left running, report the worker, workspace,
 workload identity, and how to inspect its status or logs and stop it.
 
 After cleanup, report the worker and workspace, what was stopped and removed,
-anything that could not be safely removed, and known external effects requiring
-manual review or rollback.
+whether the machine-wide Docker prune succeeded, anything that failed or could
+not be safely removed, and known external effects requiring manual review or
+rollback. Never imply cleanup completed successfully when the Docker prune
+failed.
