@@ -1,9 +1,9 @@
 # OpenCode setup
 
 This repository includes a stowed OpenCode configuration for planning,
-implementation, and two independent reviews. The optional Ansible role links
-the configuration to `~/.config/opencode/`. Start by installing the role,
-authenticating, and asking `@architect` to define one task.
+implementation, and two independent reviews. The optional Ansible role links it
+to `~/.config/opencode/`. Install the role, authenticate, and ask `@architect`
+to define one task.
 
 ## Find what you need
 
@@ -24,7 +24,7 @@ From the dotfiles repository:
 ```
 
 Start `opencode`, enter `/connect`, select **OpenAI (ChatGPT Plus/Pro)**, and
-complete browser OAuth. Credentials are stored outside the repository at
+complete browser OAuth. OpenCode stores credentials outside the repository at
 `~/.local/share/opencode/auth.json`.
 
 For a first task, open the target repository in OpenCode and ask `@architect`
@@ -47,16 +47,16 @@ You + @architect
 1. Start with `@architect`. Agree on the requirements, then approve the proposed
    plan. These are two separate approval points.
 2. Architect writes a Task Brief and sends one approved task to `@developer`.
-3. Developer implements and validates it, then requests both policy-identical
-   reviewers in parallel. Both approvals are required.
+3. Developer implements and validates it, then requests both reviewers in
+   parallel under the same review policy. Both approvals are required.
 4. Any implementation change starts a fresh review by both reviewers. Once both
    approve the same state, developer reports back to architect.
 
-Run long builds, tests, migrations, and similar work in the foreground with an
-explicit larger timeout when needed. Start persistent processes, services, or
-containers only deliberately, record their owner and stop command, and clean
-them up unless the user explicitly wants them retained. Remote-compute workers
-instead retain useful state until teardown is explicitly requested.
+Run long builds, tests, migrations, and similar work in the foreground. Set a
+larger timeout when needed. Start persistent processes, services, or containers
+only as a planned part of the task. Record their owner and stop command, then
+clean them up unless the user explicitly asks to retain them. Remote-compute
+workers keep useful state until someone explicitly requests teardown.
 
 ## Agents
 
@@ -64,7 +64,7 @@ instead retain useful state until teardown is explicitly requested.
 |---|---|
 | `architect` | Discovers requirements, plans work, writes Task Briefs, and coordinates delivery |
 | `developer` | Implements one approved Task Brief and runs the dual-review loop |
-| `repo-scouter` | Refreshes `ARCHITECTURE.md` when repository guidance is materially incomplete |
+| `repo-scouter` | Refreshes `ARCHITECTURE.md` when repository guidance lacks important details |
 | `code-reviewer-1` | First independent correctness and standards review |
 | `code-reviewer-2` | Second independent review using the same review policy |
 
@@ -84,11 +84,11 @@ The detailed contracts live in the
 
 After activation verifies SSH access and allocation, remote-compute treats the
 entire worker as an exclusive, disposable host-local sandbox. The agent may
-administer and clean up the whole host, including packages, services, processes,
-containers, and reboots, without further approval. Ordinary task completion
-retains useful worker state; `/remote-compute-cleanup` explicitly tears down the
-whole worker's host-local state. External and shared systems are never included
-in that authority or automatically rolled back.
+administer and clean up the whole host without further approval. That authority
+includes packages, services, processes, containers, and reboots. Ordinary task
+completion retains useful worker state. `/remote-compute-cleanup` tears down the
+whole worker's host-local state. This authority never includes external or
+shared systems, and it does not automatically roll them back.
 
 ## Skills
 
@@ -129,8 +129,8 @@ Assignments and runtime settings are defined in
 
 ## Server helpers
 
-The helpers run manually; they do not install a system service. Their default
-`0.0.0.0` binds accept network connections, so set a strong password, keep the
+The helpers run manually and do not install a system service. Their default
+`0.0.0.0` binds accept network connections. Set a strong password, keep the
 secret out of the repository and shell history, and restrict access with the
 host firewall or a trusted network.
 
@@ -143,10 +143,10 @@ host firewall or a trusted network.
 | `openchamber-serve-stop` | Stops the helper-managed OpenChamber process |
 
 Both start helpers bind to `0.0.0.0` by default and refuse to launch without a
-non-empty password: `OPENCODE_SERVER_PASSWORD` for `opencode-serve-start` and
-`OPENCHAMBER_UI_PASSWORD` for `openchamber-serve-start`. There is no
-helper-supported passwordless launch; provide secrets through the environment
-and keep them uncommitted. See
+non-empty password. Set `OPENCODE_SERVER_PASSWORD` for `opencode-serve-start`
+and `OPENCHAMBER_UI_PASSWORD` for `openchamber-serve-start`. The helpers do not
+support passwordless launches. Provide secrets through the environment and keep
+them uncommitted. See
 [OpenCode server authentication](https://opencode.ai/docs/server/#authentication).
 
 Override the OpenCode bind with `OPENCODE_SERVE_HOSTNAME` and
@@ -156,10 +156,9 @@ Override the OpenCode bind with `OPENCODE_SERVE_HOSTNAME` and
 port with `OPENCODE_PORT`.
 
 Session interruption and OpenChamber shutdown perform best-effort cleanup of
-owned foreground or managed processes, but detached daemons, containers,
-system services, and similar external state can survive. OpenChamber stops only
-the OpenCode server it manages; an explicitly external OpenCode server remains
-running.
+owned foreground or managed processes. Detached daemons, containers, system
+services, and similar external state can survive. OpenChamber stops only the
+OpenCode server it manages. An external OpenCode server remains running.
 
 OpenCode and OpenChamber launchers warn when the OpenCode database reaches 1
 GiB. Stop both applications before running `opencode-db-vacuum`.
@@ -178,8 +177,8 @@ Start a new login shell, or source `~/.zprofile`, before using
 - Use a command for a workflow you intentionally start.
 - Use a skill for reusable behavior OpenCode should recognize from context.
 
-Keep one authoritative source for each workflow and make its completion criteria
-checkable.
+Keep one authoritative source for each workflow. Its completion criteria must
+be checkable.
 
 ## Restart after configuration changes
 

@@ -20,7 +20,7 @@ Arguments:
 
 $ARGUMENTS
 
-Treat every supplied URL as a discovery seed. Require at least one unambiguous
+Treat each supplied URL as a discovery seed. Require at least one unambiguous
 Whitebox ticket/work-item or merge-request URL. Work-item URLs are the primary
 input; direct merge-request URLs remain supported. Ticket and merge-request
 URLs may be mixed. Normalize equivalent duplicate URLs and retain each unique
@@ -36,9 +36,9 @@ Before detailed review, resolve the complete ReviewBundle in this order:
    branch or implementation references, and linked MRs. Read every supplied
    MR's project and source/target branches, metadata, description, and
    relationship evidence.
-2. Build a combined review scope that identifies every seed and retains each
+2. Build a combined review scope that identifies every seed. Retain each
    ticket's acceptance criteria separately. Reconcile the seeds into one
-   implementation effort, and verify that every supplied ticket and MR belongs
+   implementation effort and verify that every supplied ticket and MR belongs
    to it.
 3. If the seeds resolve to unrelated efforts, incompatible implementation
    branches, or different canonical core MRs, stop before detailed review. Give
@@ -62,11 +62,11 @@ Before detailed review, resolve the complete ReviewBundle in this order:
    evidence.
 
 Finish the complete ReviewBundle before detailed review. It must identify the
-combined ticket scope and per-ticket acceptance criteria, canonical core MR or
-explicit core-`main` fallback, all deduplicated plugin/library MRs, relevant
-branches and temporary dependency refs, relationship evidence, and unresolved
-readiness findings. Then apply `$whitebox-review` for the architecture-aware
-analysis.
+combined ticket scope and per-ticket acceptance criteria. Required contents
+also include the canonical core MR or explicit core-`main` fallback, all
+deduplicated plugin/library MRs, relevant branches and temporary dependency
+refs, relationship evidence, and unresolved readiness findings. Then apply
+`$whitebox-review` for the architecture-aware analysis.
 
 This workflow is read-only. It may inspect the merge request, related merge
 requests, repositories, work-item context, diffs, and other evidence needed by
@@ -95,5 +95,5 @@ reproduction. Use short, understandable sentences rather than compressing the
 comment into a complicated one-liner.
 
 If there are no actionable findings, say so clearly. Always end with
-`Residual risks and validation gaps`, including meaningful remaining risks or
+`Residual risks and validation gaps`. Include meaningful remaining risks or
 gaps, or `None identified` when there are none.

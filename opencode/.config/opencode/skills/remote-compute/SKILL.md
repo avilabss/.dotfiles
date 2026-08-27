@@ -81,12 +81,13 @@ destruction or rollback.
 ## Recover or switch workers
 
 After a reboot, SSH interruption, or other disruption, reconnect and verify
-that the recorded worker identity and allocation still match. Revalidate and,
-when practical, repair the needed capabilities. Verify or recreate the exact
-remote child, resynchronize it from the canonical local worktree whenever its
-contents may be stale or uncertain, and continue execution there. Report and
-stop on an identity, allocation, access, or unrecoverable capability mismatch;
-never recover source or Git state from the worker into the local worktree.
+that the recorded worker identity and allocation still match. Revalidate the
+needed capabilities and repair them when practical. Verify or recreate the
+exact remote child. Resynchronize it from the canonical local worktree whenever
+its contents may be stale or uncertain, then continue execution there. Report
+and stop on an identity, allocation, access, or unrecoverable capability
+mismatch. Never recover source or Git state from the worker into the local
+worktree.
 
 A later invocation with another destination switches workers. Verify the new
 worker before replacing the active context, then create and synchronize its

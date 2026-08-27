@@ -1,9 +1,9 @@
 # Neovim setup
 
-This repository installs the latest stable Neovim, stows its configuration to
-`~/.config/nvim`, and provides an IDE-like setup without hiding the underlying
-Neovim workflows. New users should install it, open `nvim` once to fetch the
-locked plugins, and then start with the keymap cheat sheet.
+This repository installs the latest stable Neovim and stows its configuration
+to `~/.config/nvim`. The setup adds IDE features while keeping standard Neovim
+workflows available. After installation, open `nvim` once to fetch the locked
+plugins, then start with the keymap cheat sheet.
 
 ## Find what you need
 
@@ -29,10 +29,10 @@ To rerun only its installation role (plus the always-run common role), use:
 ./bootstrap.sh --tags nvim
 ```
 
-- **Linux:** Ansible resolves GitHub's latest non-prerelease Neovim release and
+- **Linux.** Ansible resolves GitHub's latest non-prerelease Neovim release and
   installs its official x86-64 or ARM64 tarball under `/opt/nvim`, with
   `/usr/local/bin/nvim` as the entry point. A rerun upgrades an older install.
-- **macOS:** Ansible updates Homebrew metadata and keeps the `neovim` formula at
+- **macOS.** Ansible updates Homebrew metadata and keeps the `neovim` formula at
   its latest version.
 
 This latest-stable policy applies to Neovim itself, not to plugins.
@@ -49,19 +49,19 @@ The configuration lives under [`nvim/.config/nvim/`](../nvim/.config/nvim/):
 
 On first launch, run `nvim` with Git and network access available. lazy.nvim
 then bootstraps itself and installs the locked plugins. Its update checker
-reports available updates but does not install them. Use `:Lazy update` when
-intentionally updating plugins, review the resulting lockfile, and commit it.
-After pulling a changed lockfile, `:Lazy restore` returns installed plugins to
-those revisions.
+reports available updates but does not install them. To update plugins, run
+`:Lazy update`, review the resulting lockfile, and commit it. After pulling a
+changed lockfile, run `:Lazy restore` to return installed plugins to those
+revisions.
 
-The interface uses **Catppuccin Mocha**, with lualine, indentation guides,
-icons, and which-key. The main functionality groups are:
+The interface uses Catppuccin Mocha, with lualine, indentation guides, icons,
+and which-key. Its main features are:
 
-- **Editing:** nvim-cmp, LuaSnip, nvim-autopairs, native Neovim commenting, and
+- **Editing.** nvim-cmp, LuaSnip, nvim-autopairs, native Neovim commenting, and
   vim-sleuth indentation detection.
-- **Languages:** native LSP configured through nvim-lspconfig, Mason-managed
+- **Languages.** Native LSP configured through nvim-lspconfig, Mason-managed
   servers and tools, Conform formatting, and Treesitter textobjects.
-- **Projects:** Telescope, Neo-tree, Gitsigns, Fugitive, automatic sessions,
+- **Projects.** Telescope, Neo-tree, Gitsigns, Fugitive, automatic sessions,
   Toggleterm, and nvim-dap with its UI and virtual text.
 
 ## Automatic behavior
@@ -92,40 +92,40 @@ fallback when that formatter is unavailable.
 | Python | Pyright + Ruff | Ruff import organization, then Ruff formatting | Pyright types + Ruff diagnostics | debugpy: launch current file |
 | Rust | rust-analyzer | rustfmt | rust-analyzer runs Clippy checks | codelldb: launch an executable |
 | Go | gopls | goimports | gopls with staticcheck enabled | Delve: package, arguments, file test, or `go.mod` package test |
-| HTML | html | Prettier | html | — |
-| CSS / SCSS | cssls | Prettier | cssls | — |
-| JSON / JSONC | jsonls with schema support | Prettier for JSON; jsonls fallback for JSONC | jsonls | — |
+| HTML | html | Prettier | html | None |
+| CSS / SCSS | cssls | Prettier | cssls | None |
+| JSON / JSONC | jsonls with schema support | Prettier for JSON; jsonls fallback for JSONC | jsonls | None |
 | JavaScript / TypeScript / React | ts_ls + project-aware ESLint | Prettier | ts_ls + ESLint when configured in the project | Node launch/attach; Chrome launch/attach |
-| Svelte | svelte + project-aware ESLint | Project-local Prettier integration, otherwise svelte LSP fallback | svelte + ESLint when configured in the project | — |
+| Svelte | svelte + project-aware ESLint | Project-local Prettier integration, otherwise svelte LSP fallback | svelte + ESLint when configured in the project | None |
 
 ### Language details and prerequisites
 
-- **Python:** Pyright remains responsible for hover and type information. Ruff
+- **Python.** Pyright remains responsible for hover and type information. Ruff
   supplies diagnostics and code actions, organizes imports, and formats. When
   debugpy launches the current file, it chooses the first executable Python
   from an active `VIRTUAL_ENV` or `CONDA_PREFIX`, project-root `.venv`,
   project-root `venv`, `python3`, then `python`. If no project marker is found,
   the current working directory is used for the `.venv` and `venv` checks.
-- **Rust:** rust-analyzer runs `clippy` for checks and Conform runs `rustfmt`.
+- **Rust.** rust-analyzer runs `clippy` for checks and Conform runs `rustfmt`.
   The codelldb launch choices prompt for the executable; one also prompts for
   arguments. Installing the adapter does not build the executable.
-- **Go:** gopls has staticcheck analysis enabled, while goimports formats and
+- **Go.** gopls has staticcheck analysis enabled, while goimports formats and
   organizes imports. Delve can launch the workspace package, prompt for
   arguments, debug the current test file, or test the current file's package
   in a `go.mod` project.
-- **JavaScript, TypeScript, and React:** ts_ls supplies language features.
+- **JavaScript, TypeScript, and React.** ts_ls supplies language features.
   ESLint attaches only when nvim-lspconfig finds a project ESLint
   configuration; the project must also provide a compatible ESLint library.
   These dotfiles do not add ESLint to projects.
-- **JSON:** jsonls supplies diagnostics and schema-aware completion for JSON
+- **JSON.** jsonls supplies diagnostics and schema-aware completion for JSON
   and JSONC. Prettier is configured directly for JSON; JSONC uses the attached
   LSP formatting fallback.
-- **Web formatting:** Mason's Prettier handles JavaScript, TypeScript, React,
+- **Web formatting.** Mason's Prettier handles JavaScript, TypeScript, React,
   HTML, CSS/SCSS, and JSON. Svelte deliberately uses it only when a project
   directory provides both `node_modules/.bin/prettier` and
   `node_modules/prettier-plugin-svelte`; otherwise formatting falls back to the
   attached svelte LSP. The dotfiles do not add those dependencies to projects.
-- **JavaScript debugging:** the installed JavaScript adapter provides explicit
+- **JavaScript debugging.** The installed JavaScript adapter provides explicit
   Node choices to launch the current file or attach to a selected process, and
   Chrome choices to launch a prompted URL or attach to a prompted remote-debug
   port. Adapter installation alone does not supply a working application,
@@ -133,37 +133,37 @@ fallback when that formatter is unavailable.
 
 On Linux, the default development packages include `build-essential` on
 Debian/Ubuntu and `gcc`, `gcc-c++`, and `make` on Fedora. These provide the
-compiler/build prerequisites commonly needed when Treesitter parsers or native
-plugins must compile.
+compiler and build tools needed to compile Treesitter parsers or native plugins.
 
 ### Treesitter on first use
 
 When a buffer's filetype has a supported parser, the configuration enables an
-installed parser or starts installing the missing parser on demand. Highlighting
-and indentation are enabled only when the parser and corresponding queries are
-available. Textobjects likewise depend on language query support.
+installed parser or starts installing the missing parser on demand. It enables
+highlighting and indentation only when the parser and matching queries are
+available. Textobjects also depend on language query support.
 
 The locked nvim-treesitter `main` revision requires Neovim 0.12 or later and
-`tree-sitter-cli` 0.26.1 or later installed outside npm. Mason is configured to
-install the CLI from its official release assets; its package provided 0.26.11
-when this lock was validated. Parser installation also needs network access,
-`curl`, `tar`, and a working C compiler. Unsupported languages or missing
-prerequisites stay on normal Neovim syntax/indentation. Check `:checkhealth
-nvim-treesitter`, or run `:TSInstall <language>` after fixing a prerequisite.
+`tree-sitter-cli` 0.26.1 or later installed outside npm. The configuration tells
+Mason to install the CLI from its official release assets. Its package provided
+0.26.11 when this lock was validated. Parser installation also needs network
+access, `curl`, `tar`, and a working C compiler. Unsupported languages or
+missing prerequisites stay on normal Neovim syntax/indentation. Check
+`:checkhealth nvim-treesitter`, or run `:TSInstall <language>` after fixing a
+prerequisite.
 
 ## Cheat sheet
 
-`<leader>` is **Space** and `<localleader>` is **backslash**. `<C-x>` means
+`<leader>` is `Space` and `<localleader>` is `backslash`. `<C-x>` means
 Ctrl+x and `<M-x>` means Alt+x. Pause after Space to see the which-key menu.
 
 Press `<leader>ch` in Normal mode to search described keymaps active in the
-current context. The Telescope picker includes global mappings plus
-buffer-local mappings currently provided by features such as LSP and Gitsigns,
-across Normal, Insert, Visual, operator-pending, and Terminal modes. Type to
-fuzzy-filter the results, press Enter to execute the selected mapping, or press
-Escape twice from the initial Insert mode to close the picker. Lazy or
-buffer-local mappings that are not active in the current buffer do not appear
-here; the sections below remain the cross-context reference.
+current context. The Telescope picker includes global mappings and active
+buffer-local mappings from features such as LSP and Gitsigns. It covers Normal,
+Insert, Visual, operator-pending, and Terminal modes. Type to fuzzy-filter the
+results. Press Enter to execute the selected mapping, or press Escape twice from
+the initial Insert mode to close the picker. Lazy or buffer-local mappings that
+are not active in the current buffer do not appear here. The sections below
+remain the cross-context reference.
 
 ### Native commenting
 
@@ -223,7 +223,7 @@ snippet placeholder.
 | `<CR>` | Confirm the explicitly selected item; nothing is auto-selected |
 | `<M-e>` | Start nvim-autopairs fast-wrap |
 
-### Git: Gitsigns and Fugitive
+### Git with Gitsigns and Fugitive
 
 Use Gitsigns for inline signs and buffer-local hunk navigation, blame,
 staging/reset, and current-file diffs. Use Fugitive for repository-wide status
@@ -233,8 +233,8 @@ The Gitsigns mappings through `ih` are buffer-local to attached files;
 `<leader>gg` is the global Fugitive entry point.
 
 By default, Git and Fugitive collapse a wholly untracked directory into one
-status entry. To list every untracked file individually, matching VS Code's
-Source Control view, enable the setting globally:
+status entry. To match VS Code's Source Control view and list every untracked
+file, enable the setting globally:
 
 ```bash
 git config --global status.showUntrackedFiles all
@@ -293,7 +293,7 @@ current one. Within a diff split, native Vim diff commands such as `]c`, `[c`,
 ### Treesitter textobjects
 
 Selections work in Visual and operator-pending modes, so they can be combined
-with operators (for example, `daf`). They require a parser and matching
+with operators. For example, use `daf`. They require a parser and matching
 textobject queries.
 
 | Keys | Textobject |
@@ -376,7 +376,7 @@ windows, `q` or `<Esc>` closes the window.
 | `:checkhealth mason` | Check Mason and external-tool prerequisites |
 | `:checkhealth` | Run all available health checks |
 
-If a mapping is missing, first confirm the relevant buffer-local feature is
-active (LSP or Gitsigns), then use `:map <keys>` or `:verbose map <keys>` to see
-what owns it. For plugin failures, open `:Lazy`; for formatting failures, start
-with `:ConformInfo`.
+If a mapping is missing, first confirm that its buffer-local feature, such as
+LSP or Gitsigns, is active. Then use `:map <keys>` or `:verbose map <keys>` to
+see what owns it. For plugin failures, open `:Lazy`. For formatting failures,
+start with `:ConformInfo`.

@@ -9,9 +9,9 @@ The result is not a display-free Wayland host. SDDM automatically starts a real
 Plasma session for a dummy display, and Sunshine captures that session with
 KMS.
 
-> **Security warning:** Automatic login gives anyone with physical access an
+> **Security warning.** Automatic login gives anyone with physical access an
 > unlocked desktop after boot. KMS also gives the Sunshine executable access to
-> `CAP_SYS_ADMIN`, a broad and powerful Linux capability. Use this setup only on
+> `CAP_SYS_ADMIN`, a broad Linux capability. Use this setup only on
 > a physically controlled host, keep Sunshine off the public internet, and
 > follow the rollback steps if unattended access is no longer required.
 
@@ -40,7 +40,7 @@ verify that Plasma detects the dummy display, then choose its resolution,
 refresh rate, scale, and primary-display status.
 
 Record the current SDDM, power-management, screen-locking, display, Sunshine
-capture, and service settings. The rollback section uses those values.
+capture, and service settings. You will need those values for rollback.
 
 ## What the Ansible role handles
 
@@ -54,10 +54,10 @@ sunshine_csrf_allowed_origins:
   - https://<host-ip>:47990
 ```
 
-Use the stable LAN IP address or local DNS name that the browser will use,
-including `https://` and port `47990`. Add only origins you trust, and record the
-previous list for rollback. If more than one trusted host name is needed, add
-another YAML list item rather than allowing a broad network origin.
+Use the stable LAN IP address or local DNS name that the browser will use.
+Include `https://` and port `47990`. Add only origins you trust, and record the
+previous list for rollback. If you need more than one trusted host name, add a
+YAML list item for each one rather than allowing a broad network origin.
 
 Also record whether firewalld and the two Sunshine rules exist before the role
 runs. Query the active daemon when available, or query the permanent
@@ -84,22 +84,23 @@ fi
 printf 'default zone: %s\n' "${FIREWALL_ZONE:-not installed}"
 ```
 
-Record the enabled/active states, default zone, and each `yes` or `no` query
-result. Do not treat a failed daemon query as `no`; use the offline branch.
-From the dotfiles repository, install the optional Sunshine role:
+Record whether firewalld is enabled and active, the default zone, and each `yes`
+or `no` query result. Do not treat a failed daemon query as `no`. Use the
+offline branch. From the dotfiles repository, install the optional Sunshine
+role:
 
 ```bash
 ./bootstrap.sh --tags sunshine
 ```
 
-On Fedora, the role:
+On Fedora, the role does the following:
 
-- enables the configured LizardByte COPR and installs the native `Sunshine` RPM;
-- installs and starts firewalld;
-- opens Sunshine's configured TCP and UDP port ranges;
-- writes the configured web-UI origin to
-  `~/.config/sunshine/sunshine.conf`; and
-- enables and starts the canonical
+- Enables the configured LizardByte COPR and installs the native `Sunshine` RPM.
+- Installs and starts firewalld.
+- Opens Sunshine's configured TCP and UDP port ranges.
+- Writes the configured web UI origin to
+  `~/.config/sunshine/sunshine.conf`.
+- Enables and starts the canonical
   `app-dev.lizardbyte.app.Sunshine.service` user service.
 
 If the COPR or package is unavailable for the Fedora release or architecture,
@@ -115,21 +116,21 @@ grep '^csrf_allowed_origins' ~/.config/sunshine/sunshine.conf
 ```
 
 The final output must contain the exact origin selected above. Use that same
-origin for every web-UI step in this guide.
+origin for every web UI step in this guide.
 
 Do not substitute Flatpak or AppImage for this setup. Current upstream builds
 of those package types do not support KMS capture; the native RPM does.
 
-The role does **not** configure NVIDIA, the dummy display, SDDM automatic login,
-Plasma power behavior, KMS selection, or Moonlight pairing. Complete those
-steps below.
+The role does not configure NVIDIA, the dummy display, SDDM automatic login,
+Plasma power behavior, KMS selection, or Moonlight pairing. Complete those steps
+below.
 
 ## Enable a Plasma Wayland login
 
 A Wayland compositor does not run at the login screen. SDDM automatic login is
 what creates the unattended Plasma session that Sunshine captures.
 
-### Preferred: KDE System Settings
+### Preferred method in KDE System Settings
 
 1. Open **System Settings** and search for **Login Screen (SDDM)**.
 2. Open its behavior or advanced settings. The exact page name varies with the
@@ -138,9 +139,9 @@ what creates the unattended Plasma session that Sunshine captures.
    **Plasma (Wayland)** session.
 4. Apply the change and authenticate when prompted.
 
-This avoids guessing the installed session file name. Reconsider this choice
-if the machine is not physically secure: the account password is no longer a
-barrier to local access after boot.
+This avoids guessing the installed session file name. Do not use automatic
+login on a machine that is not physically secure. The account password no
+longer blocks local access after boot.
 
 ### Manual SDDM fallback
 
@@ -193,15 +194,15 @@ The type should be `wayland`, and the session should be active and local.
 
 ## Keep the graphical session available
 
-In **System Settings → Power Management** (called **Energy Saving** on some
-Plasma versions), adjust the active AC-power profile for an unattended host:
+In **System Settings → Power Management**, adjust the active AC-power profile
+for an unattended host. Some Plasma versions call this page **Energy Saving**.
 
 1. Prevent automatic system sleep, suspend, and hibernation.
 2. Set inactivity and lid actions, when present, so they do not end the session.
 3. Decide whether the display may power off. If powering it off makes the dummy
    output disappear, leave the output enabled.
 4. Review automatic screen locking. A lock screen can block unattended control
-   or capture on some versions; disabling it improves availability but further
+   or capture on some versions. Disabling it improves availability but further
    weakens physical security. Test the selected policy rather than assuming it
    works remotely.
 
@@ -212,7 +213,7 @@ idle interval.
 ## Select and verify KMS capture
 
 Open Sunshine's web UI at `https://<host-ip>:47990`. The certificate is
-self-signed, so a browser warning is expected; verify that the address is the
+self-signed, so a browser warning is expected. Verify that the address is the
 intended host before accepting it. Create the initial Sunshine credentials if
 prompted, then set the capture method to **KMS** in the audio/video
 configuration and save the change.
@@ -234,10 +235,10 @@ SUNSHINE_BIN="$(readlink -f "$(command -v sunshine)")"
 getcap "$SUNSHINE_BIN"
 ```
 
-The output must include `cap_sys_admin` in the permitted set; current packages
-also include `cap_sys_nice`. `CAP_SYS_ADMIN` exposes many privileged kernel
-operations, not merely display capture. Do not grant it to a Flatpak, AppImage,
-wrapper script, or an unverified executable.
+The output must include `cap_sys_admin` in the permitted set. Current packages
+also include `cap_sys_nice`. `CAP_SYS_ADMIN` grants access to many privileged
+kernel operations beyond display capture. Do not grant it to a Flatpak,
+AppImage, wrapper script, or an unverified executable.
 
 If the native RPM is installed but the capability is missing, first restore
 the package-owned metadata and check again:
@@ -274,9 +275,9 @@ systemctl --user show app-dev.lizardbyte.app.Sunshine.service \
 
 If the property is `NoNewPrivileges=yes`, locate the older or local drop-in
 shown by `systemctl --user cat`. Remove that stale override when it is yours.
-Only when another required drop-in cannot be removed should you add a narrowly
-scoped, guide-owned override. Check that its unique path is unused before
-creating it:
+Add the narrowly scoped, guide-owned override below only when another required
+drop-in cannot be removed. Check that its unique path is unused before creating
+it:
 
 ```bash
 SUNSHINE_DROPIN="$HOME/.config/systemd/user/app-dev.lizardbyte.app.Sunshine.service.d"
@@ -318,7 +319,7 @@ journalctl --user --unit app-dev.lizardbyte.app.Sunshine.service \
 
 The log should identify KMS capture and list the dummy display without a
 capability, framebuffer, encoder, or display error. Always use the canonical
-unit name in commands; `sunshine.service` is only a convenience alias created
+unit name in commands. `sunshine.service` is only a convenience alias created
 when the package unit is enabled.
 
 ## Pair Moonlight
@@ -331,7 +332,7 @@ when the package unit is enabled.
 5. Start **Desktop** in Moonlight and test video, audio, keyboard, mouse, and a
    controller if used.
 
-Do not forward Sunshine or web-UI ports directly from an internet router.
+Do not forward Sunshine or web UI ports directly from an internet router.
 
 ## Roll back the manual setup
 
@@ -345,8 +346,8 @@ Restore the values recorded at the start of this guide, in this order:
    in Moonlight. Disconnecting by itself does not revoke the client's
    certificate.
 3. **Restore Sunshine capture.** In the web UI, return the capture method to its
-   previous value (normally automatic), or remove only the `capture = kms` line
-   that this guide added.
+   previous value, which is normally automatic. You can instead remove only the
+   `capture = kms` line that this guide added.
 4. **Remove the conditional service override.** If this guide created it, run:
 
    ```bash
@@ -407,10 +408,11 @@ sudo firewall-cmd --reload
 If firewalld itself was disabled or inactive before installation, restore that
 state only after confirming no other installed service now relies on it.
 
-Optionally disable the repository with `sudo dnf copr disable lizardbyte/beta`.
-Keep or remove `~/.config/sunshine/` according to whether credentials and
-application settings are still needed; it contains user data, so do not delete
-it blindly.
+You may disable the repository with
+`sudo dnf copr disable lizardbyte/beta` if you no longer need it. Keep or remove
+`~/.config/sunshine/` according to whether you still need the credentials and
+application settings. The directory contains user data, so do not delete it
+blindly.
 
 ## Troubleshooting by symptom
 

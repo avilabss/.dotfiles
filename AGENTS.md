@@ -5,22 +5,22 @@ repository. Before editing, identify whether the change belongs in an Ansible
 role, a platform variable file, or a stowed configuration directory. Run the
 checks in [Mandatory checks](#mandatory-checks) before reporting completion.
 
-The repository uses **Ansible** for system setup and package installation and
-**GNU Stow** for configuration symlinks. It supports **macOS**,
-**Debian/Ubuntu**, and **Fedora**. The entry point, `./bootstrap.sh`, installs
-Ansible when needed and then runs `ansible/site.yml`.
+The repository uses Ansible for system setup and package installation and GNU
+Stow for configuration symlinks. It supports macOS, Debian/Ubuntu, and Fedora.
+The entry point, `./bootstrap.sh`, installs Ansible when needed and then runs
+`ansible/site.yml`.
 
 ## Architecture
 
 ```
-bootstrap.sh        → Installs Ansible and runs the playbook
-ansible/site.yml    → Classifies the platform and defines roles and tags
-ansible/group_vars/ → Shared and per-platform variables and package lists
-ansible/roles/      → One role per tool or feature
-<tool>/             → Stow package mirroring paths below the home directory
+bootstrap.sh        -> Installs Ansible and runs the playbook
+ansible/site.yml    -> Classifies the platform and defines roles and tags
+ansible/group_vars/ -> Shared and per-platform variables and package lists
+ansible/roles/      -> One role per tool or feature
+<tool>/             -> Stow package mirroring paths below the home directory
 ```
 
-### Platform Detection
+### Platform detection
 
 The playbook uses `ansible.builtin.group_by` in `pre_tasks` to assign the host
 to `macos`, `debian`, or `fedora`. Ansible then loads the matching
@@ -40,14 +40,14 @@ Fedora-only. The remaining optional roles are registered for every supported
 platform. `zen_browser` uses the `zen` and `zen-browser` tags; the role names
 and complete tag list are authoritative in `ansible/site.yml`.
 
-Desktop app roles are optional so headless systems can retain the core setup
-without pulling GUI packages. Ghostty stows its own configuration from its
-role rather than through the default `stow_packages` list.
+Desktop app roles are optional so headless systems can keep the core setup
+without pulling GUI packages. Ghostty stows its own configuration from its role
+rather than through the default `stow_packages` list.
 
 ### Stow
 
 The `common` role backs up paths listed in `stow_conflict_files` and stows each
-default package in `stow_packages`; both variables live in
+default package in `stow_packages`. Both variables live in
 `ansible/group_vars/all.yml`. Optional configuration roles outside that list,
 including OpenCode, OpenChamber, and Ghostty, stow their own packages. Other
 roles handle only tool-specific setup, such as installing Oh My Zsh or TPM.
@@ -55,7 +55,7 @@ roles handle only tool-specific setup, such as installing Oh My Zsh or TPM.
 ### Tags
 
 `bootstrap.sh` passes `--skip-tags optional` by default. `--all` removes that
-skip. `--tags <name>` targets individual roles, while `common` still runs
+skip. `--tags <name>` targets individual roles. The `common` role still runs
 because it carries the `always` tag.
 
 ## Conventions
@@ -80,14 +80,22 @@ because it carries the `always` tag.
 - Always use fully qualified collection names, such as `ansible.builtin.apt`.
 - Dispatch platform-specific work from `main.yml` to `macos.yml`,
   `debian.yml`, `fedora.yml`, or `linux.yml`.
-- Package lists go in `ansible/group_vars/<platform>.yml`, not hardcoded in tasks. GUI desktop apps should be optional roles rather than default common/dev packages when they are not useful on headless servers.
-- Optional third-party repositories can disappear or omit a release/architecture. If an optional package cannot be installed because its upstream repo is unavailable for the host, warn, add it to `dotfiles_failed_packages`, and continue rather than failing the whole bootstrap.
-- Prefer official package repositories with signature verification over convenience installer scripts. If a script or community package source is the only configured option, guard it by supported distro/release/architecture and skip with a warning elsewhere.
-- Common/shared variables go in `ansible/group_vars/all.yml`
+- Put package lists in `ansible/group_vars/<platform>.yml`, not in tasks. Make GUI
+  desktop apps optional roles when headless servers do not need them.
+- Optional third-party repositories can disappear or omit a release or
+  architecture. When an upstream repository cannot supply an optional package
+  for the host, warn, add it to `dotfiles_failed_packages`, and continue the
+  bootstrap.
+- Prefer official package repositories with signature verification over
+  convenience installer scripts. If only a script or community package source
+  is configured, guard it by supported distribution, release, and architecture.
+  Skip unsupported hosts with a warning.
+- Put common variables in `ansible/group_vars/all.yml`.
 - Use `become: true` for tasks requiring root on Linux. macOS Homebrew tasks do
   not use `become`.
-- macOS tasks need `environment: { PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}" }` for brew commands
-- Check if a tool is already installed before installing (idempotency)
+- Set `environment: { PATH: "/opt/homebrew/bin:{{ ansible_env.PATH }}" }` for
+  Homebrew commands in macOS tasks.
+- Check whether a tool is already installed before installing it.
 
 ### Add a role
 
@@ -98,23 +106,32 @@ because it carries the `always` tag.
 5. If it's optional, add the `optional` tag alongside its name tag
 6. If it's Linux-only, add `when: ansible_os_family != 'Darwin'`
 
-### Add a Stow package
+### Add a stow package
 
-1. Create a directory at the repo root mirroring the home directory structure (e.g., `toolname/.config/toolname/config`)
-2. Add the directory name to `stow_packages` in `ansible/group_vars/all.yml`
-3. If it creates files that conflict with stow (like `.zshrc`), add them to `stow_conflict_files` in `ansible/group_vars/all.yml`
+1. Create a directory at the repository root that mirrors the home directory,
+   such as `toolname/.config/toolname/config`.
+2. Add the directory name to `stow_packages` in
+   `ansible/group_vars/all.yml`.
+3. If it creates files that conflict with stow, such as `.zshrc`, add them to
+   `stow_conflict_files` in `ansible/group_vars/all.yml`.
 
 ### Add a platform
 
-1. Create `ansible/group_vars/<platform>.yml` with package lists
-2. Add the distribution name to the `group_by` key in `ansible/site.yml` pre_tasks
-3. Add `<platform>.yml` task files to roles that need platform-specific logic (at minimum: `common`, `dev_tools`)
+1. Create `ansible/group_vars/<platform>.yml` with package lists.
+2. Add the distribution name to the `group_by` key in `ansible/site.yml`
+   `pre_tasks`.
+3. Add `<platform>.yml` task files to roles that need platform-specific logic.
+   At minimum, update `common` and `dev_tools`.
 
 ### Add platform packages
 
-- **macOS**: Edit `ansible/group_vars/macos.yml` — use `common_packages` (brew), `brew_casks` (cask), `dev_tool_packages`, or `brew_taps`
-- **Debian/Ubuntu**: Edit `ansible/group_vars/debian.yml` — use `common_packages` or `dev_tool_packages`
-- **Fedora**: Edit `ansible/group_vars/fedora.yml` — use `common_packages` or `dev_tool_packages`
+- For macOS, edit `ansible/group_vars/macos.yml`. Use `common_packages` for
+  Homebrew formulas, `brew_casks` for casks, `dev_tool_packages`, or
+  `brew_taps`.
+- For Debian/Ubuntu, edit `ansible/group_vars/debian.yml`. Use
+  `common_packages` or `dev_tool_packages`.
+- For Fedora, edit `ansible/group_vars/fedora.yml`. Use `common_packages` or
+  `dev_tool_packages`.
 
 ## Mandatory checks
 
@@ -129,4 +146,4 @@ because it carries the `always` tag.
 
 ## Theme
 
-All tools use **Catppuccin Mocha**. Any new tool config should use this theme for consistency.
+All tools use Catppuccin Mocha. Use this theme for new tool configuration.

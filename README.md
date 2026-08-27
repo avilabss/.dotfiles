@@ -1,9 +1,9 @@
 # Dotfiles
 
-This repository bootstraps a personal macOS, Debian/Ubuntu, or Fedora system
-with Ansible, then links user configuration with GNU Stow. A default run
-installs the command-line core only; desktop apps, servers, and other optional
-roles run only when selected.
+This repository uses Ansible to bootstrap a personal macOS, Debian/Ubuntu, or
+Fedora system and GNU Stow to link user configuration. A default run installs
+only the command-line core. Desktop apps, servers, and other optional roles run
+only when selected.
 
 ## Install the core setup
 
@@ -15,8 +15,8 @@ cd ~/dotfiles
 ./bootstrap.sh
 ```
 
-The script installs Ansible when needed and runs `ansible/site.yml`. Choose a
-different mode only when you want optional roles or a dry run:
+The script installs Ansible when needed and runs `ansible/site.yml`. Use another
+mode to include optional roles or preview changes:
 
 ```bash
 ./bootstrap.sh --all                 # Core setup and every applicable optional role
@@ -26,7 +26,7 @@ different mode only when you want optional roles or a dry run:
 ```
 
 `--all` removes the default `optional` skip. `--tags` passes the selected tags
-to Ansible; the `common` role is tagged `always` and still runs.
+to Ansible. The `common` role is tagged `always` and still runs.
 
 ## What it installs
 
@@ -62,10 +62,9 @@ Optional roles are skipped unless you use `--all` or select their tag.
 | `sunshine` | Sunshine game-streaming server | All supported platforms |
 | `waydroid` | Waydroid with Google apps and desktop launchers | Fedora |
 
-Some distributions, releases, or architectures do not publish every configured
-package. Where the role supports it, bootstrap prints a warning, skips the
-unavailable package, and summarizes the failure instead of stopping the rest of
-the setup.
+Some configured packages are unavailable on certain distributions, releases,
+or architectures. Where supported, bootstrap warns about the missing package,
+skips it, and reports the failure without stopping the rest of the setup.
 
 ## User guides
 
@@ -109,4 +108,4 @@ Tmux plugins are installed by bootstrap.
 
 ## Theme
 
-Tool configurations use **Catppuccin Mocha**.
+Tool configurations use Catppuccin Mocha.

@@ -75,8 +75,9 @@ Check cross-repository consumers and providers of changed shared contracts.
 ### Backend contracts
 
 - **Model registry**: changes to `[tool.whitebox-plugin.plugin-models]`,
-  `plugin_model_classes_map`, migrations, or `whitebox.db.get_model(...)` / registry
-  consumers are cross-plugin data-contract changes.
+  `plugin_model_classes_map`, migrations, or
+  `whitebox.db.get_model(...)` / registry consumers are cross-plugin
+  data-contract changes.
 - **Global class registry**: changes to `plugin_plugin_classes_map` or
   `get_class(...)` identifiers affect a global namespace. Renames/removals need
   coordinated consumers. Inheritance requires `get_class(..., proxy=False)`.
@@ -88,8 +89,8 @@ Check cross-repository consumers and providers of changed shared contracts.
   handler context return shapes, callback registration, callback timing, or
   WebSocket message `type` values are shared contracts.
 - **URLs/APIs**: changes to `plugin_url_map`, Django/DRF routes, route names,
-  plugin URL namespaces, serializers, or frontend API consumers need compatibility
-  checks across core and plugins.
+  plugin URL namespaces, serializers, or frontend API consumers need
+  compatibility checks across core and plugins.
 - **Security/request context**: trace authentication, tenant scope, and request
   context across plugin routes, event handlers/callbacks, and WebSocket consumers.
   Verify identity and tenant data are preserved from the originating request or
@@ -107,8 +108,9 @@ Check cross-repository consumers and providers of changed shared contracts.
 
 - JSX files under plugin `jsx/` directories are transpiled and exposed through
   module federation.
-- `slot_component_map` and `exposed_component_map` define shared component names;
-  check renames, prop-shape changes, missing slots, and capability alignment.
+- `slot_component_map` and `exposed_component_map` define shared component
+  names. Check renames, prop-shape changes, missing slots, and capability
+  alignment.
 - `state_store_map` exposes shared state stores; check store key stability,
   initialization order, and consumers using `withStateStore` or async imports.
 - Review uses of global `Whitebox` helpers such as `SlotLoader`,
@@ -133,7 +135,7 @@ Check cross-repository consumers and providers of changed shared contracts.
 
 ## Output
 
-Start with bundle status. Report architecture risks before file-level findings;
-include severity, location, impact, and requested change. Do not approve while
+Start with bundle status. Report architecture risks before file-level findings.
+Include severity, location, impact, and requested change. Do not approve while
 bundle links, temporary refs, or cross-plugin contracts remain unresolved.
 Request tests or manual evidence only for a specific identified risk.
