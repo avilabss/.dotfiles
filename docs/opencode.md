@@ -55,7 +55,8 @@ You + @architect
 Run long builds, tests, migrations, and similar work in the foreground with an
 explicit larger timeout when needed. Start persistent processes, services, or
 containers only deliberately, record their owner and stop command, and clean
-them up unless the user explicitly wants them retained.
+them up unless the user explicitly wants them retained. Remote-compute workers
+instead retain useful state until teardown is explicitly requested.
 
 ## Agents
 
@@ -77,21 +78,25 @@ The detailed contracts live in the
 |---|---|---|
 | [`/handoff`](../opencode/.config/opencode/commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
 | [`/harvest`](../opencode/.config/opencode/commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
-| [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Explicitly clean up the active remote-compute worker | `/remote-compute-cleanup` |
+| [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Explicitly tear down all host-local state on the active remote-compute worker | `/remote-compute-cleanup` |
 | [`/wb-review`](../opencode/.config/opencode/commands/wb-review.md) | Review one Whitebox effort from one or more work-item/MR URLs without external changes | `/wb-review <work-item-url> [<work-item-or-mr-url> ...]` |
 | [`/wb-start`](../opencode/.config/opencode/commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
 
-Remote-compute assumes each worker machine is dedicated. Its explicit cleanup
-destructively prunes all unused Docker state machine-wide, including unused
-volumes. Running Docker resources are not removed by that prune, and external
-systems are not automatically rolled back.
+After activation verifies SSH access and allocation, remote-compute treats the
+entire worker as an exclusive, disposable host-local sandbox. The agent may
+administer and clean up the whole host, including packages, services, processes,
+containers, and reboots, without further approval. Ordinary task completion
+retains useful worker state; `/remote-compute-cleanup` explicitly tears down the
+whole worker's host-local state. External and shared systems are never included
+in that authority or automatically rolled back.
 
 ## Skills
 
 | Skill | Use it when |
 |---|---|
 | [`diagnosing-bugs`](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
-| [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An explicit SSH worker should run every project execution command while the current local Git worktree remains authoritative |
+| [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An exclusive disposable SSH worker should run every project execution command while the current local Git worktree remains authoritative |
+| [`unslop`](../opencode/.config/opencode/skills/unslop/SKILL.md) | Drafting, rewriting, or polishing prose to remove obvious AI-writing patterns |
 | [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
 | [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 

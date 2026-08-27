@@ -1,11 +1,11 @@
 ---
 name: remote-compute
-description: Use `$remote-compute user@host` to run all project execution on a session-scoped SSH worker while keeping the current local Git worktree authoritative.
+description: Use `$remote-compute user@host` to run all project execution on an exclusive disposable SSH worker while keeping the current local Git worktree authoritative.
 ---
 
 # Remote compute
 
-## Activate and scope
+## Activate the worker
 
 `$remote-compute user@host` activates remote-compute mode for the rest of the
 current session and only for the current canonical local Git worktree. Treat
@@ -13,122 +13,116 @@ current session and only for the current canonical local Git worktree. Treat
 worktree is missing or ambiguous.
 
 Resolve the canonical worktree path and derive a stable, collision-resistant
-workspace identifier from it. Keep the active worker, canonical path, workspace
-identifier, and exact remote child as the session's remote-compute context. Do
-not apply that context to another worktree or persist or reuse it across
-sessions.
+workspace identifier from it. Record the worker's identity, canonical path,
+workspace identifier, and exact remote child as the session context. Do not
+apply that context to another worktree or persist or reuse it across sessions.
 
-Confirm SSH access and the tools needed for the intended work before using the
-worker. Stop and report any failed check rather than changing the worker. A
-later invocation with another destination switches workers after these checks.
+Verify SSH access, the worker identity and allocation, and the capabilities
+needed for the intended work. Report access, identity, allocation, or
+unrecoverable capability failures. Repair or prepare the host when practical
+instead of stopping merely because a tool is missing.
 
-Activation and worker switching do not stop, migrate, or restart existing work.
-Report any attributable persistent work left on the previous worker.
+After verification, the entire worker is exclusively allocated to this session
+and worktree. Treat all host-local state as an owned, disposable sandbox: there
+are no other users, unrelated work, or worktrees to preserve. Without further
+approval, take any task-relevant host-wide action, including installing or
+removing packages, changing services, stopping processes, deleting host-local
+state or stale remote-compute worktrees, resetting or pruning container state,
+performing system-wide cleanup, and rebooting. This authority applies only to
+host-local state on the verified active worker, not to external or shared
+systems.
 
 Under the architect workflow, carry the active worker and remote-execution
 constraint into the Task Brief. The architect runs no implementation commands;
-the executing agent applies this workflow.
+the executing agent follows this contract.
 
-## Prepare and synchronize
+## Synchronize from local authority
 
-Use only the isolated child for the active workspace beneath this fixed remote
-base:
+Use this exact child beneath the fixed remote base:
 
 ```text
 $HOME/.opencode-remote-compute/worktrees/<workspace-id>
 ```
 
-Create a temporary local snapshot from existing tracked files and nonignored
-untracked files. Exclude `.git`, likely secrets, submodules, and ignored nested
-repositories unless a specific input is explicitly needed. Review any such
-input before narrowly including it. These exclusions reduce exposure but are
-not exhaustive secret detection.
+Create a temporary local snapshot from tracked files and nonignored untracked
+files. Exclude `.git`, likely secrets, submodules, and ignored nested
+repositories unless a specific reviewed input is needed. Review that input
+before narrowly including it; these exclusions are not exhaustive secret
+detection.
 
-Synchronize the snapshot to the computed child with ordinary rsync. Deletion is
-allowed only against that child so local deletions and renames are reflected;
-never use deletion against the fixed base, remote home, or another destination.
+Synchronize the snapshot to the verified exact remote child with ordinary
+rsync. Normal synchronization may delete only within that child so local
+deletions and renames are reflected; never point its deletion at the fixed
+base, remote home, or another destination. This synchronization boundary does
+not restrict task-relevant whole-host administration or explicit teardown on
+the exclusive worker.
 
-## Execute
+## Execute and administer remotely
 
-While mode is active, keep only authoritative source editing and inspection,
-Git state, snapshot creation, synchronization, and lightweight coordination
-local. Coordination includes deriving paths and identities, checking SSH and
-tools, invoking commands on the worker, and reporting results; it must not run
-the project locally.
+Keep authoritative source editing and inspection, Git state and operations,
+snapshot creation, synchronization, and lightweight coordination local. Run
+every project execution command from the exact remote child, including builds,
+tests, linting, formatting, type checks, dependency operations, migrations,
+data processing, containers, media or compute tools, and deployments. Do not
+run project-runtime commands locally while mode is active.
 
-Run every project execution command from the exact remote child. This includes
-builds, tests, linting, formatting, type checks, package and dependency
-operations, migrations, data processing, Docker and other container operations,
-media or compute tools such as FFmpeg, and deployment commands. Do not run heavy
-or project-runtime commands locally while mode is active.
+The canonical local worktree and its Git state remain authoritative. Never
+treat remote source or Git changes as authoritative or synchronize them back.
+If a remote command produces an intended source change, inspect it and
+reproduce the change locally before creating the next snapshot.
 
-The local worktree and its Git state remain authoritative. Never treat remote
-source or Git changes as authoritative and never synchronize them back. When a
-remote command proposes a source change, inspect its result and reproduce the
-intended edit in the local worktree before creating a new snapshot.
+Administer the whole worker as needed throughout execution. Record the identity
+and inspection or stop commands for any persistent workload intentionally kept
+running. Attribute and conservatively handle effects on cloud accounts,
+registries, Kubernetes clusters, shared deployments, and every other external
+or shared system; whole-worker authority never authorizes their automatic
+destruction or rollback.
 
-Before creating a remote process, persistent workload, container, image,
-volume, network, generated or deployment artifact, or other worker-local state,
-associate it with the stable workspace identifier whenever the tool supports
-labels, names, paths, metadata, or ownership records. Record exact resource
-identities and inspection and removal details as they become available. Use
-this attribution for targeted cleanup; the machine-wide Docker prune defined
-below is the only exception. Also record known effects on external or shared
-deployment systems without including secrets.
+## Recover or switch workers
 
-## Clean up intentionally
+After a reboot, SSH interruption, or other disruption, reconnect and verify
+that the recorded worker identity and allocation still match. Revalidate and,
+when practical, repair the needed capabilities. Verify or recreate the exact
+remote child, resynchronize it from the canonical local worktree whenever its
+contents may be stale or uncertain, and continue execution there. Report and
+stop on an identity, allocation, access, or unrecoverable capability mismatch;
+never recover source or Git state from the worker into the local worktree.
 
-Run cleanup only when explicitly requested, including through
-`/remote-compute-cleanup`. Use the active session context: the current canonical
-worktree, its recomputed workspace identifier and exact remote child, and the
-active worker. Refuse cleanup if that context is missing or ambiguous, if the
-current worktree does not match it, or if the target cannot be verified as the
-isolated child beneath the fixed remote base.
+A later invocation with another destination switches workers. Verify the new
+worker before replacing the active context, then create and synchronize its
+exact child from local authority. Do not silently migrate persistent workloads.
+Report any workload or other state intentionally left on the previous worker,
+including how to inspect and stop it.
 
-Remote-compute assumes each worker machine is dedicated to that worker. On the
-verified active worker, machine-wide Docker pruning is therefore intentionally
-allowed during explicit cleanup. This does not weaken boundaries around another
-worker's files or external/shared systems.
+## Tear down only when requested
 
-Use established labels, names, paths, metadata, and ownership records to
-identify attributable resources. Except for the required Docker prune below,
-refuse ambiguous, host-wide, or unrelated deletion; preserve other worktrees,
-another worker's files, and unrelated non-Docker worker state. Report anything
-that cannot be attributed or safely removed instead of guessing.
+Ordinary task completion does not tear down the worker. Preserve useful worker
+state unless the user directly requests teardown or invokes
+`/remote-compute-cleanup`.
 
-In this order:
+For teardown, verify the active session's worker identity and allocation,
+canonical local worktree, recomputed workspace identifier, and exact remote
+child. Refuse an ambiguous or mismatched target. Then tear down the whole
+disposable worker: stop all host-local processes and workloads that should not
+survive, remove containers and container images, volumes, networks, and cache,
+delete all remote-compute worktrees and other host-local task state, and perform
+any needed system-wide cleanup. Nothing host-local needs preservation, and
+teardown is not limited by workspace attribution. Remove the exact remote child
+last so its context remains available during cleanup.
 
-1. Stop attributable processes and persistent workloads.
-2. Remove attributable containers, worktree-specific images, volumes, and
-   networks.
-3. Remove attributable generated and deployment artifacts and any other
-   attributable worker-local state outside the remote child.
-4. On the active worker, remove all unused Docker containers, images, networks,
-   build cache, and volumes with this exact command, and record whether it
-   succeeds:
-
-   ```bash
-   docker system prune -af --volumes
-   ```
-
-   This machine-wide prune is intentionally broader than workspace attribution,
-   but it does not remove running Docker resources.
-5. Remove only the verified isolated remote child, and remove it last.
-
-Do not automatically roll back Kubernetes clusters, registries, cloud accounts,
-shared deployment environments, or other external/shared systems. Report known
-external effects that may need manual rollback.
+Do not automatically destroy or roll back external or shared systems. Report
+their known effects for separate review. Teardown concerns the allocated
+worker's host-local state; it does not provision, release, reimage, or
+deallocate the machine.
 
 ## Report
 
-Report failed access, tool, synchronization, and execution checks with enough
-context for the user to act.
+Report access, identity, allocation, synchronization, recovery, administration,
+and execution failures with enough context to act. At task completion, identify
+the worker and exact remote child, summarize significant host-wide changes or
+reboots, and give inspection and stop commands for intentionally retained
+workloads. Report known external effects without secrets.
 
-If a workload is intentionally left running, report the worker, workspace,
-workload identity, and how to inspect its status or logs and stop it.
-
-After cleanup, report the worker and workspace, what was stopped and removed,
-whether the machine-wide Docker prune succeeded, anything that failed or could
-not be safely removed, and known external effects requiring manual review or
-rollback. Never imply cleanup completed successfully when the Docker prune
-failed.
+After teardown, report the verified worker, what was stopped and removed, any
+failed or retained host-local state, and external effects needing separate
+review. Never imply that teardown succeeded when required cleanup failed.
