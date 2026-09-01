@@ -4,7 +4,9 @@
   "small_model": "openai/gpt-5.6-luna",
   "default_agent": "architect",
   "subagent_depth": 2,
-  "instructions": ["instructions/tool-selection.md"],
+  "instructions": [
+    "instructions/tool-selection.md"
+  ],
   "agent": {
     "code-reviewer-1": {
       "description": "Reviews code for best practices and potential issues.",
@@ -33,7 +35,9 @@
       }
     }
   },
-  "enabled_providers": ["openai"],
+  "enabled_providers": [
+    "openai"
+  ],
   "provider": {
     "openai": {
       "options": {

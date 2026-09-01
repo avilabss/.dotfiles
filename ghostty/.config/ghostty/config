@@ -4,5 +4,5 @@ font-size = 12
 font-thicken = true
 cursor-style = block
 
-# Catppuccin Mocha theme (matches starship)
-theme = catppuccin-mocha
+# Locally bundled Ayu Dark theme (matches starship)
+theme = ayu-dark

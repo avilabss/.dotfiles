@@ -146,4 +146,5 @@ because it carries the `always` tag.
 
 ## Theme
 
-All tools use Catppuccin Mocha. Use this theme for new tool configuration.
+Use Ayu Dark for tracked tool configuration. KDE is the only exception: use
+Nordic when no suitable Ayu theme is available.

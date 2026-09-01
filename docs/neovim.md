@@ -54,7 +54,7 @@ reports available updates but does not install them. To update plugins, run
 changed lockfile, run `:Lazy restore` to return installed plugins to those
 revisions.
 
-The interface uses Catppuccin Mocha, with lualine, indentation guides, icons,
+The interface uses Ayu Dark, with lualine, indentation guides, icons,
 and which-key. Its main features are:
 
 - **Editing.** nvim-cmp, LuaSnip, nvim-autopairs, native Neovim commenting, and

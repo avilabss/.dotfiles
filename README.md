@@ -108,4 +108,5 @@ Tmux plugins are installed by bootstrap.
 
 ## Theme
 
-Tool configurations use Catppuccin Mocha.
+Tracked tool configurations use Ayu Dark. KDE remains unmanaged; Nordic is the
+KDE-only fallback when no suitable Ayu theme is available.
