@@ -108,5 +108,6 @@ Tmux plugins are installed by bootstrap.
 
 ## Theme
 
-Tracked tool configurations use Ayu Dark. KDE remains unmanaged; Nordic is the
-KDE-only fallback when no suitable Ayu theme is available.
+Tracked tool configurations use Ayu Dark. KDE remains unmanaged by this
+repository; its current setup uses the Dracula application theme with Tela Nord
+Dark icons.

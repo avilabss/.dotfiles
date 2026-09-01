@@ -146,5 +146,6 @@ because it carries the `always` tag.
 
 ## Theme
 
-Use Ayu Dark for tracked tool configuration. KDE is the only exception: use
-Nordic when no suitable Ayu theme is available.
+Use Ayu Dark for tracked tool configuration. KDE remains unmanaged by this
+repository; its current setup uses the Dracula application theme with Tela Nord
+Dark icons.

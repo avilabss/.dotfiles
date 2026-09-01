@@ -68,5 +68,15 @@
   },
   "server": {
     "port": 4096
+  },
+  "mcp": {
+    "excalidraw": {
+      "type": "remote",
+      "url": "https://api.excalidraw.com/api/v1/mcp",
+      "headers": {
+        "Authorization": "Bearer sk-LMAO"
+      },
+      "enabled": true
+    }
   }
 }

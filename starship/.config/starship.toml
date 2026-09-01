@@ -1,16 +1,14 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+add_newline = false
+
 format = """
-[](red)\
 $os\
 $username\
 $hostname\
-[](bg:orange fg:red)\
 $directory\
-[](bg:yellow fg:orange)\
 $git_branch\
 $git_status\
-[](fg:yellow bg:green)\
 $c\
 $rust\
 $golang\
@@ -20,14 +18,12 @@ $java\
 $kotlin\
 $haskell\
 $python\
-[](fg:green bg:blue)\
 $conda\
 $docker_context\
-[](fg:blue bg:purple)\
-$time\
-[ ](fg:purple)\
-$battery\
 $cmd_duration\
+$fill\
+$time\
+$battery\
 $line_break\
 $character"""
 
@@ -35,7 +31,8 @@ palette = 'ayu_dark'
 
 [os]
 disabled = false
-style = "bg:red fg:background"
+style = "fg:blue"
+format = "[$symbol ]($style)"
 
 [os.symbols]
 Windows = ""
@@ -61,18 +58,18 @@ RedHatEnterprise = "󱄛"
 
 [username]
 show_always = true
-style_user = "bg:red fg:background"
-style_root = "bg:red fg:background"
-format = '[ $user]($style)'
+style_user = "fg:foreground"
+style_root = "bold fg:red"
+format = '[$user]($style)'
 
 [hostname]
 ssh_only = false
-style = "bg:red fg:background"
-format = '[@$hostname ]($style)'
+style = "fg:foreground"
+format = '[@$hostname]($style)'
 
 [directory]
-style = "bg:orange fg:background"
-format = "[ $path ]($style)"
+style = "bold fg:gold"
+format = " [in](fg:muted) [$path]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
 
@@ -85,74 +82,78 @@ truncation_symbol = "…/"
 
 [git_branch]
 symbol = ""
-style = "bg:yellow"
-format = '[[ $symbol $branch ](fg:background bg:yellow)]($style)'
+style = "fg:blue"
+format = ' [│](fg:muted) [$symbol $branch]($style)'
 
 [git_status]
-style = "bg:yellow"
-format = '[[($all_status$ahead_behind )](fg:background bg:yellow)]($style)'
+style = "fg:red"
+format = ' [$all_status$ahead_behind]($style)'
 
 [nodejs]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [c]
-symbol = " "
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+symbol = ""
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [golang]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [php]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [java]
-symbol = " "
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+symbol = ""
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [kotlin]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [haskell]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)]($style)'
 
 [python]
 symbol = ""
-style = "bg:green"
-format = '[[ $symbol( $version)(\(#$virtualenv\)) ](fg:background bg:green)]($style)'
+style = "fg:foreground"
+format = ' [│](fg:muted) [$symbol( $version)(\(#$virtualenv\))]($style)'
 
 [docker_context]
 symbol = ""
-style = "bg:blue"
-format = '[[ $symbol( $context) ](fg:background bg:blue)]($style)'
+style = "fg:blue"
+format = ' [│](fg:muted) [$symbol( $context)]($style)'
 
 [conda]
-symbol = "  "
-style = "fg:background bg:blue"
-format = '[$symbol$environment ]($style)'
+symbol = ""
+style = "fg:purple"
+format = ' [│](fg:muted) [$symbol $environment]($style)'
 ignore_base = false
+
+[fill]
+symbol = " "
+style = "fg:muted"
 
 [time]
 disabled = false
 time_format = "%I:%M %p"
-style = "bg:purple"
-format = '[[  $time ](fg:background bg:purple)]($style)'
+style = "fg:foreground"
+format = '[](fg:muted) [$time]($style)'
 
 [line_break]
 disabled = false
@@ -168,8 +169,8 @@ vimcmd_visual_symbol = '[❮](bold fg:yellow)'
 
 [cmd_duration]
 show_milliseconds = true
-format = " in $duration "
-style = "bg:purple"
+format = " [│](fg:muted) [ in $duration]($style)"
+style = "fg:muted"
 disabled = false
 show_notifications = true
 min_time_to_notify = 45000
@@ -181,7 +182,7 @@ discharging_symbol = "󰂃 "
 unknown_symbol = "󰁽 "
 empty_symbol = "󰂎 "
 disabled = false
-format = "[$symbol$percentage]($style) "
+format = " [$symbol$percentage]($style)"
 
 [[battery.display]]
 threshold = 10
@@ -204,3 +205,5 @@ yellow = "#ffb454"
 green = "#aad94c"
 blue = "#59c2ff"
 purple = "#d2a6ff"
+gold = "#e6b450"
+muted = "#565b66"
