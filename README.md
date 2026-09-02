@@ -60,7 +60,6 @@ Optional roles are skipped unless you use `--all` or select their tag.
 | `xrdp` | RDP server | Linux |
 | `qemu` | QEMU guest agent | Linux |
 | `sunshine` | Sunshine game-streaming server | All supported platforms |
-| `waydroid` | Waydroid with Google apps and desktop launchers | Fedora |
 
 Some configured packages are unavailable on certain distributions, releases,
 or architectures. Where supported, bootstrap warns about the missing package,

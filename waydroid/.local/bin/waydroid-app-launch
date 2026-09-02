@@ -1,4 +1,0 @@
-#!/bin/sh
-
-waydroid-session-start || exit 1
-exec waydroid app launch "$1"

@@ -33,12 +33,12 @@ Roles fall into two groups:
 | Type | Roles | Behavior |
 |---|---|---|
 | Core | `common`, `fonts`, `zsh`, `tmux`, `starship`, `dev_tools`, `nvim` | Run during the default bootstrap |
-| Optional | `opencode`, `openchamber`, `ghostty`, `google_chrome`, `zen_browser`, `flameshot`, `openwhispr`, `docker`, `ssh`, `xrdp`, `qemu`, `waydroid`, `sunshine` | Carry the `optional` tag and run only with `--all` or a selected role tag |
+| Optional | `opencode`, `openchamber`, `ghostty`, `google_chrome`, `zen_browser`, `flameshot`, `openwhispr`, `docker`, `ssh`, `xrdp`, `qemu`, `sunshine` | Carry the `optional` tag and run only with `--all` or a selected role tag |
 
-`openwhispr`, `ssh`, `xrdp`, and `qemu` are Linux-only. `waydroid` is
-Fedora-only. The remaining optional roles are registered for every supported
-platform. `zen_browser` uses the `zen` and `zen-browser` tags; the role names
-and complete tag list are authoritative in `ansible/site.yml`.
+`openwhispr`, `ssh`, `xrdp`, and `qemu` are Linux-only. The remaining optional
+roles are registered for every supported platform. `zen_browser` uses the
+`zen` and `zen-browser` tags; the role names and complete tag list are
+authoritative in `ansible/site.yml`.
 
 Desktop app roles are optional so headless systems can keep the core setup
 without pulling GUI packages. Ghostty stows its own configuration from its role
