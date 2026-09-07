@@ -1,7 +1,7 @@
 ---
 description: Plans whole implementations and coordinates delegated work.
 mode: primary
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 variant: high
 textVerbosity: medium
 permission:

@@ -1,7 +1,7 @@
 ---
 description: Implements one approved Task Brief at a time.
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 variant: high
 textVerbosity: low
 permission:

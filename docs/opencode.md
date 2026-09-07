@@ -118,11 +118,11 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 
 ## Models
 
-| Use | Model |
-|---|---|
-| Default, architect, developer, repo-scouter, and reviewer 1 | `openai/gpt-5.6-sol` |
-| Reviewer 2 | `openai/gpt-5.6-terra` |
-| Lightweight internal work | `openai/gpt-5.6-luna` |
+| Use | Model | Reasoning |
+|---|---|---|
+| Default, architect, developer, repo-scouter, and reviewer 1 | `openai/gpt-6-astra` | `high` |
+| Reviewer 2 | `openai/gpt-5.6-sol` | `high` |
+| Lightweight internal work | `openai/gpt-5.6-terra` | `medium` |
 
 Assignments and runtime settings are defined in
 [`opencode.json`](../opencode/.config/opencode/opencode.json).

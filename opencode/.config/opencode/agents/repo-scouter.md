@@ -1,7 +1,7 @@
 ---
 description: Scans a repository and reports stack, conventions, and commands.
 mode: subagent
-model: openai/gpt-5.6-sol
+model: openai/gpt-6-astra
 variant: high
 textVerbosity: medium
 permission:
