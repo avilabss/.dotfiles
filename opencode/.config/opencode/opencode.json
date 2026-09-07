@@ -5,7 +5,7 @@
   "default_agent": "architect",
   "subagent_depth": 2,
   "instructions": [
-    "instructions/tool-selection.md"
+    "~/.config/opencode/instructions/tool-selection.md"
   ],
   "agent": {
     "code-reviewer-1": {
@@ -40,9 +40,6 @@
   ],
   "provider": {
     "openai": {
-      "options": {
-        "headerTimeout": 60000
-      },
       "models": {
         "gpt-6-astra": {
           "options": {
@@ -62,7 +59,7 @@
   "snapshot": true,
   "compaction": {
     "auto": true,
-    "prune": true,
+    "prune": false,
     "reserved": 20000
   },
   "watcher": {
@@ -80,15 +77,5 @@
   },
   "server": {
     "port": 4096
-  },
-  "mcp": {
-    "excalidraw": {
-      "type": "remote",
-      "url": "https://api.excalidraw.com/api/v1/mcp",
-      "headers": {
-        "Authorization": "Bearer sk-LMAO"
-      },
-      "enabled": true
-    }
   }
 }
