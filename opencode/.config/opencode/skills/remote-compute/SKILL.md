@@ -50,6 +50,17 @@ repositories unless a specific reviewed input is needed. Review that input
 before narrowly including it; these exclusions are not exhaustive secret
 detection.
 
+Put temporary project copies in the disk-backed
+`~/.cache/opencode/remote-sync/` directory, outside RAM-backed `/tmp`. Scope
+creation and synchronization with `tempfile.TemporaryDirectory` or equivalent
+`try`/`finally` cleanup to remove the copy after success and exceptions.
+Process termination can leave copies behind. After cancellation or failure,
+check for leftovers and clean up only the current run's copies.
+If a separate command must consume an exported snapshot, that consumer owns
+cleanup after use; the producer must clean up failed creation. Include large
+design files, media, and archives only when the remote task needs them. These
+transfer copies are independent of OpenCode's `snapshot` configuration option.
+
 Synchronize the snapshot to the verified exact remote child with ordinary
 rsync. Normal synchronization may delete only within that child so local
 deletions and renames are reflected; never point its deletion at the fixed

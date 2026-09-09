@@ -56,7 +56,7 @@
   },
   "autoupdate": true,
   "share": "disabled",
-  "snapshot": true,
+  "snapshot": false,
   "compaction": {
     "auto": true,
     "prune": false,
