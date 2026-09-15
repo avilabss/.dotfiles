@@ -3,7 +3,8 @@
 return {
     {
         "tpope/vim-fugitive",
-        cmd = { "Git", "Gdiffsplit", "Gvdiffsplit", "Ghdiffsplit" },
+        -- Register fugitive:// buffer handlers before auto-session restores windows.
+        lazy = false,
         keys = {
             { "<leader>gg", "<cmd>Git<cr>", desc = "Git status (Fugitive)" },
         },

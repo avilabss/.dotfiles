@@ -232,6 +232,9 @@ and index operations or native Vim diff splits.
 The Gitsigns mappings through `ih` are buffer-local to attached files;
 `<leader>gg` is the global Fugitive entry point.
 
+Fugitive loads at startup so saved sessions can restore its status and diff
+buffers, and all Fugitive commands are available immediately.
+
 By default, Git and Fugitive collapse a wholly untracked directory into one
 status entry. To match VS Code's Source Control view and list every untracked
 file, enable the setting globally:

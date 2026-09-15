@@ -77,5 +77,20 @@
   },
   "server": {
     "port": 4096
+  },
+  "mcp": {
+    "freecad": {
+      "type": "local",
+      "command": [
+        "/home/avi/.local/bin/uv",
+        "--directory",
+        "/home/avi/.var/app/org.freecad.FreeCAD/data/FreeCAD/v1-1/Mod/freecad-mcp",
+        "run",
+        "--locked",
+        "--no-dev",
+        "freecad-mcp"
+      ],
+      "enabled": true
+    }
   }
 }

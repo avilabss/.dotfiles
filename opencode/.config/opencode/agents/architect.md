@@ -6,13 +6,7 @@ variant: high
 textVerbosity: medium
 permission:
   bash: ask
-  edit:
-    "*": deny
-    task-briefs/*.md: allow
-    "~/.local/state/opencode/handoffs/*.md": allow
-    ".local/state/opencode/handoffs/*.md": allow
-    # apply_patch evaluates external targets relative to the active repository.
-    "../*.local/state/opencode/handoffs/*.md": allow
+  edit: allow
   external_directory:
     "~/.local/state/opencode/handoffs/*": allow
   task:
