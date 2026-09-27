@@ -22,7 +22,7 @@ mkdir -p "$state_dir"
 if [[ -f "$db_file" ]]; then
   db_size="$(wc -c <"$db_file")"
   if (( db_size >= db_vacuum_warn_bytes )); then
-    echo "Warning: OpenCode database is $db_size bytes." >&2
+    LC_ALL=C awk -v bytes="$db_size" 'BEGIN { printf "Warning: OpenCode database is %.2f GiB.\n", bytes / 1073741824 }' >&2
     echo "Stop OpenCode/OpenChamber and run: opencode-db-vacuum" >&2
   fi
 fi
