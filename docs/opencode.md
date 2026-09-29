@@ -72,6 +72,20 @@ The detailed contracts live in the
 [agent prompts](../opencode/.config/opencode/agents/) and the
 [shared reviewer prompt](../opencode/.config/opencode/prompts/code-reviewer.md).
 
+Developer file edits and architect/reviewer shell commands run without tool
+approval prompts. Task Brief and `ARCHITECTURE.md` ownership is enforced by the
+agent instructions, rather than developer file-deny patterns that also block
+nested implementation notes. Reviewers retain their edit-tool denial, and
+delegation remains limited to the agents named in each contract. Shell access
+is not a read-only sandbox; agents must still follow their role instructions.
+
+OpenChamber's per-session auto-accept handles approval requests, but cannot
+override OpenCode's explicit `deny` rules. Child sessions inherit the nearest
+explicit parent setting unless they have their own setting. External-directory
+access and repeated-tool-call guards can still require approval. See
+[OpenCode permissions](https://opencode.ai/docs/permissions/) for rule matching
+and agent overrides.
+
 ## Commands
 
 | Command | Purpose | Example |

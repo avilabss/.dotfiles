@@ -17,7 +17,7 @@
       "prompt": "{file:./prompts/code-reviewer.md}",
       "permission": {
         "edit": "deny",
-        "bash": "ask",
+        "bash": "allow",
         "task": "deny"
       }
     },
@@ -30,7 +30,7 @@
       "prompt": "{file:./prompts/code-reviewer.md}",
       "permission": {
         "edit": "deny",
-        "bash": "ask",
+        "bash": "allow",
         "task": "deny"
       }
     }

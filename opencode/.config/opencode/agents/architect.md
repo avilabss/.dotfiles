@@ -5,7 +5,7 @@ model: openai/gpt-6-astra
 variant: high
 textVerbosity: medium
 permission:
-  bash: ask
+  bash: allow
   edit: allow
   external_directory:
     "~/.local/state/opencode/handoffs/*": allow

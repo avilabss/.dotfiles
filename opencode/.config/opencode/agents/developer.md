@@ -5,10 +5,7 @@ model: openai/gpt-6-astra
 variant: high
 textVerbosity: low
 permission:
-  edit:
-    "*": allow
-    ARCHITECTURE.md: deny
-    task-briefs/*.md: deny
+  edit: allow
   task:
     "*": deny
     code-reviewer-1: allow
