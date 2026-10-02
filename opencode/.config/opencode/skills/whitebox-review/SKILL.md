@@ -31,8 +31,11 @@ Before detailed review, build a ReviewBundle containing:
 2. Parse explicit modern links:
    - Core/parent MRs should consolidate core and plugin changes in the default
      template and list child MRs under `Related MRs`.
-   - Plugin/child MR descriptions should contain only `PARENT: <core MR URL>`,
-     a `___` divider, and `KERNEL: <core branch>`. `KERNEL:` is case-sensitive.
+   - Coordinated plugin/child MR descriptions should contain only
+     `PARENT: <core MR URL>`, a `___` divider, and `KERNEL: #<core branch>`.
+     `KERNEL:` is case-sensitive and the `#` is required for branch selection.
+   - SDK/library and genuinely standalone plugin MRs use their applicable
+     template or the [canonical no-template fallback](../whitebox-development/references/merge-request-workflow.md#standalone-plugin-or-library-efforts).
 3. For a core MR, treat it as the likely source of truth. Inspect
    `backend/pyproject.toml` changes in
    `[tool.poetry.group.plugins-temporary.dependencies]`; git dependencies there
@@ -43,7 +46,10 @@ Before detailed review, build a ReviewBundle containing:
    item context, branch correlation, reverse links from other MRs, and
    `plugins-temporary` evidence.
 5. Treat old or loose linking patterns only as discovery clues. Request the
-   expected relationship block or `Related MRs` section when links are missing.
+   expected relationship block or `Related MRs` section when required links are
+   missing. Distinguish an inapplicable standalone parent from a missing required
+   parent; never demand an empty core MR or fake URL. Inspect SDK dependency refs
+   and locks in consuming plugins as well as core's temporary group.
 6. If associated MRs are still draft or inconsistent, make the bundle/readiness
    issue clear before doing or trusting a full review unless an early pass was
    explicitly requested.
@@ -170,6 +176,24 @@ owner and next action rather than assuming compatibility.
   - each plugin MR points back to the parent with `PARENT:`;
   - each plugin MR uses the correct `KERNEL:` value;
   - stale temporary refs are removed or intentionally retained before merge.
+
+Assess readiness against the [canonical phase gates](../whitebox-development/references/merge-request-workflow.md#merge-and-verify-publication),
+not a single blanket CI requirement. Early draft/manual testing can have labeled
+CI gaps; final merges retain current project reviews/CI and exact reviewed state.
+For consuming plugins, verify this effort's temporary Git/path SDK overrides are
+replaced by verified published releases, locks refreshed and installed artifacts
+tested before merge. Core's cleanup does not sanitize plugin package metadata.
+For core, check normal dependency groups and normal install evidence, so stale
+temporary overrides cannot mask published packages.
+
+Check retained named Git refs and lock commits, including relevant transitive
+sources, for consuming-build fetchability before core merge. Inspect publication
+provenance/version/artifact evidence, not just merge/tag/pipeline labels. The
+[core-first exception](../whitebox-development/references/merge-request-workflow.md#exceptional-core-first-recovery)
+needs separate informed user approval, exact pipeline/content verification and
+a new dependency follow-up MR. Review reports do not grant that approval or
+authorize cancellation/recovery. Report an incomplete exception as intermediate
+main with its next action, not final readiness.
 
 ## Output
 

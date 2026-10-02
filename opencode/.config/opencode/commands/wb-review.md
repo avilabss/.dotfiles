@@ -53,9 +53,10 @@ Before detailed review, resolve the complete ReviewBundle in this order:
    normalize duplicates, and retain the evidence source for each relationship.
 5. Validate that ticket references, the core and plugin branches, plugin
    parents, `KERNEL:` values, temporary dependency refs, and all discovered MRs
-   agree. Missing or contradictory links are ReviewBundle/readiness findings;
-   make them visible rather than inventing a relationship or excluding the
-   conflicting evidence.
+   agree. Missing required or contradictory links are ReviewBundle/readiness
+   findings; distinguish an inapplicable standalone parent using the skill's
+   canonical MR rules. Make defects visible rather than inventing a relationship
+   or excluding conflicting evidence.
 6. If exhaustive discovery finds no core MR, use the skill's existing core
    `main` fallback only when appropriate. State clearly that no complete parent
    MR was found. Do not use the fallback to hide conflicting effort or branch

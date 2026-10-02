@@ -209,7 +209,7 @@ recovery action before taking new destructive steps.
 
 The user's manual green flag ends the fast loop and starts CI cleanup plus the
 normal [validation](../SKILL.md#validate) and
-[project review/merge gates](merge-request-workflow.md#core-mr-description).
+[project review/merge gates](merge-request-workflow.md#merge-and-verify-publication).
 Resolve CI failures and required missing evidence; manual success is not merge
 approval, CI-bypass authority, or a substitute for code/product review. Keep
 implemented/validated, AI-reviewed, author-reviewed/understood, and ready for

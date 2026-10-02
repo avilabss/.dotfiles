@@ -132,7 +132,7 @@ shared systems, and it does not automatically roll them back.
 | [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An exclusive disposable SSH worker should run every project execution command while the current local Git worktree remains authoritative |
 | [`technical-documentation`](../opencode/.config/opencode/skills/technical-documentation/SKILL.md) | Planning, writing, or reviewing substantial technical docs/onboarding or explaining non-obvious code contracts |
 | [`unslop`](../opencode/.config/opencode/skills/unslop/SKILL.md) | Polishing prose for clarity while preserving meaning and the author's voice |
-| [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories, or explicitly requesting [SBC testing/deployment](../opencode/.config/opencode/skills/whitebox-development/references/sbc-testing.md) |
+| [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox effort across core, plugins and SDK/library consumers; authorized [publication/merging](../opencode/.config/opencode/skills/whitebox-development/references/merge-request-workflow.md), or explicit [SBC testing/deployment](../opencode/.config/opencode/skills/whitebox-development/references/sbc-testing.md) |
 | [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 
 Skills can trigger from context. When you want one explicitly, say, for example,

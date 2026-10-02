@@ -20,4 +20,7 @@ or branch name is missing or ambiguous, ask for it.
 
 Follow the complete `$whitebox-development` workflow and verify that relevant
 local plugin worktrees and dependency setup are usable before implementation.
-Do not push, create merge requests, or update the ticket unless requested.
+Use its canonical publication/merge reference for phase-specific authority and
+ordering. Do not push, mutate MRs/tickets, merge, publish releases, or retry/cancel
+CI unless that phase is authorized. Ordinary merge authority does not approve a
+core-first exception; architect still plans/delegates rather than executing.

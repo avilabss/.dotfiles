@@ -1,6 +1,6 @@
 ---
 name: whitebox-development
-description: Develop Whitebox.aero tickets across the core repository and plugin repositories using coordinated Git worktrees, branches, temporary Poetry plugin dependencies, validation, merge requests, and ticket cross-linking. Use when starting, continuing, preparing to push, or raising merge requests for Whitebox ticket implementation that may touch core or plugins, or when explicitly asked to test or deploy that work on an SBC.
+description: Develop Whitebox.aero efforts across core, plugins and SDK/library consumers using coordinated worktrees, dependencies, validation and merge requests. Use when starting or continuing tickets, preparing publication, raising or merging MRs, or explicitly asked to test or deploy that work on an SBC. Each operational phase requires its own authority.
 ---
 
 # Whitebox ticket development
@@ -99,7 +99,7 @@ divergent history without explicit authorization.
 
 ## Develop with local plugin dependencies
 
-When a plugin is modified, add it to the backend
+For core/plugin co-development, add each modified plugin to the core backend
 `plugins-temporary` dependency group from inside the backend development
 container as an editable local path:
 
@@ -122,27 +122,26 @@ Before pushing core changes, reconcile the planned repository set, branches,
 dependency refs, and unresolved relationships locally. No MR URLs are needed to
 plan or review unpublished changes; never invent them. Once MRs exist, use the
 [ReviewBundle discovery](../whitebox-review/SKILL.md#resolve-the-reviewbundle-first)
-to reconcile the actual effort. Then preserve this publication order:
+to reconcile the actual effort. Follow the canonical
+[branch and draft-MR publication order](references/merge-request-workflow.md#publish-branches-and-draft-mrs),
+including affected SDK/library providers and standalone cases. It obtains a real
+core `PARENT` URL before creating coordinated child MRs; publication order is not
+merge order.
 
-1. Commit and push every touched plugin first.
-2. Raise or update each plugin merge request.
-3. Replace every editable plugin dependency in core with a Git dependency that
-   targets the corresponding plugin MR branch:
+Replace this effort's editable plugin dependencies in core with Git dependencies
+targeting their real pushed branches:
 
-   ```bash
-   poetry add --group plugins-temporary git+https://gitlab.com/whitebox-aero/whitebox-plugin-name.git#feature/whitebox-1337
-   ```
+```bash
+poetry add --group plugins-temporary git+https://gitlab.com/whitebox-aero/whitebox-plugin-name.git#feature/whitebox-1337
+```
 
-4. Run the command inside the backend development container and verify every
-   Git ref names the actual pushed plugin branch.
-5. Validate the resulting Poetry configuration and lockfile, then commit and
-   push core.
+Run this from core's backend directory inside its backend development container.
+Substitute the actual repository/branch, verify pushed refs and refreshed
+lock-resolved commits, and validate the resulting configuration before pushing
+core. Preserve unrelated dependency entries.
 
-If a plugin changes after a core push, push it first and refresh the core Git
-dependency before pushing core again.
-
-If development continues after pushing, switch the dependencies back to
-editable local paths. Repeat this push preparation before later core pushes.
+For later provider changes or resumed local development, follow that same
+canonical publication procedure; do not leave a consumer lock on an old commit.
 
 ## Validate
 
@@ -177,6 +176,16 @@ phase distinction and for retaining the deployment the user is testing.
 
 Use [references/merge-request-workflow.md](references/merge-request-workflow.md)
 as the canonical MR and ticket format.
+
+For an explicitly authorized merge, follow its
+[SDK → plugins → core sequence](references/merge-request-workflow.md#merge-and-verify-publication)
+and [failed-job/publication checks](references/merge-request-workflow.md#failed-jobs-or-publication).
+An evidenced core-first recovery needs
+[separate informed approval](references/merge-request-workflow.md#exceptional-core-first-recovery)
+and a new published-dependency follow-up MR; ordinary merge authority is not that
+approval. Reading this skill grants no operational authority. In the architect
+flow, architect plans/delegates through a Task Brief; developer performs only
+authorized operations.
 
 Author/developer owns code and explanatory fixes. Investigate external reviewer
 disagreements against the evidence, record the resolution, and escalate unresolved
