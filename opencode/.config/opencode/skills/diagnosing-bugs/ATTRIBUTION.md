@@ -4,6 +4,11 @@ This skill includes material adapted from
 [`mattpocock/skills`](https://github.com/mattpocock/skills) at revision
 `2ab958093e83e0ec752e6c1c5932da465bf23e0c`, reviewed on 2026-07-28.
 
+Local adaptations preserve the narrow trigger and evidence-first feedback loop
+while adding condition-specific and intermittent-failure evidence, escalation
+for uninformative iteration, sanitized evidence retention before cleanup, and
+build/operational validation distinctions within existing authority boundaries.
+
 The upstream copyright notice and MIT License terms follow verbatim.
 
 MIT License

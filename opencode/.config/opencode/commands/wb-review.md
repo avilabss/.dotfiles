@@ -83,6 +83,10 @@ Then include only actionable findings, sorted by severity in this exact order:
 `critical`, `high`, `medium`, `low`. Omit empty severity sections and omit
 speculative, non-actionable, or purely stylistic findings.
 
+Material explanation, durable-rationale, onboarding, and reviewability gaps from
+the skill are not purely stylistic. Report their concrete reader/maintenance
+impact and location, not cosmetic preferences or guesses about prose origin.
+
 For every finding, include:
 
 - the lowercase severity and a short descriptive title;

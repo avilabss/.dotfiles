@@ -15,6 +15,11 @@ Before detailed review, build a ReviewBundle containing:
 - work items or issue references;
 - the kernel/core branch used by plugin CI;
 - `backend/pyproject.toml` `plugins-temporary` dependency overrides;
+- each repository's original comparison base, exact reviewed revision and
+  staged/unstaged/untracked state (including relevant dirty diffs/contents), plus
+  resolved installed versions/commits and lock state used by validation;
+- relevant unchanged providers and consumers of changed contracts, not just
+  repositories with MRs;
 - inferred architecture edges through capabilities, plugin models, class
   registries, events, URLs, JSX slots/components, state stores, sockets, and
   lifecycle hooks.
@@ -42,6 +47,14 @@ Before detailed review, build a ReviewBundle containing:
 6. If associated MRs are still draft or inconsistent, make the bundle/readiness
    issue clear before doing or trusting a full review unless an early pass was
    explicitly requested.
+
+For authorized review of unpublished work, identify the planned repositories,
+bases, branches, current state, and unresolved relationships without fabricating
+MR URLs. Reconcile actual MRs through discovery when they exist. Assess the full
+combined effort against its original bases: task and repository approvals do not
+establish cumulative approval. In the architect flow, read and follow the
+[shared review lifecycle](../../agents/developer.md#review-loop); outside it,
+still identify the exact combined state reviewed and renew approval after edits.
 
 ## Whitebox architecture model for review
 
@@ -120,6 +133,31 @@ Check cross-repository consumers and providers of changed shared contracts.
   flows should include realistic cross-device or integration evidence when risk
   is meaningful.
 
+### Compatibility and artifact evidence
+
+Apply the [development skill's compatibility decision criteria](../whitebox-development/SKILL.md#compatibility-decisions)
+to consequential packaging/shared-contract changes. Independently trace actual
+providers and consumers, including unchanged ones, and the federation, build,
+loader, and dependency-resolution configuration at the reviewed revisions.
+Separate source/API compatibility from artifact/runtime compatibility; accepting
+"federation handles it" without those contracts and configuration is not review.
+
+Check that selected scenarios establish the stated supported scope and user
+impact: relevant older published plugins/newer hosts, shared version resolution,
+upgrades or mixed versions, and non-developer installation/error/recovery paths.
+Require evidence for a narrower policy and its tradeoffs, not universal backwards
+compatibility or an unrelated version matrix for a low-risk plugin fix.
+
+For packaging/production-install changes, inspect built/published-equivalent
+artifacts and verify the required execution evidence as well as relevant dev
+behavior. Trace installed consumer refs and lock/dependency state; editable-only
+success can mask missing packaged files and is not artifact validation. Local
+artifact tests need no registry publication. Review-only authority permits
+inspection of evidence, not installing packages or running mutating experiments.
+Distinguish inspected source from executed checks. Unsupported critical claims
+or missing required validation block approval; identify the decision/evidence
+owner and next action rather than assuming compatibility.
+
 ### `plugins-temporary` and CI/sandbox coherence
 
 - In core `backend/pyproject.toml`, `[tool.poetry.group.plugins-temporary]` is
@@ -139,3 +177,20 @@ Start with bundle status. Report architecture risks before file-level findings.
 Include severity, location, impact, and requested change. Do not approve while
 bundle links, temporary refs, or cross-plugin contracts remain unresolved.
 Request tests or manual evidence only for a specific identified risk.
+
+Assess explanation and reviewability against the
+[MR reference](../whitebox-development/references/merge-request-workflow.md) and
+use `technical-documentation` for substantial documentation/contracts. Missing
+durable rationale, a material readability barrier, unusable setup instructions,
+or missing cross-repository reading guidance can be actionable defects. Name the
+location and concrete reader/maintenance impact; omit cosmetic preferences and
+speculation about prose origin. Author/developer owns fixes and investigation of
+reviewer disagreements, not the reviewer acting as a replacement writer.
+
+State the reviewed scope/state, evidence, limits, and readiness separately from
+findings. An explicitly requested early/draft review can report useful findings
+without final approval. AI approval does not certify human author understanding
+or replace the project's two code reviews and applicable product review. A
+report does not authorize posting, approving, or other external actions;
+`/wb-review` returns its report only in-session and never mutates reviewed or
+external state.

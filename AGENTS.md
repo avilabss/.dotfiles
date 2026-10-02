@@ -52,6 +52,15 @@ default package in `stow_packages`. Both variables live in
 including OpenCode, OpenChamber, and Ghostty, stow their own packages. Other
 roles handle only tool-specific setup, such as installing Oh My Zsh or TPM.
 
+OpenCode's shared tool-selection and process-lifecycle rules live in
+[`opencode/.config/opencode/AGENTS.md`](opencode/.config/opencode/AGENTS.md),
+stowed as `~/.config/opencode/AGENTS.md`. Native OpenCode V2 loads this global file
+automatically; this is not proof that every provider bridge supplies its contents.
+Its `instructions` config array does not deliver instructions. See the
+[OpenCode guide](docs/opencode.md#instruction-delivery) for verified reviewer
+delivery and the current Claude bridge limitation. Keep dotfiles-specific
+guidance in this repository-root guide instead.
+
 ### Tags
 
 `bootstrap.sh` passes `--skip-tags optional` by default. `--all` removes that

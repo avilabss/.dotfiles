@@ -1,10 +1,16 @@
 # Attribution
 
-This skill copies
+This skill adapts
 [`pstack/skills/unslop/SKILL.md`](https://github.com/cursor/plugins/blob/799151d91b6e12ee7dbd09f708eec108d7de9b3b/pstack/skills/unslop/SKILL.md)
 from [`cursor/plugins`](https://github.com/cursor/plugins) at revision
-`799151d91b6e12ee7dbd09f708eec108d7de9b3b`. Only the frontmatter description
-is adapted for OpenCode's prose-specific contextual trigger.
+`799151d91b6e12ee7dbd09f708eec108d7de9b3b`. The frontmatter description now names
+clarity and voice preservation while retaining the same drafting, rewriting, and
+polishing trigger. The local body replaces
+prose-origin detection, invented personality, deliberate messiness, and blanket
+punctuation bans with reader-focused editing. It preserves facts, voice,
+terminology, uncertainty, and attribution, with technical-documentation checks
+taking precedence. The plain-word and repetition guidance remains adapted from
+upstream.
 
 The upstream copyright notice and MIT License terms follow verbatim.
 

@@ -47,23 +47,18 @@ rotate_log() {
   mv "$file" "$file.1"
 }
 
-if [[ -f "$pid_file" ]]; then
-  pid="$(cat "$pid_file")"
-  if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
-    command_line="$(ps -p "$pid" -o command= 2>/dev/null || true)"
-    if [[ "$command_line" == *"openchamber"* ]]; then
-      echo "OpenChamber is already running (pid $pid)."
-      echo "Log: $log_file"
-      exit 0
-    fi
-  fi
-  rm -f "$pid_file"
-fi
-
 if ! command -v openchamber >/dev/null 2>&1; then
   echo "openchamber not found in PATH." >&2
   exit 1
 fi
+
+# The CLI also discovers instances started outside this wrapper, and safely
+# returns when no instance is running on the requested port.
+if ! openchamber stop --port "$port"; then
+  echo "Failed to stop OpenChamber on port $port; startup aborted." >&2
+  exit 1
+fi
+rm -f "$pid_file"
 
 rotate_log "$log_file"
 rotate_log "$opencode_log"

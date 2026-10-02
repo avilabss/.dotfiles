@@ -30,5 +30,9 @@ Tool availability does not authorize consequential external actions.
 - Start a persistent background process, service, or container only when the
   approved task requires it. Record how it was started and how to stop it, and
   stop it before completion unless the user explicitly wants it left running.
+  Active [remote-compute](skills/remote-compute/SKILL.md#tear-down-only-when-requested)
+  is the deliberate exception: read that skill and retain useful worker state
+  until explicit teardown. This does not authorize retaining or destroying
+  external/shared-system state.
 - After an interruption or timeout that may have spawned workers, check for and
   clean up owned leftovers before retrying.

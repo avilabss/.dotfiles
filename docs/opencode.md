@@ -27,46 +27,60 @@ Start `opencode`, enter `/connect`, select **OpenAI (ChatGPT Plus/Pro)**, and
 complete browser OAuth. OpenCode stores credentials outside the repository at
 `~/.local/share/opencode/auth.json`.
 
+Reviewer 2 also needs the Claude Code CLI signed in to a Claude plan: check
+`claude auth status`, or run `claude auth login --claudeai` if signed out. The
+pinned [Claude Code plugin](https://github.com/openchamber/opencode-claude) uses
+that CLI login, not an API key. Keep `claude-code` in `enabled_providers` alongside
+`openai`, then [reload](#restart-after-configuration-changes) and confirm the
+models appear under **Claude Code**.
+
 For a first task, open the target repository in OpenCode and ask `@architect`
 to inspect it and help define the requirements. Do not start implementation
 until requirements and the resulting plan have each been approved.
 
 ## Everyday workflow
 
-```text
-You + @architect
-  -> approve requirements
-  -> approve the plan
-  -> Task Brief
-  -> @developer
-  -> @code-reviewer-1 + @code-reviewer-2 (in parallel)
-  -> fixes and fresh dual review as needed
-  -> @architect reports the result
-```
-
 1. Start with `@architect`. Agree on the requirements, then approve the proposed
    plan. These are two separate approval points.
-2. Architect writes a Task Brief and sends one approved task to `@developer`.
-3. Developer implements and validates it, then requests both reviewers in
-   parallel under the same review policy. Both approvals are required.
-4. Any implementation change starts a fresh review by both reviewers. Once both
-   approve the same state, developer reports back to architect.
+2. Architect writes a Task Brief for developer. Consequential decisions get
+   parallel dual design review first, with no edits or experiments; architect
+   resolves material decisions with you and explicitly releases implementation.
+3. Developer implements and validates the task, then requests both reviewers in
+   parallel. Any implementation edit requires fresh approvals from both on the
+   same state; missing required evidence or reviewer capability blocks approval.
+4. Multi-task work also needs cumulative dual review of the combined change.
+   Architect reports the result; only you can confirm understanding and ownership.
+
+AI approval does not replace project review or authorize publication. The
+[developer review loop](../opencode/.config/opencode/agents/developer.md#review-loop)
+owns dispatch inputs, independent same-state review, and escalation. The
+[technical-documentation skill](../opencode/.config/opencode/skills/technical-documentation/SKILL.md#check-with-a-fresh-reader)
+owns the fresh-reader procedure. Agents must read linked instructions when
+required; a link alone does not load them.
+
+If work is blocked, keep it blocked. Report the missing decision, evidence, or
+capability with an owner and next action to architect; do not substitute another
+reviewer, lower the criteria, or treat a failed dispatch as a vote. Architect
+resolves scope conflicts and material changes with you. Resume only when the
+blocker and any required authorization are resolved.
 
 Run long builds, tests, migrations, and similar work in the foreground. Set a
 larger timeout when needed. Start persistent processes, services, or containers
 only as a planned part of the task. Record their owner and stop command, then
-clean them up unless the user explicitly asks to retain them. Remote-compute
-workers keep useful state until someone explicitly requests teardown.
+clean them up unless the user explicitly asks to retain them. Active
+[remote-compute](../opencode/.config/opencode/skills/remote-compute/SKILL.md#tear-down-only-when-requested)
+is the deliberate exception: retain useful worker state until explicit teardown.
+Its whole-worker authority never extends to external or shared systems.
 
 ## Agents
 
 | Agent | Normal use |
 |---|---|
 | `architect` | Discovers requirements, plans work, writes Task Briefs, and coordinates delivery |
-| `developer` | Implements one approved Task Brief and runs the dual-review loop |
+| `developer` | Implements one approved Task Brief or dispatches an authorized review-only phase |
 | `repo-scouter` | Refreshes `ARCHITECTURE.md` when repository guidance lacks important details |
-| `code-reviewer-1` | First independent correctness and standards review |
-| `code-reviewer-2` | Second independent review using the same review policy |
+| `code-reviewer-1` | Full independent review, emphasizing system behavior, contracts, and security |
+| `code-reviewer-2` | Full independent review, emphasizing maintainability, explanation, and onboarding |
 
 The detailed contracts live in the
 [agent prompts](../opencode/.config/opencode/agents/) and the
@@ -79,11 +93,17 @@ nested implementation notes. Reviewers retain their edit-tool denial, and
 delegation remains limited to the agents named in each contract. Shell access
 is not a read-only sandbox; agents must still follow their role instructions.
 
+The architect -> developer -> reviewer path uses `experimental.subagent_depth: 2`
+in `opencode.json`. V2 ignores the old top-level field; see the
+[V2 migration guide](https://opencode.ai/v2/docs/migrate-v1#accepted-but-unsupported-fields).
+A depth-limit error means review did not run. Follow the
+[reload guidance](#restart-after-configuration-changes) before retrying.
+
 OpenChamber's per-session auto-accept handles approval requests, but cannot
 override OpenCode's explicit `deny` rules. Child sessions inherit the nearest
 explicit parent setting unless they have their own setting. External-directory
-access and repeated-tool-call guards can still require approval. See
-[OpenCode permissions](https://opencode.ai/docs/permissions/) for rule matching
+access can still require approval. See
+[OpenCode V2 permissions](https://opencode.ai/v2/docs/permissions/) for rule matching
 and agent overrides.
 
 ## Commands
@@ -110,12 +130,50 @@ shared systems, and it does not automatically roll them back.
 |---|---|
 | [`diagnosing-bugs`](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md) | A hard, intermittent, recurrent, or performance bug needs disciplined diagnosis |
 | [`remote-compute`](../opencode/.config/opencode/skills/remote-compute/SKILL.md) | An exclusive disposable SSH worker should run every project execution command while the current local Git worktree remains authoritative |
-| [`unslop`](../opencode/.config/opencode/skills/unslop/SKILL.md) | Drafting, rewriting, or polishing prose to remove obvious AI-writing patterns |
-| [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories |
+| [`technical-documentation`](../opencode/.config/opencode/skills/technical-documentation/SKILL.md) | Planning, writing, or reviewing substantial technical docs/onboarding or explaining non-obvious code contracts |
+| [`unslop`](../opencode/.config/opencode/skills/unslop/SKILL.md) | Polishing prose for clarity while preserving meaning and the author's voice |
+| [`whitebox-development`](../opencode/.config/opencode/skills/whitebox-development/SKILL.md) | Developing a Whitebox ticket across core and affected plugin repositories, or explicitly requesting [SBC testing/deployment](../opencode/.config/opencode/skills/whitebox-development/references/sbc-testing.md) |
 | [`whitebox-review`](../opencode/.config/opencode/skills/whitebox-review/SKILL.md) | Reviewing Whitebox core, kernel, plugin, or cross-repository changes |
 
 Skills can trigger from context. When you want one explicitly, say, for example,
 `Use $whitebox-review to review <merge-request-url>`.
+
+### Instruction delivery
+
+The global [AGENTS.md](../opencode/.config/opencode/AGENTS.md) owns tool-selection
+and process-lifecycle guidance. The OpenCode stow package places it at
+`~/.config/opencode/AGENTS.md`, which [native V2 loads automatically](https://opencode.ai/v2/docs/instructions/#scope)
+alongside the target repository's guidance. Keep shared rules here rather than
+in the `instructions` config field, whose [entries are not loaded](https://opencode.ai/v2/docs/config/#instructions).
+V2 detects global/upward `AGENTS.md` edits before the next model request;
+[ambient instruction updates](https://opencode.ai/v2/docs/instructions/#updates)
+do not require a server reload. Nested instructions already loaded through file
+discovery need a new session to receive edits immediately.
+
+That native behavior is not proof that every provider bridge forwards the same
+instructions. With the installed Claude Code plugin 1.3.2, a fresh Fable context
+did not receive the complete OpenCode reviewer contract/global rules before
+tools. Inspection of that version's prompt and query paths supports the limit:
+it uses Claude Code's own system prompt and omits OpenCode system messages from
+transferred history. Rules may arrive later through steering or explicit reads;
+Claude-side discovery can also supply repository guidance depending on the
+working directory. This is not a universal claim about plugin versions or paths,
+and no complete provider request was captured.
+
+Developer therefore uses the
+[verified user-prompt bootstrap](../opencode/.config/opencode/agents/developer.md#review-instruction-delivery)
+for both reviewers in every review phase. Normal reviews load the contract,
+global rules, and repository guidance first. A fresh-reader exercise emits
+natural reader-path observations first, then completes verified bootstrap before
+the brief/diff-based review or verdict. Direct/manual reviewer use outside this
+dispatch must explicitly load those same current files; do not assume the bridge
+supplies them. A denied external-directory read or unavailable complete read-event
+evidence blocks acceptance rather than triggering a fallback.
+
+The procedure establishes instruction availability for the reviewed context,
+not obedience, durable retention, bridge repair, or review quality. Native
+ambient loading, explicit Fable reads, and cold-reader observations are separate
+evidence. It does not change models, permissions, or external-action authority.
 
 ## Task Briefs and handoffs
 
@@ -134,12 +192,28 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 
 | Use | Model | Reasoning |
 |---|---|---|
-| Default, architect, developer, repo-scouter, and reviewer 1 | `openai/gpt-6-astra` | `high` |
-| Reviewer 2 | `openai/gpt-5.6-sol` | `high` |
-| Lightweight internal work | `openai/gpt-5.6-terra` | `medium` |
+| Default, architect, and reviewer 1 | `openai/gpt-6-astra` | `high` |
+| Developer | `openai/gpt-6.1-sol` | `high` |
+| Repo-scouter | `openai/gpt-6.1-sol` | `medium` |
+| Reviewer 2 | `claude-code/claude-fable-5-1[1m]` | `high` |
+| Session titles | `openai/gpt-6-luna` | `low` |
+| Manual selection/escalation only | `claude-code/claude-opus-5-5[1m]` | Choose manually |
+
+Astra retains planning and review; Sol handles implementation. By user preference,
+Fable is the regular second model-family reviewer within the Max subscription
+allowance; Opus remains manually available, not an automatic fallback or extra
+review. Claude usage draws from the signed-in plan's allowance; on Max,
+Fable uses it faster and has a weekly cap within that shared allowance. See
+[Fable plan limits](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)
+for other plans. These settings are not a benchmark of quality, latency, or quota
+efficiency.
 
 Assignments and runtime settings are defined in
-[`opencode.json`](../opencode/.config/opencode/opencode.json).
+[`opencode.json`](../opencode/.config/opencode/opencode.json) and the
+[agent frontmatter](../opencode/.config/opencode/agents/). Titles use the native
+`agents.title.model` selector with `#low`; compaction and summary selection remain
+unchanged. Claude model IDs and effort variants come from the installed CLI's
+inventory; check that inventory rather than substituting Anthropic API IDs.
 
 ## Server helpers
 
@@ -161,7 +235,7 @@ non-empty password. Set `OPENCODE_SERVER_PASSWORD` for `opencode-serve-start`
 and `OPENCHAMBER_UI_PASSWORD` for `openchamber-serve-start`. The helpers do not
 support passwordless launches. Provide secrets through the environment and keep
 them uncommitted. See
-[OpenCode server authentication](https://opencode.ai/docs/server/#authentication).
+[OpenCode V2 web access](https://opencode.ai/v2/docs/cli/web/#access).
 
 Override the OpenCode bind with `OPENCODE_SERVE_HOSTNAME` and
 `OPENCODE_SERVE_PORT`. OpenChamber logs to
@@ -196,6 +270,35 @@ be checkable.
 
 ## Restart after configuration changes
 
-OpenCode loads configuration at startup. After changing `opencode.json`, an
-agent, command, prompt, skill, plugin, or other configuration file, quit and
-restart both OpenCode and OpenChamber.
+OpenCode V2's server owns loaded configuration; closing its terminal client
+does not necessarily stop the shared server. After changing `opencode.json`,
+agents, commands, prompts, skills, or plugins, coordinate with connected users
+and [reload](https://opencode.ai/v2/docs/cli/commands/#reload) the server your
+session actually uses:
+
+```bash
+opencode reload --server <server-url>
+```
+
+Replace `<server-url>` with that server's URL and use its configured
+authentication context. Do not target an unrelated background service. The
+[V2 reload API](https://opencode.ai/v2/openapi.json) rebuilds every loaded
+location and cancels pending permissions and forms; running sessions receive
+fresh services at their next step boundary. Reload is not a reason to interrupt
+other users without coordination.
+
+Check that the same client can reach the intended server with
+`opencode api --server <server-url> get /api/info` before reloading. If it reports
+unauthorized access, stop and ask the server owner to restore the client's
+authenticated connection. Do not remove password protection, copy credentials
+into the repository, or reload another server as a workaround.
+
+If a restart is needed instead, restart the server that owns the session: use
+`opencode service restart` for the shared background service, or the matching
+stop/start helpers for a helper-managed server. Restart OpenChamber when changing
+its own configuration. See [service troubleshooting](https://opencode.ai/v2/docs/troubleshooting/#check-the-background-service).
+
+After a depth-limit failure, reload or restart the correct server before retrying
+both reviewer dispatches. Keep the task blocked until both reviewers actually
+run and approve the same current state. These are recovery instructions, not
+authorization for an agent to reload or restart a live service during review.

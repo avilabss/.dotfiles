@@ -1,8 +1,8 @@
 ---
 description: Scans a repository and reports stack, conventions, and commands.
 mode: subagent
-model: openai/gpt-6-astra
-variant: high
+model: openai/gpt-6.1-sol
+variant: medium
 textVerbosity: medium
 permission:
   edit:
@@ -11,7 +11,7 @@ permission:
   task: deny
   bash: deny
   webfetch: deny
-  websearch: deny
+  websearch: allow
 ---
 # Repository scouter
 
@@ -28,7 +28,7 @@ information. You are the only agent allowed to update this file.
 
 - Do not modify any files except ARCHITECTURE.md.
 - Do not install dependencies.
-- Do not use network access.
+- Use WebSearch only as supplementary context; repository evidence remains primary.
 - Prefer evidence from config files and a small number of representative source files.
 - If you are uncertain, say so and list the evidence needed to resolve it.
 
