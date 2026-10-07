@@ -164,6 +164,8 @@ not obedience, retention, or review quality.
 
 - For every design, implementation, or cumulative review, YOU MUST request both
   @code-reviewer-1 and @code-reviewer-2 in parallel on the same frozen state.
+  The [quota-only fallback](#quota-only-reviewer-2-fallback) may replace reviewer 2
+  after that initial request; it never waives the independent pair.
   At the full-review stage, give each the exact Task Brief path and revision,
   review phase and scope, decision evidence, and known limits. For implementation
   or cumulative review, include comparison bases, task-owned files, pre-existing unrelated changes,
@@ -194,10 +196,69 @@ not obedience, retention, or review quality.
   each reviewer identifying scope/state, evidence, and limits. Missing required
   evidence or unavailable reviewer capability is blocked, not approval. Never
   invent approvals, execution, or unavailable tool calls, or substitute an
-  unauthorized reviewer. Notify @architect with the owner and next action.
+  unauthorized reviewer. The only standing substitution permission is the
+  [quota-only fallback](#quota-only-reviewer-2-fallback). Notify @architect with
+  the owner and next action when blocked.
 - Stop and escalate repeated review churn without new evidence rather than
   looping indefinitely. @architect resolves conflicts and invalidated decisions;
   do not hide critical unknowns as residual risks.
+
+### Quota-only reviewer-2 fallback
+
+Start with reviewer 1 Astra/high and reviewer 2 Fable/high in parallel. The user
+grants standing permission for one fresh Opus 5.5/high replacement of reviewer 2
+when the dispatched Fable review fails from confirmed usage exhaustion. This
+applies to design, implementation and cumulative review, not runtime/plugin
+failover or a third reviewer. Generic error fallback would mask other failures;
+shared Claude allowance can also exhaust Opus, so spare capacity is not promised.
+
+1. **Establish the cause and inactivity.** Inspect this child's public status,
+   error and original provider details. Fable must be terminal/inactive; pending,
+   retrying or unknown status blocks replacement and requires escalation, not
+   cancellation. If needed, inspect narrowly scoped installed-bridge diagnostics
+   only where they retain attributable original data, within existing permissions.
+   No stable log path or delivered error shape is assumed. Missing provenance
+   blocks: quoted file text, a model assertion, shared gate state, bare 429,
+   `rate_limit`/billing labels or reset countdowns are not proof. The bridge can
+   synthesize “Claude session/usage limit reached” for textless throttling.
+   Original evidence explicitly exhausting finite usage allowance/credits
+   (including “out of usage credits”) qualifies regardless of classifier label.
+   Payment/account/subscription eligibility, extra-usage disabled/configuration,
+   authentication, overload, timeout, tool/instruction failures and reviewer
+   verdicts do not qualify. Contradictory or indistinguishable evidence blocks;
+   do not infer the allowance bucket, purchase/enable usage or change
+   accounts/settings.
+2. **Dispatch the existing role afresh.** Resolve the exact available model and
+   `high` variant through the models catalog, then use `subagent.model` =
+   `claude-code/claude-opus-5-5[1m]#high` on `code-reviewer-2`. This standing user
+   permission authorizes that override, not a config/default/permission change.
+   Never resume partial Fable context or use a generic developer role. Preserve
+   the same scope/state, full duties and complementary focus. The parent
+   dispatches; the reviewer does not self-delegate.
+3. **Verify loading and identity.** Apply the complete verified
+   [instruction-delivery procedure](#review-instruction-delivery). Inspect both
+   session selection and public assistant execution/request model/variant records,
+   plus exposed substitution notes/events. Configuration or self-report alone
+   is insufficient; missing/contradictory records or unauthorized substitutions
+   block acceptance. These checks establish requested model/high identity, not
+   provider-internal effort or proof against undisclosed routing. For a cold-reader
+   obligation preserve observations-before-briefing; reuse only complete,
+   unchanged, applicable evidence, otherwise run a fresh two-phase reader pass.
+4. **Keep the reviews independent.** Do not share Astra's verdict or partial Fable
+   conclusions with Opus. Preserve actionable prior findings for resolution;
+   exhaustion never erases a defect or justifies replacing a valid rejection.
+   Astra's same-state approval may stand during the sequential replacement. Any
+   source/proposal edit invalidates both approvals and requires fresh dual review.
+5. **Bound continuation and disclose it.** Record the attributable trigger and
+   child status in the replacement dispatch; report them to @architect with the
+   replacement model/high, reviewed state and evidence limits in completion/block
+   reports. Retain Opus across this active task's review phases
+   and correction cycles while the established exhaustion is unresolved, rather
+   than probing Fable again. End the override at established recovery/reset or
+   task completion; new independent tasks default to Fable. Do not change config
+   or invent a cross-task quota cache. If Opus is unavailable, fails or cannot
+   supply required evidence, stop blocked with owner/next action: no model ladder,
+   repeated quota probes, indefinite retries or single-reviewer waiver.
 
 ## Completion report (send to @architect after review passes)
 

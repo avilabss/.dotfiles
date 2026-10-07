@@ -60,9 +60,10 @@ required; a link alone does not load them.
 
 If work is blocked, keep it blocked. Report the missing decision, evidence, or
 capability with an owner and next action to architect; do not substitute another
-reviewer, lower the criteria, or treat a failed dispatch as a vote. Architect
-resolves scope conflicts and material changes with you. Resume only when the
-blocker and any required authorization are resolved.
+reviewer except under the [quota-only reviewer-2 procedure](../opencode/.config/opencode/agents/developer.md#quota-only-reviewer-2-fallback).
+Never lower the criteria or treat a failed dispatch as a vote. Architect resolves
+scope conflicts and material changes with you. Resume only when the blocker and
+any required authorization are resolved.
 
 Run long builds, tests, migrations, and similar work in the foreground. Set a
 larger timeout when needed. Start persistent processes, services, or containers
@@ -197,16 +198,32 @@ evidence. It does not change models, permissions, or external-action authority.
 | Repo-scouter | `openai/gpt-6.1-sol` | `medium` |
 | Reviewer 2 | `claude-code/claude-fable-5-1[1m]` | `high` |
 | Session titles | `openai/gpt-6-luna` | `low` |
-| Manual selection/escalation only | `claude-code/claude-opus-5-5[1m]` | Choose manually |
+| Reviewer-2 quota fallback; also manual selection | `claude-code/claude-opus-5-5[1m]` | `high` for fallback; manual otherwise |
 
 Astra retains planning and review; Sol handles implementation. By user preference,
 Fable is the regular second model-family reviewer within the Max subscription
-allowance; Opus remains manually available, not an automatic fallback or extra
-review. Claude usage draws from the signed-in plan's allowance; on Max,
-Fable uses it faster and has a weekly cap within that shared allowance. See
+allowance; Opus remains available for direct manual selection. Claude usage draws
+from the signed-in plan's allowance; on Max, Fable uses it faster and has a weekly
+cap within that shared allowance. See
 [Fable plan limits](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)
 for other plans. These settings are not a benchmark of quality, latency, or quota
 efficiency.
+
+The user grants developer a narrow standing permission to replace reviewer 2 with
+fresh Opus 5.5/high after attributable original evidence confirms exhausted finite
+usage allowance/credits and Fable is inactive. Follow the canonical
+[quota-only procedure](../opencode/.config/opencode/agents/developer.md#quota-only-reviewer-2-fallback),
+not generic error labels or exhaustion-sounding bridge text. Missing provenance,
+payment/account/configuration failures and instruction failures remain blocked.
+If Fable is pending/retrying, replacement is blocked and may need user intervention
+to end the attempt. Two independent accepted reviews are still required.
+
+This is agent-managed permission, not runtime/plugin failover or a guarantee of
+unattended switching or spare Opus capacity; shared allowance may also block Opus.
+The task-scoped override continues through correction reviews until established
+quota recovery/reset or task completion. Future independent tasks default to Fable;
+no config change, third agent, quota cache, usage purchase or account/settings
+change is authorized.
 
 Assignments and runtime settings are defined in
 [`opencode.json`](../opencode/.config/opencode/opencode.json) and the
