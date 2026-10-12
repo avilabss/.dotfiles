@@ -50,3 +50,6 @@ fi
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 export OPENCODE_ENABLE_EXA=1
+
+# JADX CLI from Flatpak
+alias jadx='flatpak run --command=jadx com.github.skylot.jadx'

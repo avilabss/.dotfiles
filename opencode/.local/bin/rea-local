@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Desktop-launched OpenCode does not necessarily inherit an interactive shell.
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+config="${XDG_CONFIG_HOME:-$HOME/.config}/rea/env"
+if [[ -f "$config" ]]; then
+  source "$config"
+fi
+export REA_JADX_MCP_JAR="${REA_JADX_MCP_JAR:-$HOME/.local/share/rea/engines/jadx-headless-mcp-0.7.1-all.jar}"
+if [[ ! -x "$HOME/.local/bin/rea" ]]; then
+  echo "REA is missing. Run rea-setup; see ~/dotfiles/docs/opencode.md." >&2
+  exit 1
+fi
+exec "$HOME/.local/bin/rea" "$@"

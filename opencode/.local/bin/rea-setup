@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+# Explicit opt-in installation; does not register other agent clients.
+export PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+node -e 'const [a,b]=process.versions.node.split(".").map(Number); if (!((a===22&&b>=19)||(a===24&&b>=11)||a>=26)) { console.error("REA needs Node 22.19+, 24.11+, or 26+."); process.exit(1); }'
+version=6.4.0
+prefix="$HOME/.local"
+package="$prefix/lib/node_modules/rea-agents"
+installed="$(node -e 'try { console.log(require(process.argv[1]).version) } catch {}' "$package/package.json")"
+if [[ "$installed" != "$version" || ! -x "$prefix/bin/rea" ]]; then
+  npm install --global --prefix "$prefix" "rea-agents@$version"
+fi
+engine_dir="$prefix/share/rea/engines"
+jar="$engine_dir/jadx-headless-mcp-0.7.1-all.jar"
+expected=6e5eacf500b64292bfb73c49797c1958f6ee44646e43e868039ae7feb573ff75
+verify() {
+  node -e 'const fs=require("fs"),c=require("crypto"); const actual=c.createHash("sha256").update(fs.readFileSync(process.argv[1])).digest("hex"); if(actual!==process.argv[2]) { console.error("JADX checksum mismatch: "+process.argv[1]); process.exit(1); }' "$1" "$expected"
+}
+mkdir -p "$engine_dir"
+if [[ -e "$jar" ]]; then
+  verify "$jar"
+else
+  temporary="$(mktemp "$engine_dir/jadx.XXXXXX")"
+  trap 'rm -f "$temporary"' EXIT
+  curl --fail --location --retry 2 --connect-timeout 20 --max-time 180 \
+    https://github.com/1013503897/jadx-headless-mcp/releases/download/v0.7.1/jadx-headless-mcp-0.7.1-all.jar \
+    --output "$temporary"
+  verify "$temporary"
+  mv "$temporary" "$jar"
+fi
+skill_dir="${XDG_CONFIG_HOME:-$HOME/.config}/opencode/skills"
+skill="$skill_dir/reverse-engineer-anything"
+source_skill="$package/skills/reverse-engineer-anything"
+mkdir -p "$skill_dir"
+if [[ -L "$skill" && "$(readlink "$skill")" == "$source_skill" ]]; then
+  :
+elif [[ -e "$skill" || -L "$skill" ]]; then
+  echo "Existing skill left intact: $skill. Reconcile it with $source_skill." >&2
+  exit 1
+else
+  ln -s "$source_skill" "$skill"
+fi
+config_dir="${XDG_CONFIG_HOME:-$HOME/.config}/rea"
+mkdir -p "$config_dir"
+if [[ ! -e "$config_dir/env" ]]; then
+  cp "$config_dir/env.example" "$config_dir/env"
+  chmod 600 "$config_dir/env"
+fi
+printf 'REA %s and the verified Android engine are installed.
+' "$version"
+printf 'Set your existing Ghidra/JDK paths in %s/env, then run:
+' "$config_dir"
+printf '  rea-local doctor --provider ghidra --format json
+  rea-local mcp doctor --json
+'

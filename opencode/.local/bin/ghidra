@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+config="${XDG_CONFIG_HOME:-$HOME/.config}/rea/env"
+[[ ! -f "$config" ]] || source "$config"
+: "${GHIDRA_INSTALL_DIR:?Set GHIDRA_INSTALL_DIR in ~/.config/rea/env}"
+exec "$GHIDRA_INSTALL_DIR/ghidraRun" "$@"

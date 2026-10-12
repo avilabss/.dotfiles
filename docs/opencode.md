@@ -12,6 +12,7 @@ to define one task.
 | Install and complete first-use authentication | [Install and authenticate](#install-and-authenticate) |
 | Run the normal agent process | [Everyday workflow](#everyday-workflow) |
 | Choose an agent, command, or skill | [Agents](#agents), [Commands](#commands), or [Skills](#skills) |
+| Analyze binaries or APKs through REA | [Reverse engineering](#reverse-engineering-with-rea) |
 | Run a password-protected web helper | [Server helpers](#server-helpers) |
 | Update configuration safely | [Restart after configuration changes](#restart-after-configuration-changes) |
 
@@ -175,6 +176,130 @@ The procedure establishes instruction availability for the reviewed context,
 not obedience, durable retention, bridge repair, or review quality. Native
 ambient loading, explicit Fable reads, and cold-reader observations are separate
 evidence. It does not change models, permissions, or external-action authority.
+
+## Reverse engineering with REA
+
+The stowed OpenCode V2 config registers `rea` under `mcp.servers`. OpenChamber
+uses that connection through its managed OpenCode server; it does not need a
+separate MCP registration. The launcher loads host paths itself, so it also works
+when the server starts without an interactive Zsh environment.
+
+### Install on another machine
+
+Install/stow OpenCode first, then opt into the analysis tools:
+
+```bash
+cd ~/dotfiles
+./bootstrap.sh --tags opencode
+rea-setup
+```
+
+On an already installed host, `stow -R opencode` refreshes only the symlinks.
+`rea-setup` installs the pinned `rea-agents@6.4.0` into `~/.local`, downloads
+`jadx-headless-mcp` 0.7.1 with a fixed SHA-256 check, and links the matching bundled
+skill into `~/.config/opencode/skills/reverse-engineer-anything`. It preserves an
+existing host environment file and refuses to overwrite an unrelated skill or
+an engine JAR with the wrong checksum. Node.js 22.19+, 24.11+, or 26+ is required,
+as are npm and curl. Installation needs network access; normal local analysis
+uses the installed package.
+
+Edit `~/.config/rea/env` (created from the tracked `env.example`):
+
+```bash
+export GHIDRA_INSTALL_DIR="$HOME/Extras/ghidra_12.1.4"
+export JAVA_HOME="/absolute/path/to/full-jdk"
+export IDA_INSTALL_DIR="$HOME/ida-free-9.4"  # Optional GUI launcher
+```
+
+These paths belong to the machine running OpenCode. The env file and generated
+skill link are ignored by Git. The setup command does not install Ghidra, Java,
+IDA, or the JADX Flatpak. Supply Ghidra 12.1.x with its native decompiler and a
+64-bit full JDK 21+ for native analysis. Android analysis uses the separate
+headless JAR, defaulting to
+`~/.local/share/rea/engines/jadx-headless-mcp-0.7.1-all.jar`; override it with
+`REA_JADX_MCP_JAR` in the env file if necessary.
+
+The configured Fedora host uses `~/Extras/ghidra_12.1.4`,
+`/usr/lib/jvm/java-25-temurin-jdk`, and `~/ida-free-9.4`. Native function
+analysis and static inspection of the public Appium ApiDemos APK were verified
+with these installations on 2026-10-12. An isolated OpenCode 2.0.26 server also
+reported `rea` connected; the active OpenChamber sessions were not reloaded
+during setup. IDA Free 9.4 remains a GUI tool:
+[REA's IDA dependency excludes IDA Free](https://github.com/mrexodia/ida-pro-mcp#prerequisites).
+Use Ghidra for automated native decompilation with this setup.
+
+### Use from OpenChamber or OpenCode
+
+After installation, follow [reload guidance](#restart-after-configuration-changes)
+for the server you actually use. The OpenChamber helper's default managed server
+is `http://127.0.0.1:4095`; the separate OpenCode background service is a different
+process. Reload only after coordinating with any active sessions. In the same
+workspace, check the MCP connection in OpenChamber or OpenCode's `/mcps` UI.
+It should show `rea` connected. Existing project configuration can override the
+global connection, including selecting an SSH-based remote engine.
+
+Example prompts (replace the paths with absolute paths on the analysis host):
+
+> Use the reverse-engineer-anything skill and REA to analyze
+> `/absolute/path/to/program`. Find how it parses its configuration, show the
+> relevant functions and pseudocode, and distinguish observations from inferences.
+
+> Use REA to inspect `/absolute/path/to/app.apk`. Summarize its manifest and
+> permissions, then locate and explain its login code without running the APK.
+
+The installed skill provides target routing and evidence-handling instructions.
+For a bridge that does not expose MCP tools or discover the skill, explicitly
+ask the agent to read the installed `SKILL.md` and use `rea-local` CLI commands.
+Do not assume native OpenCode behavior proves Claude bridge tool delivery.
+
+### Terminal commands and checks
+
+| Command | Use |
+|---|---|
+| `rea-local` | REA CLI with the same host configuration as the MCP server |
+| `jadx -d output app.apk` | Flatpak JADX CLI; also available as a Zsh alias |
+| `ghidra-headless` | Ghidra's `analyzeHeadless` with configured paths |
+| `ghidra` | Open Ghidra's GUI |
+| `ida-free` | Open the installed IDA Free GUI |
+
+```bash
+rea-local doctor --provider ghidra --format json
+rea-local mcp doctor --json
+rea-local function /absolute/path/to/program main --provider ghidra --format json
+rea-local inspect-android-package /absolute/path/to/app.apk --format json
+```
+
+The scoped doctor checks Ghidra readiness; MCP doctor starts a temporary REA
+server, verifies its catalog, and makes a target-free request. Actual analysis
+is a stronger engine check. `rea` alone does not load `~/.config/rea/env`;
+use `rea-local` when invoking the configured CLI from an agent shell.
+
+[OpenCode V2](https://opencode.ai/v2/docs/mcp-servers/) uses `mcp.servers` and
+`disabled`, whereas REA 6.4.0's setup/registration doctor expects the older
+OpenCode shape. Do not run `rea setup` over this stowed config to resolve that
+registration warning. Use REA's provider/MCP checks and OpenCode's actual
+connection status instead. This integration deliberately registers no other
+agent clients. It retains OpenCode's existing permission rules.
+
+If the CLI works but OpenChamber lacks tools, check the workspace's effective
+config and the managed server's loaded state. A project `rea` entry replaces the
+entire global entry; it must contain its own command/environment. An active
+remote-compute task must use its authorized worker and worker-local paths, not
+silently fall back to this laptop's engine. The global launcher does not change
+project remote configurations.
+
+If Java or Flatpak fails only inside an agent's sandbox, use the client's normal
+approval mechanism for the required local process access. A shell alias does not
+bypass that boundary. The Flatpak CLI has its own filesystem permissions; use
+files under your home directory or grant a specific extra path when needed.
+
+To update, review REA's release requirements, then change the pinned version
+(and, when required, engine URL/checksum) in `rea-setup`, rerun it, verify the
+engines, and reload the correct OpenCode server. Avoid `rea update` or generic
+setup commands that drift from this repository's pinned integration.
+
+Upstream references: [REA setup](https://rea.tools/get-started/) and
+[Android provider](https://github.com/morluto/rea/blob/main/docs/android-analysis.md).
 
 ## Task Briefs and handoffs
 

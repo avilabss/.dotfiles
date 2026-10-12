@@ -43,6 +43,11 @@ authoritative in `ansible/site.yml`.
 Desktop app roles are optional so headless systems can keep the core setup
 without pulling GUI packages. Ghostty stows its own configuration from its role
 rather than through the default `stow_packages` list.
+OpenCode also stows the REA launchers and `~/.config/rea/env.example`.
+`rea-setup` is an explicit opt-in for the pinned REA package, verified Android
+engine, and generated skill link. Keep host paths in the ignored
+`~/.config/rea/env`; keep the V2 MCP registration in the tracked OpenCode config.
+See [REA usage](docs/opencode.md#reverse-engineering-with-rea).
 
 ### Stow
 

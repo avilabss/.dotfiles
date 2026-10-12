@@ -1,0 +1,3 @@
+#!/bin/sh
+# Keep arguments and working directory intact; Flatpak retains its own permissions.
+exec flatpak run --command=jadx com.github.skylot.jadx "$@"

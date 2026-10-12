@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+config="${XDG_CONFIG_HOME:-$HOME/.config}/rea/env"
+[[ ! -f "$config" ]] || source "$config"
+: "${IDA_INSTALL_DIR:?Set IDA_INSTALL_DIR in ~/.config/rea/env}"
+exec "$IDA_INSTALL_DIR/ida" "$@"

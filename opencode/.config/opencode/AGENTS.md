@@ -36,3 +36,17 @@ Tool availability does not authorize consequential external actions.
   external/shared-system state.
 - After an interruption or timeout that may have spawned workers, check for and
   clean up owned leftovers before retrying.
+
+## Reverse engineering
+
+For shipped binaries, packages, or APKs, use the configured REA MCP connection
+and load the installed `reverse-engineer-anything` skill. The host setup and CLI
+examples are documented in `~/dotfiles/docs/opencode.md` under "Reverse
+engineering with REA". Use `rea-local` for shell analysis; it loads the same host
+paths as the local MCP launcher. IDA Free is GUI-only in this integration.
+
+Check the workspace's effective MCP configuration before assuming REA runs
+locally: project overrides may select an SSH worker. An active remote-compute
+workflow keeps its execution authority on that worker. Do not replace that
+connection or silently use local tools. Missing MCP delivery in a provider bridge
+can use the configured CLI only on the authorized analysis host.

@@ -90,22 +90,37 @@
     "port": 4096
   },
   "mcp": {
-    "freecad": {
-      "type": "local",
-      "command": [
-        "/home/avi/.local/bin/uv",
-        "--directory",
-        "/home/avi/.var/app/org.freecad.FreeCAD/data/FreeCAD/v1-1/Mod/freecad-mcp",
-        "run",
-        "--locked",
-        "--no-dev",
-        "freecad-mcp"
-      ],
-      "enabled": true
+    "servers": {
+      "freecad": {
+        "type": "local",
+        "command": [
+          "/home/avi/.local/bin/uv",
+          "--directory",
+          "/home/avi/.var/app/org.freecad.FreeCAD/data/FreeCAD/v1-1/Mod/freecad-mcp",
+          "run",
+          "--locked",
+          "--no-dev",
+          "freecad-mcp"
+        ],
+        "disabled": false
+      },
+      "rea": {
+        "type": "local",
+        "command": [
+          "/bin/sh",
+          "-c",
+          "exec \"$HOME/.local/bin/rea-local\" mcp"
+        ],
+        "timeout": {
+          "startup": 30000,
+          "catalog": 30000,
+          "execution": 600000
+        }
+      }
     }
   },
   "plugins": [
-    "@openchamber/opencode-claude@1.3.2"
+    "@openchamber/opencode-claude@1.4.0"
   ],
   "websearch": {
     "provider": "firecrawl"

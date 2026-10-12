@@ -4,3 +4,7 @@ opencode/.config/opencode/package.json
 opencode/.config/opencode/package-lock.json
 opencode/.config/opencode/bun.lock
 /task-briefs/
+
+# Installed REA skill and host-specific engine paths
+opencode/.config/opencode/skills/reverse-engineer-anything
+opencode/.config/rea/env
