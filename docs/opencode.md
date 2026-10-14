@@ -1,8 +1,9 @@
 # OpenCode setup
 
 This repository includes a stowed OpenCode configuration for planning,
-implementation, and two independent reviews. The optional Ansible role links it
-to `~/.config/opencode/`. Install the role, authenticate, and ask `@architect`
+implementation, two regular independent reviews, and a required final whole-effort
+review. The optional Ansible role links it to `~/.config/opencode/`.
+Install the role, authenticate, and ask `@architect`
 to define one task.
 
 ## Find what you need
@@ -28,7 +29,7 @@ Start `opencode`, enter `/connect`, select **OpenAI (ChatGPT Plus/Pro)**, and
 complete browser OAuth. OpenCode stores credentials outside the repository at
 `~/.local/share/opencode/auth.json`.
 
-Reviewer 2 also needs the Claude Code CLI signed in to a Claude plan: check
+Claude-backed reviewers also need the Claude Code CLI signed in to a Claude plan: check
 `claude auth status`, or run `claude auth login --claudeai` if signed out. The
 pinned [Claude Code plugin](https://github.com/openchamber/opencode-claude) uses
 that CLI login, not an API key. Keep `claude-code` in `enabled_providers` alongside
@@ -50,6 +51,11 @@ until requirements and the resulting plan have each been approved.
    parallel. Any implementation edit requires fresh approvals from both on the
    same state; missing required evidence or reviewer capability blocks approval.
 4. Multi-task work also needs cumulative dual review of the combined change.
+5. Once the complete effort passes validation and regular reviews, architect
+   releases final review through developer. Reviewer 3 reviews the whole delivery,
+   including single-task work, before it is declared done or ready for human review.
+   No additional user permission question is needed. Corrections require authorized
+   fixes, renewed whole-effort pair review, then final review again on the new state.
    Architect reports the result; only you can confirm understanding and ownership.
 
 AI approval does not replace project review or authorize publication. The
@@ -60,8 +66,14 @@ owns the fresh-reader procedure. Agents must read linked instructions when
 required; a link alone does not load them.
 
 If work is blocked, keep it blocked. Report the missing decision, evidence, or
-capability with an owner and next action to architect; do not substitute another
-reviewer except under the [quota-only reviewer-2 procedure](../opencode/.config/opencode/agents/developer.md#quota-only-reviewer-2-fallback).
+capability with an owner and next action to architect; do not automatically
+substitute another reviewer or treat pending final review as acceptance. The
+[final review gate](../opencode/.config/opencode/agents/developer.md#final-review-gate)
+is required, not advisory. Native retries can hold the parent inside a blocking
+dispatch, so an immediate report may not be possible until the call returns.
+User-owned interruption/recovery may be needed; agents have no standing authority
+to cancel, reload, change accounts or purchase usage. After control returns,
+report the block and resume only with the required capability/authority restored.
 Never lower the criteria or treat a failed dispatch as a vote. Architect resolves
 scope conflicts and material changes with you. Resume only when the blocker and
 any required authorization are resolved.
@@ -83,6 +95,7 @@ Its whole-worker authority never extends to external or shared systems.
 | `repo-scouter` | Refreshes `ARCHITECTURE.md` when repository guidance lacks important details |
 | `code-reviewer-1` | Full independent review, emphasizing system behavior, contracts, and security |
 | `code-reviewer-2` | Full independent review, emphasizing maintainability, explanation, and onboarding |
+| `code-reviewer-3` | Required sequential final review of the complete effort before human handoff |
 
 The detailed contracts live in the
 [agent prompts](../opencode/.config/opencode/agents/) and the
@@ -153,9 +166,9 @@ do not require a server reload. Nested instructions already loaded through file
 discovery need a new session to receive edits immediately.
 
 That native behavior is not proof that every provider bridge forwards the same
-instructions. With the installed Claude Code plugin 1.3.2, a fresh Fable context
-did not receive the complete OpenCode reviewer contract/global rules before
-tools. Inspection of that version's prompt and query paths supports the limit:
+instructions. With the installed Claude Code plugin 1.3.2, a fresh Claude-backed
+reviewer context did not receive the complete OpenCode reviewer contract/global
+rules before tools. Inspection of that version's prompt and query paths supports the limit:
 it uses Claude Code's own system prompt and omits OpenCode system messages from
 transferred history. Rules may arrive later through steering or explicit reads;
 Claude-side discovery can also supply repository guidance depending on the
@@ -164,18 +177,21 @@ and no complete provider request was captured.
 
 Developer therefore uses the
 [verified user-prompt bootstrap](../opencode/.config/opencode/agents/developer.md#review-instruction-delivery)
-for both reviewers in every review phase. Normal reviews load the contract,
+for every reviewer in every review phase. Normal reviews load the contract,
 global rules, and repository guidance first. A fresh-reader exercise emits
 natural reader-path observations first, then completes verified bootstrap before
 the brief/diff-based review or verdict. Direct/manual reviewer use outside this
 dispatch must explicitly load those same current files; do not assume the bridge
 supplies them. A denied external-directory read or unavailable complete read-event
-evidence blocks acceptance rather than triggering a fallback.
+evidence blocks acceptance rather than triggering model substitution. Developer
+also verifies actual public session and assistant model/variant records for each
+dispatch; defaults do not migrate already-existing child sessions.
 
 The procedure establishes instruction availability for the reviewed context,
 not obedience, durable retention, bridge repair, or review quality. Native
-ambient loading, explicit Fable reads, and cold-reader observations are separate
-evidence. It does not change models, permissions, or external-action authority.
+ambient loading, explicit Claude-backed reviewer reads, and cold-reader
+observations are separate evidence. It does not change models, permissions,
+or external-action authority.
 
 ## Reverse engineering with REA
 
@@ -316,46 +332,39 @@ Upstream references: [REA setup](https://rea.tools/get-started/) and
 
 ## Models
 
-| Use | Model | Reasoning |
-|---|---|---|
-| Default, architect, and reviewer 1 | `openai/gpt-6-astra` | `high` |
-| Developer | `openai/gpt-6.1-sol` | `high` |
-| Repo-scouter | `openai/gpt-6.1-sol` | `medium` |
-| Reviewer 2 | `claude-code/claude-fable-5-1[1m]` | `high` |
-| Session titles | `openai/gpt-6-luna` | `low` |
-| Reviewer-2 quota fallback; also manual selection | `claude-code/claude-opus-5-5[1m]` | `high` for fallback; manual otherwise |
-
-Astra retains planning and review; Sol handles implementation. By user preference,
-Fable is the regular second model-family reviewer within the Max subscription
-allowance; Opus remains available for direct manual selection. Claude usage draws
-from the signed-in plan's allowance; on Max, Fable uses it faster and has a weekly
-cap within that shared allowance. See
-[Fable plan limits](https://support.claude.com/en/articles/15424964-claude-fable-models-on-your-plan)
-for other plans. These settings are not a benchmark of quality, latency, or quota
-efficiency.
-
-The user grants developer a narrow standing permission to replace reviewer 2 with
-fresh Opus 5.5/high after attributable original evidence confirms exhausted finite
-usage allowance/credits and Fable is inactive. Follow the canonical
-[quota-only procedure](../opencode/.config/opencode/agents/developer.md#quota-only-reviewer-2-fallback),
-not generic error labels or exhaustion-sounding bridge text. Missing provenance,
-payment/account/configuration failures and instruction failures remain blocked.
-If Fable is pending/retrying, replacement is blocked and may need user intervention
-to end the attempt. Two independent accepted reviews are still required.
-
-This is agent-managed permission, not runtime/plugin failover or a guarantee of
-unattended switching or spare Opus capacity; shared allowance may also block Opus.
-The task-scoped override continues through correction reviews until established
-quota recovery/reset or task completion. Future independent tasks default to Fable;
-no config change, third agent, quota cache, usage purchase or account/settings
-change is authorized.
-
-Assignments and runtime settings are defined in
+Current model assignments and variants are defined in
 [`opencode.json`](../opencode/.config/opencode/opencode.json) and the
-[agent frontmatter](../opencode/.config/opencode/agents/). Titles use the native
-`agents.title.model` selector with `#low`; compaction and summary selection remain
-unchanged. Claude model IDs and effort variants come from the installed CLI's
-inventory; check that inventory rather than substituting Anthropic API IDs.
+[agent frontmatter](../opencode/.config/opencode/agents/), not duplicated here.
+Update those configuration values when upgrading models; role duties and gates
+remain unchanged. The [Agents table](#agents) describes those duties.
+
+Reviewers 1 and 2 form the regular pair; reviewer 3 performs the required final
+whole-effort pass. The pair approves before spending final-pass quota, rather
+than calling three reviewers at every checkpoint. Usage limits depend on the
+configured provider, model and signed-in plan; these assignments do not promise
+spare capacity or establish quality, latency or quota efficiency.
+
+The required final gate is the user's choice, not an advisory vote. Automatic
+quota fallback is removed: native blocking retries can keep the parent inside
+the dispatch, preventing it from starting a replacement. This workflow does not
+repair runtime retries or promise spare capacity. An unavailable authorized final
+reviewer blocks handoff, even after implementation and pair approval.
+
+Explicit user model/variant selections remain possible, including omitted variants.
+A selection specifically for the final role/pass overrides that model for the
+stated scope without a second permission round; it does not remove the final
+stage. Pair-only selections never change reviewer 3, and exhaustion is not an
+override request. The [developer review loop](../opencode/.config/opencode/agents/developer.md#review-loop)
+owns these rules and verification, not an automatic failover plugin.
+
+Developer resolves each named role's effective configuration, unless an explicit
+scoped user selection overrides it, and verifies actual public session and
+assistant model/variant records against that selection. A default named-role
+dispatch does not invent a model override. Configuration updates do not migrate
+stored child-session selections; coordinate required activation using the
+[configuration reload guidance](#restart-after-configuration-changes).
+Use the configured provider's catalog for exact model IDs and available variants;
+Claude-backed selections use the installed CLI's inventory, not Anthropic API IDs.
 
 ## Server helpers
 
@@ -441,6 +450,7 @@ stop/start helpers for a helper-managed server. Restart OpenChamber when changin
 its own configuration. See [service troubleshooting](https://opencode.ai/v2/docs/troubleshooting/#check-the-background-service).
 
 After a depth-limit failure, reload or restart the correct server before retrying
-both reviewer dispatches. Keep the task blocked until both reviewers actually
-run and approve the same current state. These are recovery instructions, not
-authorization for an agent to reload or restart a live service during review.
+the affected reviewer dispatches. Keep the task blocked until required reviewers
+actually run and approve the same current state, including the final gate before
+handoff. These are recovery instructions, not authorization for an agent to
+reload or restart a live service during review.

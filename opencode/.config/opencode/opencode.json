@@ -29,6 +29,19 @@
     "code-reviewer-2": {
       "description": "Reviews code for best practices and potential issues.",
       "mode": "subagent",
+      "model": "claude-code/claude-opus-5-5[1m]",
+      "variant": "high",
+      "textVerbosity": "low",
+      "prompt": "{file:./prompts/code-reviewer.md}",
+      "permission": {
+        "edit": "deny",
+        "bash": "allow",
+        "task": "deny"
+      }
+    },
+    "code-reviewer-3": {
+      "description": "Reviews the complete effort in the required final pass before human handoff.",
+      "mode": "subagent",
       "model": "claude-code/claude-fable-5-1[1m]",
       "variant": "high",
       "textVerbosity": "low",

@@ -26,12 +26,18 @@ If this skill is used outside the architect workflow, present the agreed scope
 and get approval before changing code.
 
 Read and follow the shared [architect](../../agents/architect.md) and
-[developer](../../agents/developer.md) contracts for design, task, and cumulative
+[developer](../../agents/developer.md) contracts for design, task, cumulative and final
 review. Outside that flow, still obtain evidence-backed decisions before broad
 implementation and review the complete combined change against the original
 bases before declaring readiness. A task or single-repository approval is not
 cumulative approval. Record exact reviewed revisions and dirty-state diffs,
 including untracked contents; renew affected approvals after implementation edits.
+The required [final whole-effort gate](../../agents/developer.md#final-review-gate)
+also applies outside the architect flow before human-ready delivery. A coordinator
+with existing permission must arrange the architect's final-only release through
+developer; if that route is unavailable, report pending/blocked and route the work
+through the architect workflow. This grants no direct reviewer routing, new tool
+permissions, fixes, publication or deployment authority.
 
 Use the same requested feature branch name in core and every plugin touched,
 unless the ticket explicitly requires a different branch.

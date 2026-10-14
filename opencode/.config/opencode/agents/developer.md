@@ -10,6 +10,7 @@ permission:
     "*": deny
     code-reviewer-1: allow
     code-reviewer-2: allow
+    code-reviewer-3: allow
 ---
 # Developer
 
@@ -65,6 +66,9 @@ Your job is to implement exactly one task at a time, as specified in a Task Brie
   specifications and integration evidence. Do not edit; return findings for
   @architect to authorize fixes. Per-task or design approvals cannot replace
   cumulative implementation approval.
+- In **final review only**, dispatch the required whole-effort reviewer through
+  the [final review gate](#final-review-gate). Do not edit or self-release fixes.
+  Return its outcome to @architect; intermediate task approval is not final handoff.
 - These are instruction-level authorization boundaries, not an edit-tool
   sandbox. Tool availability never grants authority to bypass them.
 
@@ -119,7 +123,7 @@ Your job is to implement exactly one task at a time, as specified in a Task Brie
 ### Review instruction delivery
 
 Do not assume a provider forwards the reviewer's system prompt or global rules.
-For both reviewers, in every review phase, put the loading requirement in the
+For every reviewer, in every review phase, put the loading requirement in the
 dispatched **user prompt**. Resolve the current installation's shared reviewer
 prompt and global `AGENTS.md`, plus applicable repository guidance, to absolute
 paths; do not hardcode a personal home or dotfiles checkout in this contract.
@@ -162,10 +166,34 @@ not obedience, retention, or review quality.
 
 ### Dispatch and outcomes
 
+The regular pair is @code-reviewer-1 and @code-reviewer-2; @code-reviewer-3
+performs the final whole-effort pass. Model assignments and variants belong in
+the effective named-role configuration, not this workflow contract.
+
+Explicit user-requested models and variants take precedence for the identified
+roles and scope, including an explicit request to omit a variant. @architect may
+relay the selection, but must not invent an override. A request specifically for
+reviewer 3 or the final pass authorizes its scoped model/variant override without
+another permission question; a pair-only selection does not change the final
+reviewer. No selection silently waives a review stage or changes persistent
+configuration or permissions. There is no automatic model substitution or
+default-model probe required before an explicit selection.
+
+For every regular and final dispatch, resolve the named role's current effective
+model/variant configuration, or the explicit scoped user selection, and confirm
+availability through the catalog. Default dispatch uses the named role without
+inventing a `subagent.model` override; set that override only for an authorized
+explicit selection. Verify complete public instruction delivery, session selection
+AND assistant execution/request model/variant records against the resolved
+selection, including omission when requested and any exposed substitution events.
+Config or self-report alone is insufficient; missing or contradictory records
+block acceptance. These checks
+establish public requested identity, not provider-internal effort or undisclosed
+routing. Existing child sessions retain stored selections; do not assume a changed
+default migrated them or change old sessions without authority.
+
 - For every design, implementation, or cumulative review, YOU MUST request both
   @code-reviewer-1 and @code-reviewer-2 in parallel on the same frozen state.
-  The [quota-only fallback](#quota-only-reviewer-2-fallback) may replace reviewer 2
-  after that initial request; it never waives the independent pair.
   At the full-review stage, give each the exact Task Brief path and revision,
   review phase and scope, decision evidence, and known limits. For implementation
   or cumulative review, include comparison bases, task-owned files, pre-existing unrelated changes,
@@ -196,79 +224,68 @@ not obedience, retention, or review quality.
   each reviewer identifying scope/state, evidence, and limits. Missing required
   evidence or unavailable reviewer capability is blocked, not approval. Never
   invent approvals, execution, or unavailable tool calls, or substitute an
-  unauthorized reviewer. The only standing substitution permission is the
-  [quota-only fallback](#quota-only-reviewer-2-fallback). Notify @architect with
-  the owner and next action when blocked.
+  unauthorized reviewer. Notify @architect with the owner and next action when
+  blocked; do not choose a substitute model to bypass a failed required review.
 - Stop and escalate repeated review churn without new evidence rather than
   looping indefinitely. @architect resolves conflicts and invalidated decisions;
   do not hide critical unknowns as residual risks.
 
-### Quota-only reviewer-2 fallback
+### Final review gate
 
-Start with reviewer 1 Astra/high and reviewer 2 Fable/high in parallel. The user
-grants standing permission for one fresh Opus 5.5/high replacement of reviewer 2
-when the dispatched Fable review fails from confirmed usage exhaustion. This
-applies to design, implementation and cumulative review, not runtime/plugin
-failover or a third reviewer. Generic error fallback would mask other failures;
-shared Claude allowance can also exhaust Opus, so spare capacity is not promised.
+The user requires a final independent whole-effort review by @code-reviewer-3.
+Reserve final-review quota for this pass, not each task, design revision or
+intermediate checkpoint. The regular pair and relevant validation must pass first
+so final-pass quota is spent on a delivery candidate.
+Single-task work also requires this gate; multi-task work first needs cumulative
+pair approval against the original bases, not just the last task's approval.
 
-1. **Establish the cause and inactivity.** Inspect this child's public status,
-   error and original provider details. Fable must be terminal/inactive; pending,
-   retrying or unknown status blocks replacement and requires escalation, not
-   cancellation. If needed, inspect narrowly scoped installed-bridge diagnostics
-   only where they retain attributable original data, within existing permissions.
-   No stable log path or delivered error shape is assumed. Missing provenance
-   blocks: quoted file text, a model assertion, shared gate state, bare 429,
-   `rate_limit`/billing labels or reset countdowns are not proof. The bridge can
-   synthesize “Claude session/usage limit reached” for textless throttling.
-   Original evidence explicitly exhausting finite usage allowance/credits
-   (including “out of usage credits”) qualifies regardless of classifier label.
-   Payment/account/subscription eligibility, extra-usage disabled/configuration,
-   authentication, overload, timeout, tool/instruction failures and reviewer
-   verdicts do not qualify. Contradictory or indistinguishable evidence blocks;
-   do not infer the allowance bucket, purchase/enable usage or change
-   accounts/settings.
-2. **Dispatch the existing role afresh.** Resolve the exact available model and
-   `high` variant through the models catalog, then use `subagent.model` =
-   `claude-code/claude-opus-5-5[1m]#high` on `code-reviewer-2`. This standing user
-   permission authorizes that override, not a config/default/permission change.
-   Never resume partial Fable context or use a generic developer role. Preserve
-   the same scope/state, full duties and complementary focus. The parent
-   dispatches; the reviewer does not self-delegate.
-3. **Verify loading and identity.** Apply the complete verified
-   [instruction-delivery procedure](#review-instruction-delivery). Inspect both
-   session selection and public assistant execution/request model/variant records,
-   plus exposed substitution notes/events. Configuration or self-report alone
-   is insufficient; missing/contradictory records or unauthorized substitutions
-   block acceptance. These checks establish requested model/high identity, not
-   provider-internal effort or proof against undisclosed routing. For a cold-reader
-   obligation preserve observations-before-briefing; reuse only complete,
-   unchanged, applicable evidence, otherwise run a fresh two-phase reader pass.
-4. **Keep the reviews independent.** Do not share Astra's verdict or partial Fable
-   conclusions with Opus. Preserve actionable prior findings for resolution;
-   exhaustion never erases a defect or justifies replacing a valid rejection.
-   Astra's same-state approval may stand during the sequential replacement. Any
-   source/proposal edit invalidates both approvals and requires fresh dual review.
-5. **Bound continuation and disclose it.** Record the attributable trigger and
-   child status in the replacement dispatch; report them to @architect with the
-   replacement model/high, reviewed state and evidence limits in completion/block
-   reports. Retain Opus across this active task's review phases
-   and correction cycles while the established exhaustion is unresolved, rather
-   than probing Fable again. End the override at established recovery/reset or
-   task completion; new independent tasks default to Fable. Do not change config
-   or invent a cross-task quota cache. If Opus is unavailable, fails or cannot
-   supply required evidence, stop blocked with owner/next action: no model ladder,
-   repeated quota probes, indefinite retries or single-reviewer waiver.
+1. **Wait for final-review-only release.** @architect marks the current brief and
+   delegation **final review only** once the complete effort is ready. Dispatch
+   the named reviewer 3 automatically, without another user permission question.
+   Verify effective role availability and permissions as well as the shared
+   loading and identity checks. A generic session with a model override is not a
+   substitute for the authorized named role. If activation needs a reload, report
+   the blocker and request separate authority; do not bypass routing permissions.
+2. **Supply the whole effort, not persuasive verdicts.** Include the exact brief
+   path/revision, constituent specs or preserved requirements, all repositories
+   and original bases, complete staged/unstaged/untracked state and task-owned vs
+   unrelated changes, integration/validation evidence and omissions. Require
+   independent inspection of the full delivery and relevant unchanged consumers.
+   Do not supply the pair's verdicts or an author's persuasive review summary as
+   the analytical starting point. Preserve reviewer 3's own unresolved findings
+   for subsequent passes. Applicable evidence may be reused transparently, not
+   relabeled as new cold-reader observations.
+3. **Handle outcomes without self-authorizing fixes.** Return an explicit
+   `approved`, `changes-required` or `blocked` outcome with scope/state, evidence
+   and limits. Final findings enter the normal authorized correction workflow;
+   review-only release never permits edits. Any implementation edit invalidates
+   the pair and final approvals. Renew both regular reviews on the full changed
+   effort (cumulative for multi-task work), then repeat the final pass before
+   handoff. Escalate scope conflicts and repeated churn without new evidence.
+4. **Keep unavailable review blocked.** Missing capability, quota exhaustion,
+   incomplete loading/identity evidence, or a pending/retrying required reviewer
+   is not approval. Report implemented/validated and pair-reviewed separately
+   from final-reviewed; do not declare done or ready for human review. Native
+   blocking retries may hold the parent inside the call until failure or
+   user-owned interruption returns control, preventing an immediate block report.
+   Once control returns, report the missing evidence, owner and next action.
+   No cancellation, retry controller, model ladder, account change or usage
+   purchase is authorized. Only an explicit scoped user selection can override
+   the final model; exhaustion itself is not such a request.
 
 ## Completion report (send to @architect after review passes)
 
-After both reviewers approve, report to @architect:
+After regular task/cumulative reviews approve, report their scoped result to
+@architect, without claiming whole-effort completion. After the required final
+gate approves, include that outcome in the whole-effort handoff:
 
 - Summary (2-4 bullets): what changed and why
 - Files changed (list filenames)
 - Validation evidence, including anything not run
 - Both reviewer outcomes, reviewed scope/state, and whether design, task, or
   cumulative review passed
+- Final reviewer outcome and actual role/model/variant, complete-effort scope/state
+  and verification limits when final review is released; otherwise its pending status
 - Tracked rationale locations and the human-readability pass result
 - For substantial changes, a guided reading order, key decisions, risky paths,
   validation, and open questions for human ownership
