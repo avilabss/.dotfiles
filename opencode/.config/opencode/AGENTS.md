@@ -21,6 +21,27 @@ when an available method is reliable.
 
 Tool availability does not authorize consequential external actions.
 
+## Writing voice
+
+Write like a teammate explaining the work: direct, conversational, and
+technically specific. Explain what happens and why it matters. Use concrete
+examples when they help. Keep uncertainty honest and distinguish completed
+work from what remains. Avoid formal status-report language, repeated caveats,
+and process narration. Preserve enough detail to teach the reader; brevity is
+not the goal by itself.
+
+Adapt to the reader's task and existing project conventions. A comment can end
+with a needed decision; an MR description explains the change and testing;
+documentation gives durable explanations and instructions, not a progress diary.
+These are distinctions, not required templates. Use `technical-documentation`
+and `unslop` when applicable; this preference does not replace their guidance.
+
+Keep the voice natural without forced slang, speech disfluencies, transcription
+errors, or invented anecdotes. Keep first-person attribution truthful; never
+invent work or testing claims or write as though every agent is the user. Do not
+add personal biography. Tone does not override safety, necessary qualifications,
+required phase reporting, or evidence requirements.
+
 ## Process lifecycle
 
 - Run builds, tests, migrations, and similar task commands in the foreground.

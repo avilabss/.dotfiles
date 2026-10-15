@@ -156,19 +156,20 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 
 ### Instruction delivery
 
-The global [AGENTS.md](../opencode/.config/opencode/AGENTS.md) owns tool-selection,
+The global [AGENTS.md](../opencode/.config/opencode/AGENTS.md) owns the default
+[writing voice](../opencode/.config/opencode/AGENTS.md#writing-voice), tool-selection,
 process-lifecycle and [task-continuation](../opencode/.config/opencode/AGENTS.md#task-continuation)
 guidance. The OpenCode stow package places it at
 `~/.config/opencode/AGENTS.md`, which [native V2 loads automatically](https://opencode.ai/v2/docs/instructions/#scope)
-alongside the target repository's guidance. Keep shared rules here rather than
-in the `instructions` config field, whose [entries are not loaded](https://opencode.ai/v2/docs/config/#instructions).
+alongside the target repository's guidance. Keep shared defaults in that file
+rather than duplicating them across agent prompts or config.
 V2 detects global/upward `AGENTS.md` edits before the next model request;
 [ambient instruction updates](https://opencode.ai/v2/docs/instructions/#updates)
 do not require a server reload. Nested instructions already loaded through file
 discovery need a new session to receive edits immediately.
 
 That native behavior is not proof that every provider bridge forwards the same
-instructions. With the installed Claude Code plugin 1.3.2, a fresh Claude-backed
+instructions. In earlier checks with Claude Code plugin 1.3.2, a fresh Claude-backed
 reviewer context did not receive the complete OpenCode reviewer contract/global
 rules before tools. Inspection of that version's prompt and query paths supports the limit:
 it uses Claude Code's own system prompt and omits OpenCode system messages from

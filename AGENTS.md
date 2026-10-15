@@ -57,14 +57,15 @@ default package in `stow_packages`. Both variables live in
 including OpenCode, OpenChamber, and Ghostty, stow their own packages. Other
 roles handle only tool-specific setup, such as installing Oh My Zsh or TPM.
 
-OpenCode's shared tool-selection, process-lifecycle and task-continuation rules
-live in
+OpenCode's shared writing voice, tool-selection, process-lifecycle and
+task-continuation guidance lives in
 [`opencode/.config/opencode/AGENTS.md`](opencode/.config/opencode/AGENTS.md),
 stowed as `~/.config/opencode/AGENTS.md`. Native OpenCode V2 loads this global file
 automatically; this is not proof that every provider bridge supplies its contents.
-Its `instructions` config array does not deliver instructions. See the
+Keep shared defaults there rather than duplicating them across agent prompts or
+config. See the
 [OpenCode guide](docs/opencode.md#instruction-delivery) for verified reviewer
-delivery and the current Claude bridge limitation. Keep dotfiles-specific
+delivery and previously observed Claude bridge limits. Keep dotfiles-specific
 guidance in this repository-root guide instead.
 
 ### Tags
