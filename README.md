@@ -70,7 +70,8 @@ skips it, and reports the failure without stopping the rest of the setup.
 - [Neovim](docs/neovim.md): first launch, language tooling, keymaps, plugin
   management, and troubleshooting.
 - [OpenCode](docs/opencode.md): first authentication, the agent workflow,
-  commands, skills, models, server helpers, and security boundaries.
+  commands (including the audit-first [`/simplify`](docs/opencode.md#commands)),
+  skills, models, server helpers, and security boundaries.
   Includes [REA binary/APK analysis](docs/opencode.md#reverse-engineering-with-rea)
   using existing Ghidra and Java installations (`rea-setup` is an explicit opt-in).
 - [Sunshine](docs/sunshine.md): unattended Fedora host setup with NVIDIA, KDE

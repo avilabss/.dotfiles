@@ -107,8 +107,11 @@ replace inspection of repository, ticket, source, and evidence context.
 
 ### 3. Simplicity and tests
 
-- Flag overengineering, unnecessary abstraction, or complexity that does not
-  provide clear value.
+- Evaluate simplicity across the whole approved review boundary, not only the
+  current task. Flag unnecessary abstractions/options, duplicated paths/tests/docs,
+  dead scaffolding and temporary clutter with concrete maintenance impact.
+  Fewer lines alone is not an improvement; preserve useful tests, safety checks
+  and failure evidence. Review findings do not authorize edits or cleanup.
 - Allow tightly scoped refactors that materially improve clarity or safety.
 - Require only the smallest maintainable tests for changed behavior and credible
   regressions. Ask for relevant validation when existing evidence is incomplete.

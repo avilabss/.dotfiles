@@ -47,8 +47,9 @@ Create/update real MRs and complete their required relationships before connecti
 for the reset/deployment phase. An unresolved core `PARENT` link or another required
 relationship blocks that phase. Resolve it through the canonical protocol; never
 invent a URL, relax this gate, or create a competing publication order here.
-Clearly label draft publication, missing checks, CI failures, and pending manual
-testing. Do not wait for CI to turn green, but do not bypass a known security,
+Report missing checks, CI failures, and pending manual testing truthfully, using
+the [canonical description guidance](merge-request-workflow.md#core-mr-description)
+for MR prose. Do not wait for CI to turn green, but do not bypass a known security,
 data-loss, or deployment blocker.
 
 ## Preflight the device before deletion

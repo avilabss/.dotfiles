@@ -127,6 +127,7 @@ and agent overrides.
 |---|---|---|
 | [`/handoff`](../opencode/.config/opencode/commands/handoff.md) | Write a concise continuation note for a fresh session | `/handoff focus on the failed Fedora install` |
 | [`/harvest`](../opencode/.config/opencode/commands/harvest.md) | Review completed work for reusable knowledge without changing files | `/harvest main..feature-branch` |
+| [`/simplify`](../opencode/.config/opencode/commands/simplify.md) | Ask architect for a read-only simplification audit; approve recommendations before changes | `/simplify` or `/simplify main..feature-branch` |
 | [`/remote-compute-cleanup`](../opencode/.config/opencode/commands/remote-compute-cleanup.md) | Explicitly tear down all host-local state on the active remote-compute worker | `/remote-compute-cleanup` |
 | [`/wb-review`](../opencode/.config/opencode/commands/wb-review.md) | Review one Whitebox effort from one or more work-item/MR URLs without external changes | `/wb-review <work-item-url> [<work-item-or-mr-url> ...]` |
 | [`/wb-start`](../opencode/.config/opencode/commands/wb-start.md) | Start or continue a Whitebox ticket with its development skill | `/wb-start <ticket-link> <branch-name> [context]` |
@@ -155,8 +156,9 @@ Skills can trigger from context. When you want one explicitly, say, for example,
 
 ### Instruction delivery
 
-The global [AGENTS.md](../opencode/.config/opencode/AGENTS.md) owns tool-selection
-and process-lifecycle guidance. The OpenCode stow package places it at
+The global [AGENTS.md](../opencode/.config/opencode/AGENTS.md) owns tool-selection,
+process-lifecycle and [task-continuation](../opencode/.config/opencode/AGENTS.md#task-continuation)
+guidance. The OpenCode stow package places it at
 `~/.config/opencode/AGENTS.md`, which [native V2 loads automatically](https://opencode.ai/v2/docs/instructions/#scope)
 alongside the target repository's guidance. Keep shared rules here rather than
 in the `instructions` config field, whose [entries are not loaded](https://opencode.ai/v2/docs/config/#instructions).

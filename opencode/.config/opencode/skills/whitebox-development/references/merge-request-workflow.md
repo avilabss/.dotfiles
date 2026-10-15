@@ -17,9 +17,9 @@ replace cumulative review.
 A local draft or readiness report authorizes no external action. Pushes, MR
 creation/updates, feedback posting, ticket edits, approvals, merging, publication,
 and CI retry/cancellation each remain subject to the user's authorized scope.
-An explicitly authorized early/draft
-submission is allowed with incomplete readiness clearly labeled and missing
-checks identified; do not represent it as final approval. `/wb-review` remains
+An explicitly authorized early/draft submission is allowed with missing checks
+and limits reported using the [description guidance](#core-mr-description);
+do not represent it as final approval. `/wb-review` remains
 strictly read-only even when it produces a report suitable for later publication.
 
 ## Publish branches and draft MRs
@@ -37,8 +37,9 @@ plugin MRs first leaves those relationships unavailable.
    refresh lock-resolved commits, then commit and push core. Apply provider-first
    ordering to SDK/plugin dependencies too; local paths must not escape into CI.
 3. If the effort needs a core MR and none exists, create a **draft core MR** now
-   to obtain its URL. Use the core template, noting relationships still being
-   filled and missing checks. Referenced dependency branches must already exist.
+   to obtain its URL. Use the [core description guidance](#core-mr-description)
+   for unresolved relationships and missing checks. Referenced dependency branches
+   must already exist.
    This intermediate MR is not ready for review, deployment, or merging.
 4. Create/update coordinated plugin MRs with the real `PARENT` and `KERNEL` block
    below, then complete core `Related MRs` and ticket links, including libraries.
@@ -46,7 +47,7 @@ plugin MRs first leaves those relationships unavailable.
    template exists, describe scope, testing and actual relationships concisely.
 5. Reconcile pushed refs, MR/ticket links and locks before declaring publication
    complete or starting [SBC reset/deployment](sbc-testing.md#complete-publication-before-device-operations).
-   Label draft/testing state and missing evidence honestly.
+   Report outstanding checks using that same description guidance.
 
 Never publish a consumer ref to an unpushed provider. For later changes, push the
 provider first, refresh the consumer's lock-resolved commit, push the consumer,
@@ -84,24 +85,40 @@ as a clone URL. Standalone MRs follow the exception above, not a fake parent blo
 ## Core MR description
 
 Read the current core `.gitlab/merge_request_templates/default.md` and consolidate
-the ticket's core, plugin, and library changes there. Use its existing sections,
-not a second readiness form:
+the ticket's core, plugin, and library changes there. Use its existing headings
+and managed sections, not a second readiness form. The description serves human
+review and feature acceptance, not as an internal verification inventory:
 
-- **What**: concrete affected behavior and contracts, with per-repository scope.
-- **Why / How**: the problem, chosen approach, compatibility expectations and
-  tradeoffs, and links to tracked decisions/contracts. For substantial changes,
-  give a reading order across repositories and identify the risky paths. The MR
-  summarizes durable rationale rather than being its only home.
-- **Testing**: put reproducible setup and commands in Developer Testing
-  Instructions, with prerequisites, working directories, dependency mode,
-  revisions/lock state and artifact identities. Include expected outcomes and
-  actual evidence, distinguishing execution from inspection. Use Sandbox Testing
-  Instructions for applicable product-review steps and Common Testing
-  Instructions to avoid repetition. Do not manually edit the auto-managed
-  Sandbox Hosting section.
-- **Anything Else?**: missing checks with owners/next actions, known risks,
-  unsupported combinations and recovery limits, and the current readiness state.
-  Required missing evidence is a blocker, not a passed check.
+- **What**: briefly explain the changed behavior and affected scope.
+- **Why / How**: explain the problem, approach and major decisions concisely.
+  Link durable architectural detail rather than copying it. For substantial
+  changes, give a short reading order and identify risky paths. Do not include
+  a session diary or successive simplification/progress history.
+- **Testing**: give human **manual feature acceptance** steps: minimum needed
+  setup, meaningful actions and observable expected results. Select applicable
+  routes, not all by rote: Sandbox Testing Instructions when the sandbox is
+  suitable; Developer Testing Instructions for local setup when needed, or OPi
+  when hardware is required; Common Testing Instructions for shared actions.
+  Link existing setup docs when adequate. Necessary setup commands are fine;
+  automated suite-running recipes, test counts/logs, generations/hashes and
+  historical proof inventories are not the default human testing content.
+  CI owns automated results. Do not manually edit Sandbox Hosting.
+- **Anything Else?**: state genuine actionable limitations briefly and once where
+  they affect review/testing, with owner/next action for blockers. For example,
+  if the sandbox is unavailable, give a usable local route only if established;
+  do not invent a working environment or claim unobserved success. Link relevant
+  issues/jobs for deep failure diagnosis instead of copying it into the prose.
+
+For draft/publication status reporting, GitLab's Draft status carries draft state;
+actionable missing checks/blockers belong briefly once in the appropriate existing
+template section. Do not add an opening Draft/AI-readiness disclaimer or generic
+AI-versus-human approval language. Keep real approval requirements in the
+workflow/checklist below, without repeating them as MR disclaimers. Required
+missing evidence still blocks readiness. Agents must perform the development
+skill's validation and exact revision/dependency/artifact checks, retaining evidence
+in existing CI, linked documentation or session review records; concise MR prose
+does not weaken those gates or require a new evidence document for every change.
+Replace stale description content rather than appending progress reports.
 
 Update the existing `Related MRs` section immediately after `What`; add it there
 only if absent:
@@ -113,8 +130,10 @@ only if absent:
 ```
 
 List every related plugin/library MR once and omit the section when there are
-none. For coordinated efforts, keep consolidated explanation and per-repository
-reading/testing guidance here, not in relationship-only plugin descriptions.
+none. Do not add plugin SHA inventories, pipeline tables or repeated temporary
+dependency explanations. For coordinated efforts, keep the concise consolidated
+explanation and reading/manual-testing guidance in the core MR, not in
+relationship-only plugin descriptions.
 
 Preserve the project's Before Merge Checklist: testing, documentation where
 applicable, two code reviews with no outstanding comment, product review for

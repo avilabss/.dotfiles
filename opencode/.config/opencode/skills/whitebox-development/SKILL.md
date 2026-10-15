@@ -121,8 +121,9 @@ validate cross-repository behavior.
 
 This ordering applies only when publication is explicitly authorized. Preparing
 a draft or readiness report does not authorize any push or MR/ticket mutation.
-An explicitly requested early/draft push or review may proceed with its state,
-missing evidence, and limits clearly labeled; it is not final readiness.
+An explicitly requested early/draft push or review may proceed with truthful
+reporting of missing checks and limits; it is not final readiness. For MR prose,
+use the [canonical description guidance](references/merge-request-workflow.md#core-mr-description).
 
 Before pushing core changes, reconcile the planned repository set, branches,
 dependency refs, and unresolved relationships locally. No MR URLs are needed to
@@ -177,6 +178,8 @@ phase distinction and for retaining the deployment the user is testing.
   expected outcomes, actual results, and unavailable checks. Separate source
   inspection from execution. Required missing evidence blocks approval/readiness;
   name its owner and next action rather than treating it as a minor residual risk.
+  These are agent validation records, not a default inventory to paste into the
+  MR's human manual-testing instructions; use the publication reference below.
 
 ## Merge requests and ticket
 

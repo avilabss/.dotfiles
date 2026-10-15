@@ -37,6 +37,17 @@ Tool availability does not authorize consequential external actions.
 - After an interruption or timeout that may have spawned workers, check for and
   clean up owned leftovers before retrying.
 
+## Task continuation
+
+Linking, context updates and other housekeeping reminders are auxiliary to the
+active task, not completion criteria. After handling them, continue the next
+already-authorized step, including after compaction; do not finish with only a
+linking acknowledgment. This is an instruction-level rule, not runtime enforcement.
+Respect real blockers, approval boundaries, explicit user stops/reprioritization
+and legitimate waits for asynchronous work. Do not auto-resume stopped or
+user-owned sessions, poll waiting agents, bypass approval or treat a reminder as
+authority to work indefinitely.
+
 ## Reverse engineering
 
 For shipped binaries, packages, or APKs, use the configured REA MCP connection

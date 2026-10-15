@@ -94,14 +94,25 @@ Your job is to implement exactly one task at a time, as specified in a Task Brie
 
 ## Human-readability pass
 
-- Before review, read the change as a maintainer unfamiliar with the session.
+- Before review, read the whole effort across the approved review boundary,
+  including affected repositories and task-owned changes against original bases,
+  as a maintainer unfamiliar with the session. Do not optimize one task at the
+  expense of the combined delivery.
   Check meaningful names, logical grouping and whitespace, navigation and
   abstraction boundaries, non-obvious invariants, ownership/order/lifecycle,
   and failure behavior. Explain why tempting alternatives are unsafe where that
   knowledge matters; comments should explain reasoning, not syntax.
-- Fix concrete comprehension barriers, not personal style preferences. You own
-  explanation and documentation remediation. Do not substitute brevity, extra
-  abstractions, or quotas for a change a human can understand.
+- Question unnecessary abstractions/options, duplicated paths/tests/docs, dead
+  scaffolding, temporary diagnostics/artifacts and MR-description clutter.
+  Remove only proven task-owned disposable material; preserve unrelated work,
+  behavior, safety checks, useful regression tests and important failure evidence.
+- Fix concrete comprehension and simplicity barriers within authorized scope,
+  not personal style preferences. You own explanation and documentation
+  remediation. Fewer lines, extra abstractions, or comment/deletion quotas are
+  not substitutes for understanding. Escalate material scope changes to architect.
+  This normal implementation pass needs no new approval checkpoint; an explicit
+  [`/simplify`](../commands/simplify.md) invocation is instead an audit-only request
+  and requires user approval before corrections are scoped and delegated.
 
 ## Testing policy (risk-based and maintainable)
 
