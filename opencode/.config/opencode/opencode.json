@@ -133,7 +133,7 @@
     }
   },
   "plugins": [
-    "@openchamber/opencode-claude@1.4.0"
+    "@openchamber/opencode-claude@1.6.0"
   ],
   "websearch": {
     "provider": "firecrawl"

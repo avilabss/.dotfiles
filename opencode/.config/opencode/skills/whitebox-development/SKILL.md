@@ -13,6 +13,9 @@ for manual testing. It does not activate remote-compute or override role authori
 ## Establish scope
 
 1. Resolve the ticket, acceptance criteria, and requested branch.
+   Identify the normal user journey, target environment and smallest early
+   end-to-end proof under the architect's acceptance-anchor criteria. Component
+   tests or editable installs alone must not stand in for that journey.
 2. Inspect the current repository, worktree, branch, status, remotes, existing
    worktrees, and relevant plugin dependencies before changing anything.
 3. Map the complete core/plugin/library effort and the actual providers and
@@ -22,22 +25,21 @@ for manual testing. It does not activate remote-compute or override role authori
    consumers without preparing or modifying every plugin by default.
 4. Preserve unrelated changes and stop on unsafe worktree or branch conflicts.
 
-If this skill is used outside the architect workflow, present the agreed scope
-and get approval before changing code.
+Read and follow the [architect](../../agents/architect.md) and
+[developer](../../agents/developer.md) contracts for decisions, finding dispositions
+and review gates. Developer fixes covered issues; architect resolves disputed or
+out-of-scope decisions. Retain actionable follow-ups before discarding transient
+context; a missing external ticket is not permission to lose one or invent a URL.
 
-Read and follow the shared [architect](../../agents/architect.md) and
-[developer](../../agents/developer.md) contracts for design, task, cumulative and final
-review. Outside that flow, still obtain evidence-backed decisions before broad
-implementation and review the complete combined change against the original
-bases before declaring readiness. A task or single-repository approval is not
-cumulative approval. Record exact reviewed revisions and dirty-state diffs,
-including untracked contents; renew affected approvals after implementation edits.
-The required [final whole-effort gate](../../agents/developer.md#final-review-gate)
-also applies outside the architect flow before human-ready delivery. A coordinator
-with existing permission must arrange the architect's final-only release through
-developer; if that route is unavailable, report pending/blocked and route the work
-through the architect workflow. This grants no direct reviewer routing, new tool
-permissions, fixes, publication or deployment authority.
+Outside that flow, get scope approval before changing code and evidence-backed
+decisions before broad implementation. Readiness still requires whole-effort
+review against original bases, not only per-task/repository approvals. Record
+exact revisions and dirty state, including untracked contents; edits renew approval.
+The required [final gate](../../agents/developer.md#final-review-gate) still applies:
+a coordinator with existing permission must arrange architect's final-only release
+through developer. If that route is unavailable, report pending/blocked and route
+the work through architect. This grants no new routing, tool, fix, publication or
+deployment authority.
 
 Use the same requested feature branch name in core and every plugin touched,
 unless the ticket explicitly requires a different branch.
@@ -180,6 +182,11 @@ phase distinction and for retaining the deployment the user is testing.
   name its owner and next action rather than treating it as a minor residual risk.
   These are agent validation records, not a default inventory to paste into the
   MR's human manual-testing instructions; use the publication reference below.
+- Say whether the evidence covers a component or the normal target journey.
+  Load `diagnosing-bugs` for hard failures, including stagnant investigation;
+  it owns evidence reuse and escalation. Apply developer's
+  [tooling criteria](../../agents/developer.md#scope-and-freedom-to-change-code)
+  rather than adding machinery just to repeat checks.
 
 ## Merge requests and ticket
 

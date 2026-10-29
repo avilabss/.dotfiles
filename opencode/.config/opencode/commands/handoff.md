@@ -25,6 +25,11 @@ Include only what a fresh session needs:
 - current state;
 - resolved decisions;
 - open decisions, blockers, and unknowns;
+- actionable deferred findings with stable IDs, evidence/impact, outside-scope
+  reason, owner/next action and retained home; carry a local follow-up when an
+  external ticket is not authorized, rather than losing it with the brief;
+- acceptance-anchor coverage: component proof versus the normal journey in its
+  target environment;
 - recommended next action;
 - references to relevant Task Briefs, issues or tickets, branches, commits,
   diffs, ADRs, documentation, and files; and

@@ -137,7 +137,9 @@ Check cross-repository consumers and providers of changed shared contracts.
   runtime compatibility.
 - Frontend changes that affect flight, map, camera, device, recording, or mobile
   flows should include realistic cross-device or integration evidence when risk
-  is meaningful.
+  is meaningful. Compare that evidence with the acceptance anchor's normal
+  journey and target environment; synthetic/component success cannot establish
+  the complete feature. Report an unavailable target as a specific evidence gap.
 
 ### Compatibility and artifact evidence
 
@@ -197,10 +199,28 @@ main with its next action, not final readiness.
 
 ## Output
 
-Start with bundle status. Report architecture risks before file-level findings.
-Include severity, location, impact, and requested change. Do not approve while
-bundle links, temporary refs, or cross-plugin contracts remain unresolved.
-Request tests or manual evidence only for a specific identified risk.
+Start with bundle status and architecture risks, then actionable file findings.
+For each, give severity, location, evidence, consequence, requested change,
+correctness/spec versus standard versus judgment-call classification, relation
+to approved behavior and proposed `fix`, `scope`, `defer` or `reject`.
+
+Read and apply the architect's [finding criteria](../../agents/architect.md#findings-and-scope-decisions).
+Do not approve while required bundle links, relevant temporary refs or cross-plugin
+contracts are unresolved. Severity is not relevance: an independent inherited
+issue need not block, but a worsened/newly exposed one can. Rare serious risks
+are not nits. A disposition is not approval; challenge incorrect facts or
+applicability with concrete evidence, not recurring unsupported disagreement.
+
+- In the architect flow, keep the named origin IDs and send disputes through
+  developer to architect between frozen rounds.
+- In standalone review, use report-local `W-1`, `W-2`, etc., retaining them across
+  follow-ups. Judge relevance against ticket acceptance criteria or the explicitly
+  resolved review goal; return proposed dispositions and scope decisions to the
+  user without starting extra sessions.
+
+Retain each reviewer's own open IDs and actionable follow-ups under those
+criteria; do not create an unauthorized ticket just to obtain a URL. Request
+tests or manual evidence only for an identified risk.
 
 Assess explanation and reviewability against the
 [MR reference](../whitebox-development/references/merge-request-workflow.md) and

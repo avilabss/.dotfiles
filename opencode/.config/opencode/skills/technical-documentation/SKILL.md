@@ -16,6 +16,8 @@ Before substantial writing, identify:
 
 - Audience and prerequisite knowledge, tools, access, and environment.
 - Reader goal and the observable result or question the document must answer.
+- For workflow instructions, the normal user journey and target environment the
+  example actually establishes. A component demo must not imply end-to-end proof.
 - Document type and its existing authoritative home, including relevant links.
 
 Inspect repository guidance, source, tests, and primary documentation to resolve
@@ -40,11 +42,13 @@ duplicating reference material. Do not import Django's tooling or formatting
 rules into another repository. An accurate, focused API reference needs no
 tutorial, but a newcomer guide missing setup or a usable result is incomplete.
 
-Teach why and how, not only names of internal components. Introduce a generic
-extension concept before an implementation-specific example when readers need
-that model to understand the example. Retain foundational explanation even if
-it could apply to another project; connect it to this reader's task. Use headings,
-paragraphs, lists, and whitespace to group meaning, not to meet line quotas.
+Teach the mental model the reader needs next, not an inventory of components.
+For an extension example, explain what can be extended and why before naming
+the registration file. Retain useful foundations even when they apply elsewhere,
+and connect them to the local task. Group meaning with headings, paragraphs,
+lists and whitespace rather than line quotas. Shared prose defaults live in
+[global guidance](../../AGENTS.md#writing-voice); this skill owns reader tasks,
+technical accuracy and explanation checks.
 
 ## Keep claims and examples honest
 

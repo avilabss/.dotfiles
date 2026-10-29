@@ -19,6 +19,10 @@ matrix. Obvious one-line failures remain outside this skill's trigger.
    network, and server differences. Describe authentication state without copying
    credentials or customer data. Another browser's success does not disprove the
    reported browser's failure; keep both observations and their conditions.
+   Relate the symptom to the brief's acceptance anchor: the normal user journey
+   and target environment, not just a convenient component or synthetic fixture.
+   Check high-risk device/browser capabilities early before building a harness
+   around assumptions that the environment cannot support.
 2. Establish one tight, agent-runnable feedback command that reproduces the user's
    exact symptom and can turn green after a fix. Minimize the reproduction without
    changing that symptom, retaining the original reproduction for validation.
@@ -31,20 +35,23 @@ matrix. Obvious one-line failures remain outside this skill's trigger.
    results, including contradictory evidence. For performance failures, prefer
    measurements over intuition.
 4. Prefer existing portable logs, traces, and test tooling within authorized
-   access. Reuse available evidence and name what's missing rather than adding
+   access. Inspect retained recordings/artifacts before asking the user to
+   repeat collection. Reuse evidence and name what's missing rather than adding
    a vendor upload, proprietary CI integration, or dependency for observability.
 5. Add regression protection at a stable or public seam when risk justifies it,
    exercising the observed failure conditions. Implement the smallest
    evidence-supported fix, then rerun the minimized and original reproductions
    and relevant tests.
 
-For intermittent failures, retain failing and passing runs with relevant
-conditions and counts, plus seeds, timing, or traces when available. Repeated
-green runs alone demonstrate neither causality nor elimination. Seek evidence
-specific to the suspected mechanism and regression protection that exercises
-the failure conditions. Report confidence limits, remaining uncertainty, and
-what was not reproduced; do not invent statistical certainty or a universal
-retry quota.
+For intermittent failures, keep failing and passing runs with conditions/counts
+and available seeds, timing or traces. Preserve the relevant failure conditions
+when minimizing a reproduction: disabling tracing or changing cleanup can remove
+the symptom without testing the fix. Record those differences. Repeated green
+runs prove neither causality nor elimination; seek evidence of the mechanism and
+regression protection under the failing conditions. Report confidence limits,
+remaining uncertainty and what was not reproduced, not invented statistical
+certainty or a universal retry quota. Prefer one distinguishing experiment to
+another full-suite retry.
 
 ## Stop uninformative iteration
 
@@ -61,6 +68,11 @@ captured artifact, access, instrumentation, or authorization needed, not just
 "more context". Missing required validation blocks approval; investigation may
 resume when the blocker is resolved, not by substituting a speculative fix.
 
+Architect owns [expert escalation](../../agents/architect.md#expert-help);
+developer does not call big-brain directly. Consultation alone never releases
+an experiment: assigned scratch and an approved environment still need explicit
+experiment authority.
+
 ## Preserve evidence before cleanup
 
 Keep the useful sanitized evidence needed for follow-up: minimal reproduction,
@@ -76,9 +88,11 @@ data out of retained artifacts; do not post or upload externally without
 authorization. If no safe approved home is available, report that blocker
 before discarding needed evidence.
 
-After preserving that evidence, remove temporary instrumentation and disposable
-leftovers belonging to this investigation, then check cleanup. Preserve unrelated
-work and intentionally retained state. Follow the
+Read and apply the developer's
+[product/tooling/experiment criteria](../../agents/developer.md#scope-and-freedom-to-change-code)
+to decide what should remain. After retaining useful evidence, remove owned
+temporary instrumentation and disposable leftovers, then check cleanup. Preserve
+unrelated work and intentionally retained state. Follow the
 [remote-compute lifecycle](../remote-compute/SKILL.md#tear-down-only-when-requested)
 when active: ordinary completion does not tear down the worker. Diagnosis cleanup
 is not authority for broad cleanup, data destruction, or external/shared-service
@@ -103,12 +117,14 @@ require explicit authorization and safe target identification and data handling.
 
 ## Completion
 
-Completion requires a demonstrated red-to-green feedback command, evidence
-that distinguishes the selected hypothesis, successful minimized and original
-reproductions after the fix, relevant regression checks, retained sanitized
-evidence, and cleanup of temporary diagnostic leftovers. Green runs without
-causal/failure-condition evidence cannot alone demonstrate an intermittent fix.
-Report unmet criteria as blocked, with the evidence and next action above.
+Claim a fix only after the feedback command goes red-to-green, the evidence
+distinguishes the hypothesis, minimized and original reproductions pass, relevant
+regressions are checked, useful sanitized evidence is retained and owned temporary
+diagnostics are cleaned up. Keep the intermittent-failure limits above explicit.
+
+Report unmet fix criteria as incomplete/blocked, with evidence and next action.
+An investigation-only deliverable can conclude with an unresolved cause.
+Component or synthetic success still does not prove the normal target journey.
 
 Do not impose blanket TDD or launch extra review agents. This skill does not
 authorize commits, pushes, publication, or external mutations.

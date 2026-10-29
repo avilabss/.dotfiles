@@ -62,12 +62,10 @@ Before detailed review, resolve the complete ReviewBundle in this order:
    MR was found. Do not use the fallback to hide conflicting effort or branch
    evidence.
 
-Finish the complete ReviewBundle before detailed review. It must identify the
-combined ticket scope and per-ticket acceptance criteria. Required contents
-also include the canonical core MR or explicit core-`main` fallback, all
-deduplicated plugin/library MRs, relevant branches and temporary dependency
-refs, relationship evidence, and unresolved readiness findings. Then apply
-`$whitebox-review` for the architecture-aware analysis.
+Before detailed analysis, confirm that the resolved bundle includes every seed,
+each ticket's acceptance criteria, the core MR or explicit core-`main` fallback,
+deduplicated child MRs, relevant branches/dependency refs, relationship evidence
+and unresolved readiness findings. Then apply the loaded skill's analysis.
 
 This workflow is read-only. It may inspect the merge request, related merge
 requests, repositories, work-item context, diffs, and other evidence needed by
@@ -92,8 +90,11 @@ For every finding, include:
 
 - the lowercase severity and a short descriptive title;
 - the repository-relative file path and exact line number or narrow line range;
-- a plain-language comment explaining the defect and why it matters; and
-- reproduction evidence or a concrete theoretical failure scenario.
+- a plain-language comment explaining the defect and why it matters;
+- reproduction evidence or a concrete theoretical failure scenario; and
+- the skill's stable ID, classification, relation to the goal and proposed
+  disposition. Apply its finding/deferral rules; residual-risk prose alone does
+  not retain an actionable follow-up.
 
 When useful, give specific commands, code, API actions, or UI steps for the
 reproduction. Use short, understandable sentences rather than compressing the

@@ -66,7 +66,11 @@ Keep shared defaults there rather than duplicating them across agent prompts or
 config. See the
 [OpenCode guide](docs/opencode.md#instruction-delivery) for verified reviewer
 delivery and previously observed Claude bridge limits. Keep dotfiles-specific
-guidance in this repository-root guide instead.
+guidance in this repository-root guide instead. The guide's
+[contract map](docs/opencode.md#why-these-boundaries) identifies rule owners;
+keep behavior in those contracts rather than duplicating it here. Each agent
+file is parsed as one format: new roles use native V2; leave existing V1 entries
+whole unless migration is scoped.
 
 ### Tags
 

@@ -70,6 +70,7 @@ skips it, and reports the failure without stopping the rest of the setup.
 - [Neovim](docs/neovim.md): first launch, language tooling, keymaps, plugin
   management, and troubleshooting.
 - [OpenCode](docs/opencode.md): first authentication, the agent workflow,
+  architect-invoked expert help and scoped review follow-ups,
   commands (including the audit-first [`/simplify`](docs/opencode.md#commands)),
   skills, models, server helpers, and security boundaries.
   Includes [REA binary/APK analysis](docs/opencode.md#reverse-engineering-with-rea)

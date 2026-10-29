@@ -174,6 +174,10 @@ results. After a wipe, base images and map/airport data need fetching/provisioni
 backend waits for successful map initialization. Distinguish normal provisioning,
 failed provisioning, healthy services, deployed revision, and manual feature
 acceptance. Do not invent an endpoint or declare feature acceptance for the user.
+Report coverage against the brief's normal journey and target environment;
+healthy services or a fixture alone do not establish it. Load `diagnosing-bugs`
+for hard failures, reusing retained device artifacts before requesting another
+capture rather than repeating deploys without distinguishing evidence.
 
 ## Repeat the manual testing loop
 
@@ -191,6 +195,11 @@ Keep the same allocation and verified-complete reset state. For each iteration:
 3. Report sanitized deployment/test evidence and known CI failures. **Do not wait
    for CI** or chase unrelated CI failures during this loop. Do not repeat the
    initial wipe, prune the new test data, or tear down the user's testing deployment.
+
+Read and apply architect's [finding criteria](../../../agents/architect.md#findings-and-scope-decisions)
+when separating unrelated follow-ups from blockers. The fast manual-test loop
+does not waive regressions, newly exposed acceptance-path defects or serious
+security/data-loss/deployment risks merely because they predate this iteration.
 
 ## Interruption and failure
 

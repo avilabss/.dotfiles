@@ -59,6 +59,25 @@ Behavior is unchanged. No helper extraction or arbitrary maximum block length
 is needed to make these two responsibilities visible. Larger real functions
 may need different boundaries; whitespace cannot repair a confused design.
 
+## Make an instruction usable
+
+This is an invented contrast applying the maintained workflow's distinction
+between evidence retention and cleanup, not a report of an experiment.
+
+Before:
+
+> Ensure proper handling of all artifacts before proceeding appropriately.
+
+After:
+
+> Developer retains the failed trace and its command/environment before deleting
+> the temporary probe. Otherwise the next investigator cannot compare the failure
+> with a passing run under the same conditions. Keep credentials out of the trace
+> retained for handoff.
+
+The second instruction names the actor, order, evidence and reason. It does not
+invent a retention service or imply that every raw log should be committed.
+
 ## Turn an inventory into a reader explanation
 
 This contrast uses the supported local skill pattern in the

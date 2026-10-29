@@ -109,16 +109,18 @@ review and feature acceptance, not as an internal verification inventory:
   do not invent a working environment or claim unobserved success. Link relevant
   issues/jobs for deep failure diagnosis instead of copying it into the prose.
 
-For draft/publication status reporting, GitLab's Draft status carries draft state;
-actionable missing checks/blockers belong briefly once in the appropriate existing
-template section. Do not add an opening Draft/AI-readiness disclaimer or generic
-AI-versus-human approval language. Keep real approval requirements in the
-workflow/checklist below, without repeating them as MR disclaimers. Required
-missing evidence still blocks readiness. Agents must perform the development
-skill's validation and exact revision/dependency/artifact checks, retaining evidence
-in existing CI, linked documentation or session review records; concise MR prose
-does not weaken those gates or require a new evidence document for every change.
-Replace stale description content rather than appending progress reports.
+GitLab's Draft status already tells readers this is a draft. Put actionable gaps
+briefly in the relevant template section, not an opening AI-readiness disclaimer
+or repeated AI-versus-human approval language. Replace stale text rather than
+appending progress reports. Approval requirements belong in the workflow and
+checklist below.
+
+Concise prose does not relax validation. Perform the development skill's exact
+revision/dependency/artifact checks and retain results in existing CI, linked docs
+or session review records; no new evidence document is required for every change.
+Read and apply architect's [finding dispositions](../../../agents/architect.md#findings-and-scope-decisions)
+for blockers and retained follow-ups. Those dispositions never waive the project's
+discussion-resolution requirements or authorize ticket mutation.
 
 Update the existing `Related MRs` section immediately after `What`; add it there
 only if absent:

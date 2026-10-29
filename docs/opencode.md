@@ -15,7 +15,10 @@ to define one task.
 | Choose an agent, command, or skill | [Agents](#agents), [Commands](#commands), or [Skills](#skills) |
 | Analyze binaries or APKs through REA | [Reverse engineering](#reverse-engineering-with-rea) |
 | Run a password-protected web helper | [Server helpers](#server-helpers) |
-| Update configuration safely | [Restart after configuration changes](#restart-after-configuration-changes) |
+| Get help on a hard problem | [Expert help](#expert-help) |
+| Decide what review feedback blocks | [Findings and follow-ups](#findings-and-follow-ups) |
+| Interpret source, runtime and review evidence | [What the evidence proves](#what-the-evidence-proves) |
+| Update configuration safely | [Configuration pickup and recovery](#restart-after-configuration-changes) |
 
 ## Install and authenticate
 
@@ -33,8 +36,8 @@ Claude-backed reviewers also need the Claude Code CLI signed in to a Claude plan
 `claude auth status`, or run `claude auth login --claudeai` if signed out. The
 pinned [Claude Code plugin](https://github.com/openchamber/opencode-claude) uses
 that CLI login, not an API key. Keep `claude-code` in `enabled_providers` alongside
-`openai`, then [reload](#restart-after-configuration-changes) and confirm the
-models appear under **Claude Code**.
+`openai`, then check [configuration pickup](#restart-after-configuration-changes)
+and confirm the models appear under **Claude Code**.
 
 For a first task, open the target repository in OpenCode and ask `@architect`
 to inspect it and help define the requirements. Do not start implementation
@@ -42,49 +45,127 @@ until requirements and the resulting plan have each been approved.
 
 ## Everyday workflow
 
-1. Start with `@architect`. Agree on the requirements, then approve the proposed
-   plan. These are two separate approval points.
-2. Architect writes a Task Brief for developer. Consequential decisions get
-   parallel dual design review first, with no edits or experiments; architect
-   resolves material decisions with you and explicitly releases implementation.
-3. Developer implements and validates the task, then requests both reviewers in
-   parallel. Any implementation edit requires fresh approvals from both on the
-   same state; missing required evidence or reviewer capability blocks approval.
-4. Multi-task work also needs cumulative dual review of the combined change.
-5. Once the complete effort passes validation and regular reviews, architect
-   releases final review through developer. Reviewer 3 reviews the whole delivery,
-   including single-task work, before it is declared done or ready for human review.
-   No additional user permission question is needed. Corrections require authorized
-   fixes, renewed whole-effort pair review, then final review again on the new state.
-   Architect reports the result; only you can confirm understanding and ownership.
+1. Ask `@architect` to inspect the repository. Agree on requirements, then approve
+   the plan. These are separate approval points; implementation starts only after
+   plan approval and architect's explicit release.
+2. Architect writes a Task Brief for developer. It names the normal user journey
+   or observable deliverable, target environment and smallest early end-to-end
+   proof—the **acceptance anchor**. Consequential design decisions get independent
+   dual design review, without edits or experiments, before architect explicitly
+   releases implementation.
+3. Developer implements and validates, then calls both regular reviewers in
+   parallel. A **frozen round** means both inspect the same unchanged source and
+   scope decisions. Any edit requires renewed pair approval, not a review of only
+   the latest lines. Missing required evidence or reviewer capability blocks approval.
+4. For multi-task work, architect also releases cumulative pair review of the
+   combined change against its original bases. Per-task approvals are not enough.
+5. After validation and regular reviews pass, architect releases the required
+   final whole-effort review through developer. Reviewer 3 runs even for a single
+   task; no extra permission question is needed just to invoke that required gate.
+   Authorized corrections need renewed whole-effort pair and final review.
 
+Architect reports the result. Only you can confirm understanding and ownership;
 AI approval does not replace project review or authorize publication. The
 [developer review loop](../opencode/.config/opencode/agents/developer.md#review-loop)
-owns dispatch inputs, independent same-state review, and escalation. The
-[technical-documentation skill](../opencode/.config/opencode/skills/technical-documentation/SKILL.md#check-with-a-fresh-reader)
-owns the fresh-reader procedure. Agents must read linked instructions when
-required; a link alone does not load them.
+owns dispatch, verification and correction details. For documentation, agents
+also follow the [fresh-reader procedure](../opencode/.config/opencode/skills/technical-documentation/SKILL.md#check-with-a-fresh-reader).
 
-If work is blocked, keep it blocked. Report the missing decision, evidence, or
-capability with an owner and next action to architect; do not automatically
-substitute another reviewer or treat pending final review as acceptance. The
-[final review gate](../opencode/.config/opencode/agents/developer.md#final-review-gate)
-is required, not advisory. Native retries can hold the parent inside a blocking
-dispatch, so an immediate report may not be possible until the call returns.
-User-owned interruption/recovery may be needed; agents have no standing authority
-to cancel, reload, change accounts or purchase usage. After control returns,
-report the block and resume only with the required capability/authority restored.
-Never lower the criteria or treat a failed dispatch as a vote. Architect resolves
-scope conflicts and material changes with you. Resume only when the blocker and
-any required authorization are resolved.
+When an agent cannot proceed, it reports the missing decision, evidence or
+capability, with an owner and next action, to architect. A failed or pending
+review is not a vote. Architect resolves scope conflicts with you; agents do not
+quietly lower the criteria or substitute reviewers.
 
-Run long builds, tests, migrations, and similar work in the foreground. Set a
-larger timeout when needed. Start persistent processes, services, or containers
-only as a planned part of the task. Record their owner and stop command, then
-clean them up unless the user explicitly asks to retain them. Active
+A reviewer call can remain stuck inside the runtime's retry handling, preventing
+the coordinating agent from reporting immediately. You may need to stop/cancel
+the affected call using your client's controls, then restore access/quota or
+[explicitly choose a model for the named role](#models). Reload is not a quota
+remedy. Agents have no standing authority to cancel calls, reload services,
+change accounts or buy usage. Once control returns, the agent reports the gap
+and resumes only with the missing capability and authority restored.
+
+The [global process rules](../opencode/.config/opencode/AGENTS.md#process-lifecycle)
+require foreground builds/checks and owned cleanup with stop commands. Active
 [remote-compute](../opencode/.config/opencode/skills/remote-compute/SKILL.md#tear-down-only-when-requested)
-is the deliberate exception: retain useful worker state until explicit teardown.
-Its whole-worker authority never extends to external or shared systems.
+retains its worker until explicit teardown; that exception never grants authority
+over external or shared systems.
+
+### Expert help
+
+Developer asks architect for help when investigation stalls or complexity grows
+without advancing the goal. You can also ask architect for expert investigation.
+Architect may invoke `big-brain` early for a hard problem, consequential reviewer
+disagreement or stagnant diagnosis; it need not wait for a fixed attempt count.
+
+Expert help still needs an approved plan and a Task Brief. A focused investigation
+can be the planned task before broad implementation. Ask architect to scope it;
+"early help" does not bypass plan approval or brief creation.
+
+Architect sends the goal, evidence, failed approaches, hypotheses and question
+with either **read-only consultation** or **experiment released** authority. The
+second permits only an already-approved experiment in assigned scratch and the
+approved environment, not edits to product source, worktree state or briefs.
+Developer integrates supported results. New scope or external effects need approval.
+
+The expert returns facts, inferences and untested ideas separately. Its output
+is evidence for the normal review gates, not an approval vote. Architect verifies
+instruction delivery and the publicly recorded model/variant—the requested model
+and reasoning option, not proof of provider-internal effort. Expert use can share
+final-review quota; choose it for a useful question, not as a routine fourth review.
+The [architect contract](../opencode/.config/opencode/agents/architect.md#expert-help)
+owns dispatch and [big-brain](../opencode/.config/opencode/agents/big-brain.md) owns
+its investigative boundaries.
+
+### Findings and follow-ups
+
+Severity describes impact; task relevance determines whether a finding blocks
+this goal. An introduced or worsened regression, an acceptance-anchor failure or
+missing required validation blocks. An old defect newly exposed on the acceptance
+path may block too; an independent old UI defect normally becomes a follow-up
+rather than a new code project. Serious
+security/data-loss/release risk needs your informed decision before proceeding,
+not a quiet waiver. Missing reviewer capability or verification cannot be waived.
+
+Reviewers use stable IDs and propose `fix`, `scope`, `defer` or `reject` with
+evidence. Developer fixes issues already covered by the brief. Architect resolves
+disputed or out-of-scope decisions between frozen rounds and asks you to approve
+material plan changes. A recorded disposition is not approval: reviewers may
+challenge its facts or relevance with concrete evidence.
+
+A deferral retains evidence/impact, why it is outside scope, owner/next action
+and a home that survives the brief: the final report to you, a `/handoff` note you
+explicitly request, or an existing project tracker when updates are authorized.
+Preserve it before deleting the brief. A local follow-up is enough when no external
+ticket is authorized; disclose that limit rather than inventing a URL or tracker.
+Reopen an agreed deferral when new evidence changes relevance or impact, not
+automatically every round. See the [authoritative finding rules](../opencode/.config/opencode/agents/architect.md#findings-and-scope-decisions)
+for ID origins and blocking criteria.
+
+### What the evidence proves
+
+Read a status report by what it establishes, not how many reviews ran:
+
+- **Implemented/validated** says what changed and what checks covered. A source
+  or component test is not runtime verification of the ordinary target journey.
+- **AI-reviewed** identifies the reviewed state and stage. Pair approval is not
+  cumulative or final approval, and none certifies human understanding.
+- **Author-reviewed/understood** requires your confirmation. Ready for project
+  review still needs the required evidence and final AI gate; it is not publication
+  authority or a replacement for project code/product review.
+
+The approved brief decides which target-environment evidence is required. A green
+synthetic fixture, for example, does not prove a mobile-device flow. An unavailable
+target stays in the report as a gap while safe authorized implementation can
+continue; missing required evidence blocks that delivery claim. Only you can
+explicitly narrow the scope to a source-validated delivery or a **manual-test
+candidate**, an intermediate version to try with known limits. That decision
+changes the scope of the claim, not the evidence: it proves no runtime behavior
+and waives no required AI review gate.
+
+Use [diagnosing-bugs](../opencode/.config/opencode/skills/diagnosing-bugs/SKILL.md)
+for hard failures: reuse retained captures before asking for more, and preserve
+the failing conditions when testing a hypothesis. Keep production changes,
+maintained regression/tooling and disposable experiments distinct so a one-off
+investigation does not become permanent machinery without an ongoing need.
 
 ## Agents
 
@@ -93,6 +174,7 @@ Its whole-worker authority never extends to external or shared systems.
 | `architect` | Discovers requirements, plans work, writes Task Briefs, and coordinates delivery |
 | `developer` | Implements one approved Task Brief or dispatches an authorized review-only phase |
 | `repo-scouter` | Refreshes `ARCHITECTURE.md` when repository guidance lacks important details |
+| `big-brain` | Architect-invoked investigation with explicit consultation or scratch-experiment authority; not another reviewer |
 | `code-reviewer-1` | Full independent review, emphasizing system behavior, contracts, and security |
 | `code-reviewer-2` | Full independent review, emphasizing maintainability, explanation, and onboarding |
 | `code-reviewer-3` | Required sequential final review of the complete effort before human handoff |
@@ -104,8 +186,11 @@ The detailed contracts live in the
 Developer file edits and architect/reviewer shell commands run without tool
 approval prompts. Task Brief and `ARCHITECTURE.md` ownership is enforced by the
 agent instructions, rather than developer file-deny patterns that also block
-nested implementation notes. Reviewers retain their edit-tool denial, and
-delegation remains limited to the agents named in each contract. Shell access
+nested implementation notes. Reviewers retain their edit-tool denial. Native
+`subagent` rules limit that route to named roles, but this is not a universal
+delegation barrier: observed Claude-bridge developer/reviewer catalogs also
+exposed alternative session tools. No bypass was executed. Contracts prohibit
+extra sessions or delegation through those tools, APIs or shell. Shell access
 is not a read-only sandbox; agents must still follow their role instructions.
 
 The architect -> developer -> reviewer path uses `experimental.subagent_depth: 2`
@@ -117,7 +202,10 @@ A depth-limit error means review did not run. Follow the
 OpenChamber's per-session auto-accept handles approval requests, but cannot
 override OpenCode's explicit `deny` rules. Child sessions inherit the nearest
 explicit parent setting unless they have their own setting. External-directory
-access can still require approval. See
+access can still require approval when configured to ask. Native V2 allows
+external directories by default; it does not retain V1's default external-path
+ask. An ask, including a secret-read ask, can be answered by auto-accept without
+human intervention; it is not a promise of isolation or secret protection. See
 [OpenCode V2 permissions](https://opencode.ai/v2/docs/permissions/) for rule matching
 and agent overrides.
 
@@ -178,23 +266,43 @@ Claude-side discovery can also supply repository guidance depending on the
 working directory. This is not a universal claim about plugin versions or paths,
 and no complete provider request was captured.
 
-Developer therefore uses the
-[verified user-prompt bootstrap](../opencode/.config/opencode/agents/developer.md#review-instruction-delivery)
-for every reviewer in every review phase. Normal reviews load the contract,
-global rules, and repository guidance first. A fresh-reader exercise emits
-natural reader-path observations first, then completes verified bootstrap before
-the brief/diff-based review or verdict. Direct/manual reviewer use outside this
-dispatch must explicitly load those same current files; do not assume the bridge
-supplies them. A denied external-directory read or unavailable complete read-event
-evidence blocks acceptance rather than triggering model substitution. Developer
-also verifies actual public session and assistant model/variant records for each
-dispatch; defaults do not migrate already-existing child sessions.
+Developer's [delivery procedure](../opencode/.config/opencode/agents/developer.md#review-instruction-delivery)
+is authoritative for reviewers and experts. Read and apply it before dispatch:
+developer verifies reviews; architect verifies expert help. Both require explicit
+user-prompt reads and public model/variant evidence, not a provider's assurance
+or a config entry. Direct/manual reviewer use must explicitly load the current
+contract, global rules and repository guidance too. Missing evidence blocks review
+acceptance or verified expertise; it does not justify model substitution.
 
-The procedure establishes instruction availability for the reviewed context,
-not obedience, durable retention, bridge repair, or review quality. Native
-ambient loading, explicit Claude-backed reviewer reads, and cold-reader
-observations are separate evidence. It does not change models, permissions,
-or external-action authority.
+The [fresh-reader procedure](../opencode/.config/opencode/skills/technical-documentation/SKILL.md#check-with-a-fresh-reader)
+is the deliberate ordering exception: reader-path observations come before the
+brief and author explanations, then full verified bootstrap before a verdict.
+Disclose ambient exposure rather than claiming injected answers as discoveries.
+
+For version-specific read-only inspection, resolve the existing server and its
+authenticated context first. From the target repository:
+
+```bash
+# Replace placeholders; use the existing authenticated context, never pasted credentials.
+opencode api --server <server-url> get '/api/agent?location[directory]=<encoded-absolute-path>'
+opencode api --server <server-url> get '/api/model?location[directory]=<encoded-absolute-path>'
+opencode api --server <server-url> get '/api/session/<child-session-id>'
+opencode api --server <server-url> get '/api/session/<child-session-id>/message?order=asc&limit=100'
+```
+
+These examples use the V2 `/api` surface; check the running server's
+`/openapi.json` for version-specific shapes. Session metadata and assistant
+messages expose requested model/variant; completed public tool results establish
+read paths/ranges and order. Follow pagination, inspect only the relevant public
+records, and omit private reasoning and credential-bearing content from evidence.
+Do not run bare `opencode api` against an unknown service: its discovery can
+start a background service. An explicit-server authentication failure needs the
+owner's help, not another server, copied credentials or weaker protection.
+
+These records establish instruction availability and public requested identity,
+not obedience, retention, provider-internal effort or review quality. Native
+ambient loading, explicit bridge reads and cold-reader observations are different
+evidence; none changes permissions or external-action authority.
 
 ## Reverse engineering with REA
 
@@ -341,33 +449,20 @@ Current model assignments and variants are defined in
 Update those configuration values when upgrading models; role duties and gates
 remain unchanged. The [Agents table](#agents) describes those duties.
 
-Reviewers 1 and 2 form the regular pair; reviewer 3 performs the required final
-whole-effort pass. The pair approves before spending final-pass quota, rather
-than calling three reviewers at every checkpoint. Usage limits depend on the
-configured provider, model and signed-in plan; these assignments do not promise
-spare capacity or establish quality, latency or quota efficiency.
+Use the configured provider's catalog for exact IDs and reasoning variants;
+Claude-backed selections use its CLI inventory, not Anthropic API IDs. Existing
+child sessions keep their stored selections when a default changes.
 
-The required final gate is the user's choice, not an advisory vote. Automatic
-quota fallback is removed: native blocking retries can keep the parent inside
-the dispatch, preventing it from starting a replacement. This workflow does not
-repair runtime retries or promise spare capacity. An unavailable authorized final
-reviewer blocks handoff, even after implementation and pair approval.
+You can choose a model/variant for a named role and scope, including no variant.
+A choice specifically for the final pass applies without another permission
+question; a pair-only choice does not change reviewer 3. This never waives a gate
+or changes persistent configuration or permissions. Developer owns the
+[selection and identity checks](../opencode/.config/opencode/agents/developer.md#model-selection-and-verification).
 
-Explicit user model/variant selections remain possible, including omitted variants.
-A selection specifically for the final role/pass overrides that model for the
-stated scope without a second permission round; it does not remove the final
-stage. Pair-only selections never change reviewer 3, and exhaustion is not an
-override request. The [developer review loop](../opencode/.config/opencode/agents/developer.md#review-loop)
-owns these rules and verification, not an automatic failover plugin.
-
-Developer resolves each named role's effective configuration, unless an explicit
-scoped user selection overrides it, and verifies actual public session and
-assistant model/variant records against that selection. A default named-role
-dispatch does not invent a model override. Configuration updates do not migrate
-stored child-session selections; coordinate required activation using the
-[configuration reload guidance](#restart-after-configuration-changes).
-Use the configured provider's catalog for exact model IDs and available variants;
-Claude-backed selections use the installed CLI's inventory, not Anthropic API IDs.
+Usage limits depend on provider, model and plan; assignments promise neither
+spare capacity nor model superiority. The pair approves before final-pass quota
+is spent. There is no automatic quota fallback: an unavailable required reviewer
+blocks its gate, and exhaustion alone is not a request to substitute a model.
 
 ## Server helpers
 
@@ -424,11 +519,32 @@ be checkable.
 
 ## Restart after configuration changes
 
-OpenCode V2's server owns loaded configuration; closing its terminal client
-does not necessarily stop the shared server. After changing `opencode.json`,
-agents, commands, prompts, skills, or plugins, coordinate with connected users
-and [reload](https://opencode.ai/v2/docs/cli/commands/#reload) the server your
-session actually uses:
+[The V2 models guide](https://opencode.ai/v2/docs/models/#caveats) says configuration
+files normally reload automatically and a request already running keeps its
+initial settings. That caveat does not establish passive pickup of agent, prompt
+or skill Markdown. Global/upward instruction updates have the separate behavior
+described under [instruction delivery](#instruction-delivery). Already-selected
+session models do not migrate when a role default changes.
+
+In read-only checks of an OpenChamber-managed OpenCode 2.2.0 server, agent-file
+edits were not reflected in the same-location `/api/agent` registry without a
+reload. No reload was tested in those checks. This is a server-registry pickup
+observation, not evidence of a provider-bridge fault or a guarantee about other
+versions. Use the [read-only API examples](#instruction-delivery) to check the
+effective role before and after any separately authorized reload. Then verify
+the actual dispatch: registry/catalog presence alone is not operational usability,
+and provider-bridge instruction delivery remains a separate check.
+
+Keep each agent file entirely V1 or entirely native V2:
+[V2 selects one parser for the whole frontmatter](https://opencode.ai/v2/docs/migrate-v1/#agent-files).
+Adding `permissions` to a V1 sibling would cause its `permission` and other V1
+fields to be ignored. The new expert is native V2; existing agents stay wholly
+V1 with supported normalization, rather than an unrelated config-wide migration.
+
+The server owns loaded configuration; closing a terminal client does not
+necessarily stop it. If passive pickup fails and a full reload is actually needed,
+coordinate with connected users and obtain authority before
+[reloading](https://opencode.ai/v2/docs/cli/commands/#reload) the server in use:
 
 ```bash
 opencode reload --server <server-url>
@@ -452,8 +568,35 @@ If a restart is needed instead, restart the server that owns the session: use
 stop/start helpers for a helper-managed server. Restart OpenChamber when changing
 its own configuration. See [service troubleshooting](https://opencode.ai/v2/docs/troubleshooting/#check-the-background-service).
 
-After a depth-limit failure, reload or restart the correct server before retrying
-the affected reviewer dispatches. Keep the task blocked until required reviewers
+After a depth-limit failure, inspect effective configuration and routing first;
+seek coordinated reload/restart authority only if needed before retrying the
+affected reviewer dispatches. Keep the task blocked until required reviewers
 actually run and approve the same current state, including the final gate before
 handoff. These are recovery instructions, not authorization for an agent to
 reload or restart a live service during review.
+
+## Why these boundaries
+
+The pinned MIT-licensed [tstack source](https://github.com/t3dotgg/tstack/tree/1085050f3baed1ac724caa4a8166145fb2ac88af)
+informed this workflow: challenge review scope, validate the original journey,
+reconsider sunk work and explain the problem before the implementation inventory.
+The wording here is original. We did not import its single-reviewer/changed-lines
+shortcuts, scores, automatic cancellation, PR automation or broad autonomy grants.
+
+Our independent whole-state gates keep investigators from approving their own
+work. Explicit scratch authority makes effects clear without pretending shell
+permissions isolate them. One owner per rule keeps those boundaries readable:
+
+| Contract | Authoritative home |
+|---|---|
+| Approval, briefs, expert dispatch and finding-scope decisions | [Architect](../opencode/.config/opencode/agents/architect.md) |
+| Implementation, delivery/identity verification and review gates | [Developer](../opencode/.config/opencode/agents/developer.md) |
+| Independent assessment and finding evidence | [Reviewer](../opencode/.config/opencode/prompts/code-reviewer.md) |
+| Investigation authority | [Big-brain](../opencode/.config/opencode/agents/big-brain.md) |
+| Voice, continuation and process lifetime | [Global rules](../opencode/.config/opencode/AGENTS.md) |
+| Diagnosis, writing and operational procedures | Their [specific skills](#skills) and references |
+
+Consumers keep short local boundaries because they can be loaded independently.
+Required linked reads remain explicit; a link is not evidence that a contract
+was delivered. This guide explains how to use the workflow, not a second policy
+engine or a guarantee that prompts enforce it.
