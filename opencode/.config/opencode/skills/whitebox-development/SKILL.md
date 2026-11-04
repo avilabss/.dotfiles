@@ -190,8 +190,9 @@ phase distinction and for retaining the deployment the user is testing.
 
 ## Merge requests and ticket
 
-Use [references/merge-request-workflow.md](references/merge-request-workflow.md)
-as the canonical MR and ticket format.
+Read and follow [references/merge-request-workflow.md](references/merge-request-workflow.md)
+for MR/ticket writing and publication, including its relevant example read before
+drafting substantial description or manual-testing text.
 
 For an explicitly authorized merge, follow its
 [SDK → plugins → core sequence](references/merge-request-workflow.md#merge-and-verify-publication)

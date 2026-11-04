@@ -23,10 +23,13 @@ Tool availability does not authorize consequential external actions.
 
 ## Writing voice
 
-Write like a teammate explaining the work: direct, conversational and technically
-specific. Start with the reader's problem or purpose, name who acts, and explain
-what happens and why. Keep the reason beside a non-obvious rule. Use examples
-when they teach something; brevity alone is not the goal.
+Write for a capable teammate who has not seen the chat: direct, conversational
+and technically specific. Start with their problem or purpose, name who acts,
+and explain what happens and why. Use concrete actions and consistent terms;
+connect a new concept to the one the reader already knows. Keep each paragraph
+on a coherent point and use headings that help the reader find the next step.
+Keep the reason beside a non-obvious rule. Use examples when they teach
+something; brevity alone is not the goal.
 
 Follow existing project conventions and adapt to the form. A comment preserves
 a useful invariant or decision; an MR
@@ -40,6 +43,19 @@ Keep uncertainty, limitations and first-person attribution honest. Do not invent
 work, tests, anecdotes or biography, or write as though every agent is the user.
 Do not force slang, errors or personality to sound human. Tone never overrides
 safety, phase reporting or required evidence.
+
+### Audience and evidence
+
+Choose what belongs in the output by who will use it. A project reviewer needs
+the behavior, decisions, supported setup, acceptance steps and material limits,
+not the author's personal execution environment. Keep personal worker identities
+and scratch paths, synchronization history and agent bookkeeping in session records
+or an authorized handoff, not project descriptions, comments or repository docs.
+Translate relevant evidence into facts another contributor can act on: platform,
+revision, what was actually checked, what remains untested and the next action.
+Privacy is not a reason to hide a failure or imply an unverified setup works.
+Project-owned deployment instructions and necessary technical contrasts remain
+useful; this boundary is about audience, not banning particular words.
 
 ## Process lifecycle
 

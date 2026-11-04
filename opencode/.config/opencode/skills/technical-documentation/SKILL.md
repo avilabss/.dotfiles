@@ -42,6 +42,12 @@ duplicating reference material. Do not import Django's tooling or formatting
 rules into another repository. An accurate, focused API reference needs no
 tutorial, but a newcomer guide missing setup or a usable result is incomplete.
 
+For an MR, explain changed behavior and how another contributor can accept it.
+For a proposal, walk through the proposed normal flow: who initiates it, what
+handles each step and how the result reaches the user. Separate settled choices,
+assumptions and open decisions; a proposal can expose an unresolved choice
+without pretending the mechanism is decided or that implementation is released.
+
 Teach the mental model the reader needs next, not an inventory of components.
 For an extension example, explain what can be extended and why before naming
 the registration file. Retain useful foundations even when they apply elsewhere,
@@ -49,6 +55,22 @@ and connect them to the local task. Group meaning with headings, paragraphs,
 lists and whitespace rather than line quotas. Shared prose defaults live in
 [global guidance](../../AGENTS.md#writing-voice); this skill owns reader tasks,
 technical accuracy and explanation checks.
+
+Describe the current mechanism directly. Keep historical alternatives where they
+explain a decision, rather than repeating what the system is not in each setup
+step. Preserve a contrast when it prevents a likely mistake, explains a tradeoff
+or protects a safety boundary. Specialist references can carry deeper detail,
+but must not hide prerequisites, failure recovery or an essential open decision.
+
+Before drafting or assessing substantial output, read the matching example:
+[proposal](references/examples.md#explain-a-proposal-with-an-open-decision),
+[MR and manual acceptance](references/examples.md#write-an-mr-for-another-reviewer),
+[instruction/how-to](references/examples.md#make-an-instruction-usable),
+[setup explanation](references/examples.md#turn-an-inventory-into-a-reader-explanation),
+or [comment and control flow](references/examples.md#a-comment-that-preserves-a-constraint).
+For code grouping, also read [the grouping contrast](references/examples.md#group-code-by-meaning).
+Read only the relevant sections. They demonstrate reader tasks and reasoning,
+not mandatory wording, shapes or facts to copy into another project.
 
 ## Keep claims and examples honest
 
@@ -84,10 +106,6 @@ focused decision record when warranted, and link from local code. Follow the
 project's file ownership rules; this skill grants no authority to edit protected
 architecture files. Do not repeat the whole decision at every call site.
 
-Read [the focused examples](references/examples.md) when writing or assessing
-comments, semantic code grouping, or explanations that currently read like an
-internal inventory. They illustrate the quality bar, not mandatory templates.
-
 ## Check with a fresh reader
 
 For substantial new or reworked documentation, the developer must request a
@@ -102,6 +120,10 @@ same-state dual approval, and escalation rules in the shared agent contracts.
    walkthrough, or a forced contract-first reading sequence.
    If entry text and explanatory notes share a file, supply an explicit safe read
    range or a separate entry artifact. Metadata must not teach the answer.
+   Use neutral goals appropriate to the document: identify the flow, prerequisites,
+   decisions still open, acceptance steps or recovery, without naming the answer
+   the reader is supposed to discover. Before the reader stage, record the source
+   facts and essential answers separately; withhold that record from the reader.
 2. Use a new reviewer context, not a resumed session that already learned the
    explanation. The reviewer first follows the durable reader path and emits
    initial observations, including missing steps, mental models, or contracts,
@@ -109,14 +131,20 @@ same-state dual approval, and escalation rules in the shared agent contracts.
    Then use the [developer's explicit bootstrap procedure](../../agents/developer.md#review-instruction-delivery)
    before the brief/diff-based full specification, correctness, and scope review.
    The cold read is not a replacement for those duties or for verified loading.
-3. Have the reviewer demonstrate a representative reader task when feasible
-   within review authority. For a reference, this can be resolving a contract
-   question from the page. For instructions requiring unavailable dependencies,
-   credentials, edits, or external effects, trace the steps without executing
-   them and explicitly report that limit, rather than bypassing authorization.
+3. Have the reviewer demonstrate a representative reader task from the deliverable
+   and its naturally linked reader docs, before consulting source or author notes.
+   Record which answers were explicit, inferred, ambiguous or missing, and where
+   the text supports them. Later expertise or source inspection cannot be credited
+   as an explanation the output supplied. For a reference, the task can be resolving
+   a contract question from the page. For instructions requiring unavailable
+   dependencies, credentials, edits, or external effects, trace the steps without
+   executing them and explicitly report that limit, rather than bypassing
+   authorization.
 4. Report inputs used, prior exposure, task attempted, observed gaps, and what
-   could not be demonstrated. Developer verifies the order and complete loading
-   using the linked delivery procedure, not a final assertion. Disclose unavoidable
+   could not be demonstrated. After observations, developer compares them with the
+   withheld expectations; the full reviewer independently checks correctness against
+   source. Developer verifies the order and complete loading using the linked
+   delivery procedure, not a final assertion. Disclose unavoidable
    system/catalog/ambient exposure; do not call injected answers independently
    discovered. Scope the check to what can genuinely be assessed, or request a
    fresh context if the target explanation was supplied. Unavailable capability,

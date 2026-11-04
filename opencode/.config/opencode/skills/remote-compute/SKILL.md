@@ -129,6 +129,10 @@ deallocate the machine.
 
 ## Report
 
+These are private session/handoff reports. Before preparing project-facing output,
+read the [shared audience boundary](../../AGENTS.md#audience-and-evidence);
+the worker report is not the project's setup or manual-acceptance procedure.
+
 Report access, identity, allocation, synchronization, recovery, administration,
 and execution failures with enough context to act. At task completion, identify
 the worker and exact remote child, summarize significant host-wide changes or

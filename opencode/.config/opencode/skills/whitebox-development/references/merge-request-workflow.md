@@ -87,7 +87,14 @@ as a clone URL. Standalone MRs follow the exception above, not a fake parent blo
 Read the current core `.gitlab/merge_request_templates/default.md` and consolidate
 the ticket's core, plugin, and library changes there. Use its existing headings
 and managed sections, not a second readiness form. The description serves human
-review and feature acceptance, not as an internal verification inventory:
+review and feature acceptance, not as an internal verification inventory.
+
+Before drafting or assessing substantial description/manual-testing text, read
+the [MR example](../../technical-documentation/references/examples.md#write-an-mr-for-another-reviewer)
+and apply the [shared audience boundary](../../../AGENTS.md#audience-and-evidence).
+Write for another person's supported setup, often their own OPi, not the author's
+private remote-compute worker. Keep relevant platform/revision facts and genuine
+testing gaps; private artifact links must not be required reproduction inputs.
 
 - **What**: briefly explain the changed behavior and affected scope.
 - **Why / How**: explain the problem, approach and major decisions concisely.
@@ -100,7 +107,10 @@ review and feature acceptance, not as an internal verification inventory:
   suitable; Developer Testing Instructions for local setup when needed, or OPi
   when hardware is required; Common Testing Instructions for shared actions.
   Link existing setup docs when adequate. Necessary setup commands are fine;
-  automated suite-running recipes, test counts/logs, generations/hashes and
+  project-owned Compose/SBC instructions remain valid, unlike personal worker
+  allocation, snapshot or synchronization steps. Do not make an allocated device's
+  destructive reset procedure a routine acceptance prerequisite.
+  Automated suite-running recipes, test counts/logs, generations/hashes and
   historical proof inventories are not the default human testing content.
   CI owns automated results. Do not manually edit Sandbox Hosting.
 - **Anything Else?**: state genuine actionable limitations briefly and once where

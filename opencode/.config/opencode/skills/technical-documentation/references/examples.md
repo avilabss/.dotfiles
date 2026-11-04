@@ -1,9 +1,77 @@
 # Focused explanation examples
 
-These are small contrasts, not formatting rules. The Python snippets are
-invented, unexecuted illustrations, not verified Whitebox code or production
-recipes. Their stated constraints are hypothetical; verify equivalent claims
-against real source before using them in project documentation.
+These are small contrasts, not formatting rules. Except for the source-based
+OpenCode setup explanation, the scenarios and Python snippets are invented,
+unexecuted illustrations, not verified Whitebox code or production recipes.
+Their stated constraints are hypothetical; verify equivalent claims against
+real source before using them in project documentation. Read the section that
+matches your reader's task rather than copying every example's shape.
+
+## Explain a proposal with an open decision
+
+Audience: a product/engineering teammate deciding whether an invitation flow is
+ready to implement. Hypothetical facts: invitations expire after a day; the server
+checks expiry before granting access; the delivery channel is not yet selected.
+
+An inventory hides both the mechanism and the decision:
+
+> The design uses invitations, tokens, expiry validation and delivery integration.
+
+A proposal can explain the normal flow without pretending it is fully decided:
+
+> An administrator invites a teammate to a workspace. The server creates an
+> invitation that expires after 24 hours. When the teammate opens it,
+> the server checks the invitation before granting access to that workspace.
+> An expired invitation grants no access.
+>
+> We have not selected how to deliver invitations. Email would let the teammate
+> open one directly, but needs a configured mail service. An administrator copying
+> the link avoids that service dependency but leaves delivery to them. Choose the
+> delivery route before implementing that part of the flow.
+
+Copy the connection between actor, mechanism, result and open choice. Keep the
+useful technical contrast: delivery affects setup. Do not copy the 24-hour policy
+or imply that this example proves token security. A real design must establish
+authentication, authorization and token handling from its own contracts.
+
+## Write an MR for another reviewer
+
+Audience: a contributor with the project's existing review build running in a
+supported desktop browser. Hypothetical change: a table retains sorting in the
+current tab across page reloads, but a fresh independent tab starts with defaults.
+The supplied validation facts are source inspection and a focused component test;
+the desktop browser journey has not run. Private worker setup is irrelevant to
+manual acceptance. The quoted description below illustrates those facts, not
+tests performed for this repository.
+
+> ### What
+>
+> The results table remembers the selected sort column and direction when you
+> reload the page in the same browser tab. A fresh independent tab still uses the
+> default order.
+>
+> ### Testing
+>
+> Use your existing review-build setup in a supported desktop browser and a table
+> with different values in the Name column.
+>
+> 1. Select Name and set descending order. The rows should appear in that order.
+> 2. Reload the page in the same tab. Name and descending order should remain selected.
+> 3. Open the table in a fresh independent tab, rather than duplicating the old tab.
+>    It should start with the default sort.
+>
+> Source inspection and the focused component test cover the stored sort value,
+> not this complete browser journey. Browser acceptance remains for the project
+> reviewer to run; report any difference between these expected results and the build.
+
+Copy observable actions/results and the honest boundary between component evidence
+and manual acceptance. Replace private execution details with relevant platform
+and coverage facts, not with claims of broader success. Use the real project's
+template, including its other required sections; this excerpt is not a substitute
+Whitebox template. Link project-owned setup docs when prerequisites need more
+explanation. Do not add worker login/sync instructions, test-count inventories or
+links the reviewer cannot access. Keep a useful limitation here instead of
+repeating it in every section.
 
 ## A comment that preserves a constraint
 
