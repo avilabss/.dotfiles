@@ -1,7 +1,7 @@
 ---
 description: Investigates hard problems for architect with explicit consultation or scratch-experiment authority.
 mode: subagent
-model: claude-code/claude-fable-5-1[1m]#max
+model: claude-code/claude-fable-5-1#max
 permissions:
   - action: subagent
     resource: "*"
