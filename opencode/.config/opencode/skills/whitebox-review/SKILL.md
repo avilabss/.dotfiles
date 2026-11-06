@@ -64,6 +64,13 @@ still identify the exact combined state reviewed and renew approval after edits.
 
 ## Whitebox architecture model for review
 
+Apply the [development skill's project-fit discovery](../whitebox-development/SKILL.md#establish-scope)
+independently at the reviewed revisions. Use the model and checks below as
+navigation, verifying the task-relevant responsibilities and supported behavior
+against current project guidance and actual providers/consumers. Distinguish a
+supported configuration from a mechanism's possibilities; assess departures by
+the task need and evidence, not familiarity with an older architecture.
+
 - **Kernel**: the plugin system. It discovers and manages plugins, handles JSX
   transpilation/module federation, and exposes plugin APIs.
 - **Core**: the kernel plus the default/core plugin set and platform layers that
@@ -151,7 +158,9 @@ Separate source/API compatibility from artifact/runtime compatibility; accepting
 "federation handles it" without those contracts and configuration is not review.
 
 Check that selected scenarios establish the stated supported scope and user
-impact: relevant older published plugins/newer hosts, shared version resolution,
+impact through the ordinary supported setup, provisioned data and consumer paths,
+not only convenient fixtures or the author's environment. For compatibility risks,
+include relevant older published plugins/newer hosts, shared version resolution,
 upgrades or mixed versions, and non-developer installation/error/recovery paths.
 Require evidence for a narrower policy and its tradeoffs, not universal backwards
 compatibility or an unrelated version matrix for a low-risk plugin fix.
