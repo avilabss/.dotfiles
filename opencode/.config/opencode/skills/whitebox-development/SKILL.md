@@ -17,13 +17,27 @@ for manual testing. It does not activate remote-compute or override role authori
    end-to-end proof under the architect's acceptance-anchor criteria. Component
    tests or editable installs alone must not stand in for that journey.
 2. Inspect the current repository, worktree, branch, status, remotes, existing
-   worktrees, and relevant plugin dependencies before changing anything.
+   worktrees, and relevant plugin dependencies before changing anything. Read its
+   current project guidance and follow the relevant architecture/development docs
+   to establish the project's purpose, responsibilities, supported behavior and
+   conventions before selecting a solution. Keep discovery task-relevant, not a
+   fresh whole-project architecture report for every change.
 3. Map the complete core/plugin/library effort and the actual providers and
    consumers of changed contracts, including relevant unchanged repositories.
    Record each repository's original comparison base and starting revision,
    staged/unstaged/untracked state, and role in the effort. Inspect unchanged
    consumers without preparing or modifying every plugin by default.
 4. Preserve unrelated changes and stop on unsafe worktree or branch conflicts.
+
+Distinguish supported product configurations from what an extension API permits
+or a defensive branch happens to tolerate. Trace declared contracts and actual
+consumers, not just registration metadata. Prefer established patterns; a departure
+needs a present task need and evidence that it fits the supported behavior. Current
+guidance and execution paths inform that judgment together: neither existing code,
+an old proposal nor generic best practice settles intent alone. Resolve consequential
+conflicts through the scope-owner escalation below rather than inventing a policy.
+This keeps project fit grounded as the architecture evolves, without speculative
+flexibility or enforcing stale assumptions.
 
 Read and follow the [architect](../../agents/architect.md) and
 [developer](../../agents/developer.md) contracts for decisions, finding dispositions
@@ -162,7 +176,10 @@ it is not permission to merge or bypass them. Follow the SBC reference for this
 phase distinction and for retaining the deployment the user is testing.
 
 - Run repository-provided focused tests, linting, and formatting for every
-  changed repository.
+  changed repository. Select data and setup representative of the ordinary
+  supported journey, including its provisioning and relevant ambiguity or scale;
+  convenient fixtures or the author's prepared environment alone do not establish
+  that path.
 - Validate core with the touched plugins installed through the dependency mode
   appropriate to the current phase.
 - For packaging or production-installation changes, inspect the built or
@@ -190,8 +207,9 @@ phase distinction and for retaining the deployment the user is testing.
 
 ## Merge requests and ticket
 
-Use [references/merge-request-workflow.md](references/merge-request-workflow.md)
-as the canonical MR and ticket format.
+Read and follow [references/merge-request-workflow.md](references/merge-request-workflow.md)
+for MR/ticket writing and publication, including its relevant example read before
+drafting substantial description or manual-testing text.
 
 For an explicitly authorized merge, follow its
 [SDK → plugins → core sequence](references/merge-request-workflow.md#merge-and-verify-publication)

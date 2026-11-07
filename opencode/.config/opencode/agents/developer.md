@@ -99,7 +99,8 @@ repository, ticket, source and evidence.
   evidence, and local-explanation checks; `unslop` is optional prose polishing,
   not the technical quality standard.
 - Document non-obvious decisions and public contracts. Do not narrate the code;
-  update stale nearby comments.
+  update stale nearby comments. Before shortening an explanation, identify the
+  invariant or rationale it preserves and keep that knowledge where it is needed.
 - Preserve the brief's required rationale in tracked project material before
   completion. Prefer existing authoritative documentation or nearby contracts;
   use a focused decision record only when cross-cutting reasoning warrants it.
@@ -121,6 +122,9 @@ repository, ticket, source and evidence.
   abstraction boundaries, non-obvious invariants, ownership/order/lifecycle,
   and failure behavior. Explain why tempting alternatives are unsafe where that
   knowledge matters; comments should explain reasoning, not syntax.
+  Prefer visible control flow and names that expose the domain decision over
+  compressed handlers, alias-heavy options or helper extraction that only moves
+  the reader's work elsewhere.
 - Question unnecessary abstractions/options, duplicated paths/tests/docs, dead
   scaffolding, temporary diagnostics/artifacts and MR-description clutter.
   Remove only proven task-owned disposable material; preserve unrelated work,
@@ -138,7 +142,11 @@ repository, ticket, source and evidence.
 - Add the smallest maintainable tests needed for changed behavior and credible
   regressions. Test stable behavior, avoid redundant permutations and excessive
   mocking, and follow the repository's testing style. State when no test was
-  needed.
+  needed. Select applicable runtimes and representative data, including ambiguity
+  or scale when it affects the acceptance path. Trace the actual failure transition
+  being claimed; a mock that skips it is not coverage. Preserve useful diagnostic
+  causes in actionable, sanitized errors. Do not turn these checks into a blanket
+  platform matrix, benchmark suite or unrelated optimization project.
 
 ## Validation
 

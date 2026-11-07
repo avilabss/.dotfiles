@@ -251,6 +251,9 @@ guidance. The OpenCode stow package places it at
 `~/.config/opencode/AGENTS.md`, which [native V2 loads automatically](https://opencode.ai/v2/docs/instructions/#scope)
 alongside the target repository's guidance. Keep shared defaults in that file
 rather than duplicating them across agent prompts or config.
+Its [audience boundary](../opencode/.config/opencode/AGENTS.md#audience-and-evidence)
+separates private execution reports from project-facing explanations without hiding
+material testing gaps. Skills own the document-specific instructions and examples.
 V2 detects global/upward `AGENTS.md` edits before the next model request;
 [ambient instruction updates](https://opencode.ai/v2/docs/instructions/#updates)
 do not require a server reload. Nested instructions already loaded through file

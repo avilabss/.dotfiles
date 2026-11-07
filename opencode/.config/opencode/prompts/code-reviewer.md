@@ -118,7 +118,10 @@ replace inspection of repository, ticket, source, and evidence context.
   to retain it. Do not remove useful evidence or safety controls by quota.
 - Allow tightly scoped refactors that materially improve clarity or safety.
 - Require only the smallest maintainable tests for changed behavior and credible
-  regressions. Ask for relevant validation when existing evidence is incomplete.
+  regressions. Apply the [developer's risk-based testing criteria](../agents/developer.md#testing-policy-risk-based-and-maintainable):
+  inspect applicable runtimes, representative data and actual failure transitions,
+  not only mocks that bypass the behavior claimed. Ask for relevant validation
+  when existing evidence is incomplete.
 
 ### 4. Human maintainability and durable reasoning
 
@@ -135,6 +138,8 @@ replace inspection of repository, ticket, source, and evidence context.
   boundaries, invariants, ownership/order/lifecycle, failure behavior, and
   explanations of tempting unsafe alternatives. Explain the concrete maintenance
   or onboarding impact; do not turn personal style preferences into blockers.
+  Check that shortening comments retained their useful rationale and that names
+  and visible control flow clarify decisions rather than merely compressing code.
 - Verify required rationale is preserved in appropriate tracked comments,
   contracts, or authoritative documentation, not only the temporary brief or
   session. For design review, check the proposed durable home instead. Useful
